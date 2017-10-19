@@ -22,3 +22,9 @@ data NatIso :: k -> k -> (k -> k -> *) -> * where
 
 data MndCat :: k -> (k -> k -> k) -> (k -> k -> *) -> * where
  MndCat :: forall i f cat. Category cat -> Bifunctor f cat cat cat -> (forall a b c. NatIso (f a (f b c)) (f (f a b) c) cat) -> (forall a. NatIso (f i a) a cat) -> (forall a. NatIso (f a i) a cat) -> MndCat i f cat
+
+data Op :: (k -> k -> *) -> k -> k -> * where
+ Op :: forall cat a b. cat b a -> Op cat a b
+
+data DiNatTrns :: (k -> k -> l) -> (k -> k -> l) -> (k -> k -> *) -> (l -> l -> *) -> * where
+ DiNatTrns :: forall f g cat dat. Category cat -> Category dat -> Bifunctor f (Op cat) cat dat -> Bifunctor f (Op cat) cat dat -> (forall a. dat (f a a) (g a a)) -> DiNatTrns f g cat dat
