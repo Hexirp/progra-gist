@@ -15,9 +15,19 @@ Section skeleton.
      : forall t a r, (a -> r) -> (forall x, composed (kleisli (skeleta t)) x a -> t x -> r)
      -> skeleta t a -> r.
 
- Definition skeleta_map (t : Type -> Type) (a : Type) (b : Type) (f : a -> b) (x : skeleta t a)
-     : skeleta t b :=
+ Definition composed_map k a b b'
+     (k_map : forall ak bk b'k, (bk -> b'k) -> k ak bk -> k ak b'k)
+     (f : b -> b')
+     (x : composed k a b)
+     : composed k a b' :=
+ match_composed _ _ _ _
+  (fun xl => leaf _ _ _ (k_map _ _ _ f xl))
+  (fun _ xl xc => tree _ _ _ _ (k_map _ _ _ f xl) xc)
+ x.
+
+ Definition skeleta_map t a b (f : a -> b) (x : skeleta t a) : skeleta t b :=
  match_skeleta _ _ _
   (fun xp => returns _ _ (f xp))
   (fun xt xc xv => _)
  x.
+End skeleton.
