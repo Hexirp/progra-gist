@@ -1,59 +1,23 @@
-Inductive kleisli (m : Type -> Type) (a : Type) (b : Type) : Type :=
-| kleisliC : (a -> m b) -> kleisli m a b.
+Definition kleisli (t : Type -> Type) : Type -> Type -> Type := fun a b => a -> t b.
 
-Inductive cat (k : Type -> Type -> Type) (a : Type) (b : Type) : Type :=
-| leaf : k a b -> cat k a b
-| tree : forall x, k x b -> cat k a x -> cat k a b.
+Section skeleton.
+ Variable composed : (Type -> Type -> Type) -> Type -> Type -> Type.
+ Variable leaf : forall k a b, k a b -> composed k a b.
+ Variable tree : forall k a b x, k x b -> composed k a x -> composed k a b.
+ Variable match_composed
+     : forall k a b r, (k a b -> r) -> (forall x, k x b -> composed k a x -> r)
+     -> composed k a b -> r.
 
-Inductive skeleton (t : Type -> Type) (a : Type) : Type :=
-| returnS : a -> skeleton t a
-| bindS : forall x, t x -> cat (kleisli (skeleton t)) x a -> skeleton t a.
+ Variable skeleta : (Type -> Type) -> Type -> Type.
+ Variable returns : forall t a, a -> skeleta t a.
+ Variable binds : forall t a x, composed (kleisli (skeleta t)) x a -> t x -> skeleta t a.
+ Variable match_skeleta
+     : forall t a r, (a -> r) -> (forall x, composed (kleisli (skeleta t)) x a -> t x -> r)
+     -> skeleta t a -> r.
 
-Definition fmap t a b : (a -> b) -> skeleton t a -> skeleton t b.
-Proof.
- intros F X.
- case X; clear X.
- -
-  intros A.
-  apply returnS.
-  apply F.
-  apply A.
- -
-  intros x T C.
-  apply bindS with x.
-  +
-   apply T.
-  +
-   apply tree with a.
-   *
-    apply kleisliC.
-    intros A.
-    apply returnS.
-    apply F.
-    apply A.
-   *
-    apply C.
-Defined.
-
-Definition pure t a : a -> skeleton t a := returnS t a.
-
-Definition join t a : skeleton t (skeleton t a) -> skeleton t a.
-Proof.
- intros X.
- case X; clear X.
- -
-  intros A.
-  apply A.
- -
-  intros x T C.
-  apply bindS with x.
-  +
-   apply T.
-  + (*
-   Fail apply tree with (skeleton t a).
-   *
-    apply kleisliC.
-    apply returnS.
-   *
-    apply C.
-*) Abort.
+ Definition skeleta_map (t : Type -> Type) (a : Type) (b : Type) (f : a -> b) (x : skeleta t a)
+     : skeleta t b :=
+ match_skeleta _ _ _
+  (fun xp => returns _ _ (f xp))
+  (fun xt xc xv => _)
+ x.
