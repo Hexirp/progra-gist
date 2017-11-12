@@ -10,3 +10,12 @@ Fixpoint fmap t a b (f : a -> b) (x : skeleta t a) : skeleta t b :=
  | binds _ _ xt xv xf => binds _ _ xt xv (fun x => fmap _ _ _ f (xf x))
  end
 .
+
+Definition retn t a (x : a) : skeleta t a := returns _ _ x.
+
+Fixpoint join t a (x : skeleta t (skeleta t a)) : skeleta t a :=
+ match x with
+ | returns _ _ xr => xr
+ | binds _ _ xt xv xf => binds _ _ xt xv (fun x => join _ _ (xf x))
+ end
+.
