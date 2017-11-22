@@ -19,3 +19,11 @@ Fixpoint join t a (x : skeleta t (skeleta t a)) : skeleta t a :=
  | binds _ _ xt xv xf => binds _ _ xt xv (fun x => join _ _ (xf x))
  end
 .
+
+Fixpoint run t a (rt : forall x, x -> t x) (bi : forall x y, t x -> (x -> t y) -> t y)
+    (x : skeleta t a) : t a :=
+ match x with
+ | returns _ _ xr => rt _ xr
+ | binds _ _ xt xv xf => bi _ _ xv (fun x => run _ _ rt bi (xf x))
+ end
+.
