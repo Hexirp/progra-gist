@@ -31,6 +31,8 @@ nはxに左右される。
 *)
 Definition replace n (x : fin n) (y : ter n) : ter n := fin_destruct _ _ x y Var.
 
+Definition beta_rec n (x : ter (S (S n))) (y : ter n) : ter n := undefined (ter n).
+
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。 *)
 Definition beta n (f : ter (S n)) (x : ter n) : ter n.
 Proof.
@@ -42,7 +44,11 @@ Proof.
   +
    apply x.
  -
-  apply (undefined (ter n)).
+  apply beta_rec.
+  +
+   apply H.
+  +
+   apply x.
  -
   apply (undefined (ter n)).
 Qed.
