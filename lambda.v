@@ -19,12 +19,14 @@ Inductive ter : nat -> Type :=
 
 nはxに左右される。
 *)
-Definition replace n (x : fin n) (y : ter n) : ter n :=
- match x in (fin xn) return ter xn -> ter xn with
- | Fino _ => fun i => i
- | Fins _ xp => fun _ => Var _ xp
- end y
-.
+Definition replace n p (x : fin n) : p n.
+Proof.
+ destruct x.
+ -
+  apply (undefined (p n)).
+ -
+  apply (undefined (fin n -> p (S n)) x).
+Qed.
 
 Print replace.
 
