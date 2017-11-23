@@ -32,10 +32,19 @@ nはxに左右される。
 Definition replace n (x : fin n) (y : ter n) : ter n := fin_destruct _ _ x y Var.
 
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。 *)
-Fixpoint beta n (f : ter (S n)) (x : ter n) : ter n :=
- match f with
- | Var _ var => undefined (ter n)
- | Abs _ abs => undefined (ter n)
- | App _ lef rig => undefined (ter n)
- end
-.
+Definition beta n (f : ter (S n)) (x : ter n) : ter n.
+Proof.
+ inversion f.
+ -
+  apply replace.
+  +
+   apply H0.
+  +
+   apply x.
+ -
+  apply (undefined (ter n)).
+ -
+  apply (undefined (ter n)).
+Qed.
+
+Print beta.
