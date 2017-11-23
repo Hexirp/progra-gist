@@ -11,6 +11,26 @@ Inductive ter : nat -> Type :=
  | App : forall n, ter n -> ter n -> ter n
 .
 
+(**
+(\ v2) foo
+\ (v1 foo)+
+\ (replace 0 foo)+
+\ foo+
+
+nはxに左右される。
+*)
+Definition replace n (x : fin n) (y : ter n) : ter n.
+Proof.
+ destruct x.
+ -
+  apply y.
+ -
+  apply Var.
+  apply x.
+Defined.
+
+Print replace.
+
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。 *)
 Fixpoint beta n (f : ter (S n)) (x : ter n) : ter n :=
  match f with
