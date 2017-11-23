@@ -19,13 +19,14 @@ Inductive ter : nat -> Type :=
 
 nはxに左右される。
 *)
-Definition replace n p (x : fin n) : p n.
+Definition replace n p (x : fin n) (co : p n) (cs : forall n, fin n -> p (S n)) : p n.
 Proof.
  destruct x.
  -
-  apply (undefined (p n)).
+  apply co.
  -
-  apply (undefined (fin n -> p (S n)) x).
+  apply cs.
+  apply x.
 Qed.
 
 Print replace.
