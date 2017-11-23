@@ -11,15 +11,7 @@ Inductive ter : nat -> Type :=
  | App : forall n, ter n -> ter n -> ter n
 .
 
-(**
-(\ v2) foo
-\ (v1 foo)+
-\ (replace 0 foo)+
-\ foo+
-
-nはxに左右される。
-*)
-Definition replace n p (x : fin n) (co : p n) (cs : forall n, fin n -> p (S n)) : p n.
+Definition fin_destruct n p (x : fin n) (co : p n) (cs : forall xn, fin xn -> p (S xn)) : p n.
 Proof.
  destruct x.
  -
@@ -29,7 +21,15 @@ Proof.
   apply x.
 Qed.
 
-Print replace.
+(**
+(\ v2) foo
+\ (v1 foo)+
+\ (replace 0 foo)+
+\ foo+
+
+nはxに左右される。
+*)
+Definition replace n (x : fin n) (y : ter n) : ter n := fin_destruct _ _ x y Var.
 
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。 *)
 Fixpoint beta n (f : ter (S n)) (x : ter n) : ter n :=
