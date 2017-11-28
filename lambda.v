@@ -16,9 +16,9 @@ Proof.
  fix go 2.
  intros n x.
  inversion x as [xn xH | xn x' xH]; clear x.
- -
+ - (* x = 0 *)
   apply Fino.
- -
+ - (* x = n *)
   apply Fins.
   apply go.
   apply x'.
@@ -43,19 +43,19 @@ Definition beta_var : forall n, fin n -> fin n -> ter n -> ter n.
 Proof.
  fix go 3.
  intros n h f x.
- inversion f.
+ inversion f as [fn fH | fn f' fH]; clear f.
  - (* f = 0 *)
-  inversion h.
+  inversion h as [hn hH | hn h' hH]; clear h.
   + (* h = 0 *)
    apply x.
   + (* h = n *)
    apply Var.
-   apply H0.
+   apply Fino.
  - (* f = n *)
-  inversion h.
+  inversion h as [hn hH | hn h' hH]; clear h.
   + (* h = 0 *)
    apply Var.
-   apply H.
+   apply f'.
   + (* h = n *)
    apply go.
    
