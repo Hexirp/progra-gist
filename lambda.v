@@ -40,10 +40,10 @@ Qed.
 \ \ 2 1
 
 *)
-Definition beta : forall n, ter (S n) -> ter n -> ter n.
+Definition beta : forall n, fin n -> ter (S n) -> ter n -> ter n.
 Proof.
- fix go 2.
- intros n f x.
+ fix go 3.
+ intros n h f x.
  inversion f as [fn fv fnH | fn fv fnH | fn fvl fvr fnH].
  -
   apply (undefined _).
