@@ -40,21 +40,15 @@ Qed.
 \ \ 2 1
 
 *)
-Definition beta n (f : ter (S n)) (x : ter n) : ter n.
+Definition beta : forall n, ter (S n) -> ter n -> ter n.
 Proof.
- inversion f.
+ fix go 2.
+ intros n f x.
+ inversion f as [fn fv fnH | fn fv fnH | fn fvl fvr fnH].
  -
-  apply replace.
-  +
-   apply H0.
-  +
-   apply x.
+  apply (undefined _).
  -
-  apply beta_rec.
-  +
-   apply H.
-  +
-   apply x.
+  apply (undefined _).
  -
-  apply (undefined (ter n)).
+  apply (undefined _).
 Qed.
