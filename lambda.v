@@ -13,17 +13,17 @@ Inductive ter : nat -> Type :=
 
 (**
 
-v1 B0 v2
-v2
+0n B0 xn
+xn
 
-v2 B0 v1
-v2
+1n B0 xn
+v2n
 
-v1 B1 v2
-v1
+0n B1 xn
+v1n
 
-v2 B1 v1
-v1
+1n B1 xn
+xn
 
 *)
 Definition beta_var : forall n, fin n -> fin n -> ter n -> ter n.
@@ -71,6 +71,11 @@ Proof.
 \ (\ 2 1) B0 1
 \ \ (2 1) B1 2
 \ \ 2 1
+
+1. 外側で定義されている変数の数
+2. 置き換えるべき変数
+3. 適用する項
+4. 適用される項
 
 *)
 Definition beta : forall n, fin n -> ter (S n) -> ter n -> ter n.
