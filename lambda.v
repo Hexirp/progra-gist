@@ -11,15 +11,48 @@ Inductive ter : nat -> Type :=
  | App : forall n, ter n -> ter n -> ter n
 .
 
-Definition fin_destruct n p (x : fin n) (co : p n) (cs : forall xn, fin xn -> p (S xn)) : p n.
+(**
+
+v1 B0 v2
+v2
+
+v2 B0 v1
+v2
+
+v1 B1 v2
+v1
+
+v2 B1 v1
+v1
+
+*)
+Definition beta_var : forall n, fin n -> fin n -> ter n -> ter n.
 Proof.
- destruct x.
- -
-  apply co.
- -
-  apply cs.
-  apply x.
-Qed.
+ fix go 3.
+ intros n h f x.
+ inversion f.
+ - (* f = 0 *)
+  inversion h.
+  + (* h = 0 *)
+   apply x.
+  + (* h = n *)
+   apply Var.
+   apply H0.
+ - (* f = n *)
+  inversion h.
+  + (* h = 0 *)
+   apply Var.
+   apply H.
+  + (* h = n *)
+   apply go.
+   
+   *
+    rewrite H0.
+    rewrite <- H2.
+    apply Fins.
+    apply H1.
+   *
+    
 
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。
 
