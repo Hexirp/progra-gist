@@ -11,6 +11,19 @@ Inductive ter : nat -> Type :=
  | App : forall n, ter n -> ter n -> ter n
 .
 
+Definition fin_expand : forall n, fin n -> fin (S n).
+Proof.
+ fix go 2.
+ intros n x.
+ inversion x as [xn xH | xn x' xH]; clear x.
+ -
+  apply Fino.
+ -
+  apply Fins.
+  apply go.
+  apply x'.
+Defined.
+
 (**
 
 0n B0 xn
