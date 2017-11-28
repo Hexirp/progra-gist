@@ -46,7 +46,7 @@ Proof.
  intros n h f x.
  inversion f as [fn fv fnH | fn fv fnH | fn fvl fvr fnH].
  -
-  apply (undefined _).
+  apply (undefined (forall n, fin n -> fin n -> ter n -> ter n) _ h fv x).
  -
   apply (undefined _).
  -
