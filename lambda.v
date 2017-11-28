@@ -21,31 +21,6 @@ Proof.
   apply x.
 Qed.
 
-(**
-(\ v2) foo
-\ (v1 foo)+
-\ (replace 0 foo)+
-\ foo+
-
-nはxに左右される。
-*)
-Definition replace n (x : fin n) (y : ter n) : ter n := fin_destruct _ _ x y Var.
-
-Definition beta_rec n (x : ter (S (S n))) (y : ter n) : ter n := undefined (ter n).
-
-Definition ter_destruct n p (f : ter (S n)) : p n.
-Proof.
- inversion f.
- -
-  apply (undefined (forall n, fin n -> p n) n H0).
- -
-  apply (undefined (forall n, ter (S (S n)) -> p n) n H).
- -
-  apply (undefined (forall n, ter (S n) -> ter (S n) -> p n) n H H0).
-Qed.
-
-Print ter_destruct.
-
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。
 
 (\ 1 1) (\ 1 1)
@@ -83,5 +58,3 @@ Proof.
  -
   apply (undefined (ter n)).
 Qed.
-
-Print beta.
