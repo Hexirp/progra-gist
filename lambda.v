@@ -102,7 +102,17 @@ Proof.
     refine (Fino _).
   + (* f = n *)
    intros fH hH.
-   refine (_ _).
+   refine (beta_var fm n _ _ _ _).
+   *
+    refine (
+     match H in le _ n' return le fm n' with
+     | Leo _ => _
+     | Les _ Hn Hp => _
+     end
+    ).
+    --
+     refine
+
  -
   intro fH.
   refine (
