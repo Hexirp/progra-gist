@@ -160,22 +160,15 @@ Proof.
        end
       ).
       refine (eq_refl _).
+    --
+     refine hp.
+   *
     refine fp.
    *
-    
+    refine x.
+Qed.
 
- -
-  intro fH.
-  refine (
-   match fH in @eq _ _ n' return ter n' with
-   | @eq_refl _ _ => _
-   end
-  ); clear fH fn.
-  apply (undefined _).
- -
-  apply (undefined _).
- Show Proof.
-    
+Print beta_var.
 
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。
 
