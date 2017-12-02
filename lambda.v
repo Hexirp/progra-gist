@@ -22,18 +22,30 @@ Definition max m0 n0 (st0 : nat_max m0 n0) : nat.
 Proof.
  refine (
   (fix go m n (st : nat_max m n) {struct st} := _) m0 n0 st0
- ); clear st0 n0 m0.
+ );
+ clear st0 n0 m0.
  generalize (eq_refl m) (eq_refl n).
- destruct m as [ | m]; destruct n as [ | n].
+ refine (
+  match st in nat_max stm0 stn0 return m = stm0 -> n = stn0 -> nat with
+  | NMe => _
+  | NMl stl => _
+  | NMr str => _
+  | NMs sts st' => _
+  end
+ );
+ clear st;
+ intros _ _.
  -
   apply 0.
  -
-  apply (S n).
+  apply (S stl).
  -
-  apply (S m).
+  apply (S str).
  -
-  apply (go m n).
-  apply 
+  apply (go sts sts st').
+Defined.
+
+Print max.
 
 (**
 
