@@ -111,7 +111,58 @@ Proof.
      end
     ).
     --
-     refine
+     refine (
+      match (_ : S fm = m) in _ = m' return le fm m' with
+      | eq_refl _ => _
+      end
+     ).
+     ++
+      refine (
+       match fH in _ = m' return m' = m with
+       | eq_refl _ => _
+       end
+      ).
+      refine (eq_refl _).
+     ++
+      refine (Les _ _ _).
+      refine (Leo _).
+    --
+     refine (Les _ _ _).
+     refine (
+      undefined (forall m n, le (S m) n -> le m n) _ _ _
+     ).
+     refine (
+      match fH in _ = m' return le m' Hn with
+      | eq_refl _ => _
+      end
+     ).
+     refine Hp.
+   *
+    refine (
+     match (_ : hm = fm) in _ = hm' return fin hm' with
+     | eq_refl _ => _
+     end
+    ).
+    --
+     refine (
+      match (_ : (_ (S hm)) = hm) in _ = hm' return hm' = fm with
+      | eq_refl _ => _
+      end
+     ).
+     ++
+      refine (
+       eq_refl hm : (fun x => match x with | O => O | S p => p end) (S hm) = hm
+      ).
+     ++
+      refine (
+       match hH in _ = fmS' return (fun x => match x with | O => O | S p => p end) fmS' = fm with
+       | eq_refl _ => _
+       end
+      ).
+      refine (eq_refl _).
+    refine fp.
+   *
+    
 
  -
   intro fH.
