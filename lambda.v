@@ -1,15 +1,39 @@
 Axiom undefined : forall a : Type, a.
 
 Inductive fin : nat -> Type :=
- | Fino : forall n, fin n
- | Fins : forall n, fin n -> fin (S n)
+| Fino : forall n, fin n
+| Fins : forall n, fin n -> fin (S n)
 .
 
 Inductive ter : nat -> Type :=
- | Var : forall n, fin n -> ter (S n)
- | Abs : forall n, ter (S n) -> ter n
- | App : forall n, ter n -> ter n -> ter n
+| Var : forall n, fin n -> ter (S n)
+| Abs : forall n, ter (S n) -> ter n
+| App : forall n, ter n -> ter n -> ter n
 .
+
+Inductive nat_max : nat -> nat -> Type :=
+| NMe : nat_max 0 0
+| NMl : forall n, nat_max (S n) 0
+| NMr : forall n, nat_max 0 (S n)
+| NMs : forall n, nat_max n n -> nat_max (S n) (S n)
+.
+
+Definition max m0 n0 (st0 : nat_max m0 n0) : nat.
+Proof.
+ refine (
+  (fix go m n (st : nat_max m n) {struct st} := _) m0 n0 st0
+ ); clear st0 n0 m0.
+ generalize (eq_refl m) (eq_refl n).
+ destruct m as [ | m]; destruct n as [ | n].
+ -
+  apply 0.
+ -
+  apply (S n).
+ -
+  apply (S m).
+ -
+  apply (go m n).
+  apply 
 
 (**
 
