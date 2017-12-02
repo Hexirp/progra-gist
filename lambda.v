@@ -72,17 +72,24 @@ Defined.
 
    #
 
-(h = 0, f = n)
+(h = 0, f = x)
 ---|===
 ------|
 
 ---|==
 
-(h = n, f = 0)
+(h = x, f = 0)
 -----|
 ---|==
 
 ----|
+
+(h = x, f = x)
+----|==
+--|====
+
+----|=
+--|===
 
 1. 外側で定義されている変数の数
 2. 置き換えるべき変数
@@ -139,7 +146,7 @@ Proof.
     refine fp.
    *
     refine x.
-Qed.
+Defined.
 
 Definition beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n
  := beta_var_le _ _ (leo _) h f x.
@@ -180,3 +187,5 @@ Proof.
  -
   apply (undefined _).
 Qed.
+
+Print beta_var_le.
