@@ -64,7 +64,7 @@ Proof.
   (fix go n (h : fin n) (f : fin n) (x : ter n) {struct n} := _) n0 h0 f0 x0
  ); clear x0 f0 h0 n0.
  refine (
-  _ (@eq_refl _ n)
+  _ (eq_refl n)
  ).
  refine (
   match f in fin fn0 return n = fn0 -> ter fn0 with
@@ -73,6 +73,12 @@ Proof.
   end
  ).
  -
+  intro fH.
+  refine (
+   match fH in @eq _ _ n' return ter n' with
+   | @eq_refl _ _ => _
+   end
+  ); clear fH fn.
   apply (undefined _).
  -
   apply (undefined _).
