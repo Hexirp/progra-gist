@@ -12,8 +12,8 @@ Inductive ter : nat -> Type :=
 .
 
 Inductive le (m : nat) : nat -> Type :=
-| Leo : le m m
-| Les : forall n, le m n -> le m (S n)
+| leo : le m m
+| les : forall n, le m n -> le m (S n)
 .
 
 (**
@@ -76,10 +76,10 @@ Proof.
     --
      rewrite <- HH.
      rewrite <- fH.
-     refine (Les _ _ _).
-     refine (Leo _).
+     refine (les _ _ _).
+     refine (leo _).
     --
-     refine (Les _ _ _).
+     refine (les _ _ _).
      refine (
       undefined (forall m n, le (S m) n -> le m n) _ _ _
      ).
