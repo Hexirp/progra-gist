@@ -42,42 +42,37 @@ Inductive le (m : nat) : nat -> Type :=
 4. 置き換える項
 
 *)
-Fixpoint beta_var m n (H : le m n) (h : fin n) (f : fin n) (x : ter n) : ter n.
+Fixpoint beta_var m n (H : le m n) (h : fin m) (f : fin m) (x : ter n) : ter n.
 Proof.
  refine (
-  match h in fin hn' return n = hn' -> ter hn' with
-  | Fino hn => _
-  | Fins hn hp => _
-  end (eq_refl n)
+  match h in fin hm' return m = hm' -> ter n with
+  | Fino hm => _
+  | Fins hm hp => _
+  end (eq_refl m)
  ); clear h.
  - (* h = 0 *)
   refine (
-   match f in fin fn' return n = fn' -> fn' = hn -> ter hn with
-   | Fino fn => _
-   | Fins fn fp => _
-   end (eq_refl n)
+   match f in fin fm' return m = fm' -> fm' = hm -> ter n with
+   | Fino fm => _
+   | Fins fm fp => _
+   end (eq_refl m)
   ); clear f.
   + (* f = 0 *)
    intros fH hH.
-   refine (
-    match hH in _ = hn' return ter hn' with
-    | eq_refl _ => _
-    end
-   ); clear hH hn.
-   refine (
-    match fH in _ = fn' return ter fn' with
-    | eq_refl _ => _
-    end
-   ); clear fH fn.
    apply x.
   + (* f = n *)
    intros fH hH.
    refine (
-    match hH in _ = hn' return ter hn' with
-    | eq_refl _ => _
-    end
-   ); clear hH hn.
-   refine (Var _ _).
+    undefined (forall m n, le (S m) n -> fin m -> ter n) fm _ _ _
+   ).
+   *
+    refine (
+     match fH in _ = m' return le m' n with
+     | eq_refl _ => _
+     end
+    ).
+    apply H.
+   *
    refine fp.
  - (* h = n *)
   refine (
