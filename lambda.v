@@ -44,124 +44,55 @@ Inductive le (m : nat) : nat -> Type :=
 *)
 Fixpoint beta_var m n (H : le m n) (h : fin m) (f : fin m) (x : ter n) : ter n.
 Proof.
- refine (
-  match h in fin hm' return m = hm' -> ter n with
-  | Fino hm => _
-  | Fins hm hp => _
-  end (eq_refl m)
- ); clear h.
+ inversion h as [hm hH | hm hp hH]; clear h.
  - (* h = 0 *)
-  refine (
-   match f in fin fm' return m = fm' -> fm' = hm -> ter n with
-   | Fino fm => _
-   | Fins fm fp => _
-   end (eq_refl m)
-  ); clear f.
+  inversion f as [fm fH | fm fp fH]; clear f.
   + (* f = 0 *)
-   intros fH hH.
-   apply x.
+   refine x.
   + (* f = n *)
-   intros fH hH.
    refine (
     undefined (forall m n, le (S m) n -> fin m -> ter n) fm _ _ _
    ).
    *
-    refine (
-     match fH in _ = m' return le m' n with
-     | eq_refl _ => _
-     end
-    ); clear fH.
-    apply H.
+    rewrite -> fH.
+    refine H.
    *
    refine fp.
  - (* h = n *)
-  refine (
-   match f in fin fm' return m = fm' -> fm' = S hm -> ter n with
-   | Fino fm => _
-   | Fins fm fp => _
-   end (eq_refl m)
-  ); clear f.
+  inversion f as [fm fH | fm fp fH]; clear f.
   + (* f = 0 *)
-   intros fH hH.
    refine (
     undefined (forall m n, le (S m) n -> fin m -> ter n) hm _ _ _
    ).
    *
-    refine (
-     match hH in _ = fm' return le fm' n with
-     | eq_refl _ => _
-     end
-    ); clear hH.
-    refine (
-     match fH in _ = m' return le m' n with
-     | eq_refl _ => _
-     end
-    ).
+    rewrite -> hH.
     refine H.
    *
     refine (Fino _).
   + (* f = n *)
-   intros fH hH.
    refine (beta_var fm n _ _ _ _).
    *
-    refine (
-     match H in le _ n' return le fm n' with
-     | Leo _ => _
-     | Les _ Hn Hp => _
-     end
-    ).
+    inversion H as [HH | Hn Hp HH]; clear H.
     --
-     refine (
-      match (_ : S fm = m) in _ = m' return le fm m' with
-      | eq_refl _ => _
-      end
-     ).
-     ++
-      refine (
-       match fH in _ = m' return m' = m with
-       | eq_refl _ => _
-       end
-      ).
-      refine (eq_refl _).
-     ++
-      refine (Les _ _ _).
-      refine (Leo _).
+     rewrite <- HH.
+     rewrite <- fH.
+     refine (Les _ _ _).
+     refine (Leo _).
     --
      refine (Les _ _ _).
      refine (
       undefined (forall m n, le (S m) n -> le m n) _ _ _
      ).
-     refine (
-      match fH in _ = m' return le m' Hn with
-      | eq_refl _ => _
-      end
-     ).
+     rewrite -> fH.
      refine Hp.
    *
-    refine (
-     match (_ : hm = fm) in _ = hm' return fin hm' with
-     | eq_refl _ => _
-     end
-    ).
-    --
-     refine (
-      match (_ : (_ (S hm)) = hm) in _ = hm' return hm' = fm with
-      | eq_refl _ => _
-      end
-     ).
-     ++
-      refine (
-       eq_refl hm : (fun x => match x with | O => O | S p => p end) (S hm) = hm
-      ).
-     ++
-      refine (
-       match hH in _ = fmS' return (fun x => match x with | O => O | S p => p end) fmS' = fm with
-       | eq_refl _ => _
-       end
-      ).
-      refine (eq_refl _).
+    replace fm with hm.
     --
      refine hp.
+    --
+     refine (eq_add_S _ _ _).
+     rewrite -> fH.
+     refine hH.
    *
     refine fp.
    *
