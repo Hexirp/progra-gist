@@ -15,34 +15,21 @@ Inductive nat_max : nat -> nat -> Type :=
 | NMe : nat_max 0 0
 | NMl : forall n, nat_max (S n) 0
 | NMr : forall n, nat_max 0 (S n)
-| NMs : forall n, nat_max n n -> nat_max (S n) (S n)
+| NMs : forall m n, nat_max m n -> nat_max (S m) (S n)
 .
 
-Definition max m0 n0 (st0 : nat_max m0 n0) : nat.
+Fixpoint max m n : nat_max m n.
 Proof.
- refine (
-  (fix go m n (st : nat_max m n) {struct st} := _) m0 n0 st0
- );
- clear st0 n0 m0.
- generalize (eq_refl m) (eq_refl n).
- refine (
-  match st in nat_max stm0 stn0 return m = stm0 -> n = stn0 -> nat with
-  | NMe => _
-  | NMl stl => _
-  | NMr str => _
-  | NMs sts st' => _
-  end
- );
- clear st;
- intros _ _.
+ destruct m as [ | m]; destruct n as [ | n].
  -
-  apply 0.
+  refine NMe.
  -
-  apply (S stl).
+  refine (NMr _).
  -
-  apply (S str).
+  refine (NMl _).
  -
-  apply (go sts sts st').
+  refine (NMs _ _ _).
+  refine (max _ _).
 Defined.
 
 Print max.
