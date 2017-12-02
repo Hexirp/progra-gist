@@ -32,8 +32,6 @@ Proof.
   refine (max _ _).
 Defined.
 
-Print max.
-
 Inductive fin_max : forall n, fin n -> fin n -> Type :=
 | FMe : forall n, fin_max n (Fino n) (Fino n)
 | FMl : forall n (fi : fin n), fin_max (S n) (Fins n fi) (Fino (S n))
@@ -87,12 +85,14 @@ xn
 
     |====
 
+1. 外側で定義されている変数の数
+2. 置き換えるべき変数
+3. 対象の変数
+4. 置き換える項
+
 *)
-Definition beta_var n0 (h0 : fin n0) (f0 : fin n0) (x0 : ter n0) : ter n0.
+Fixpoint beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n.
 Proof.
- refine (
-  (fix go n (h : fin n) (f : fin n) (x : ter n) {struct n} := _) n0 h0 f0 x0
- ); clear x0 f0 h0 n0.
  refine (
   _ (eq_refl n)
  ).
