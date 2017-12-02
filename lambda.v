@@ -88,6 +88,18 @@ xn
 
 ---|====
 
+(h = 0, f = 0)
+---|
+---|
+
+   #
+
+(h = 0, f = n)
+---|===
+------|
+
+---|==
+
 1. 外側で定義されている変数の数
 2. 置き換えるべき変数
 3. 対象の変数
@@ -97,14 +109,39 @@ xn
 Fixpoint beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n.
 Proof.
  refine (
-  _ (eq_refl n)
- ).
+  match h in fin hn' return n = hn' -> ter hn' with
+  | Fino hn => _
+  | Fins hn hp => _
+  end (eq_refl n)
+ ); clear h.
+ - (* h = 0 *)
+  refine (
+   match f in fin fn' return n = fn' -> fn' = hn -> ter hn with
+   | Fino fn => _
+   | Fins fn fp => _
+   end (eq_refl n)
+  ); clear f.
+  + (* f = 0 *)
+   intros fH hH.
+   refine (
+    match hH in _ = hn' return ter hn' with
+    | eq_refl _ => _
+    end
+   ); clear hH hn.
+   refine (
+    match fH in _ = fn' return ter fn' with
+    | eq_refl _ => _
+    end
+   ); clear fH fn.
+   apply x.
+  + (* f = n *)
+   
  refine (
-  match f in fin fn0 return n = fn0 -> ter fn0 with
+  match f in fin fn' return n = fn' -> ter fn' with
   | Fino fn => _
   | Fins fn fp => _
-  end
- ).
+  end (eq_refl n)
+ ); intro fH.
  -
   intro fH.
   refine (
