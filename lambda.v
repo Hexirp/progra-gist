@@ -16,6 +16,18 @@ Inductive le (m : nat) : nat -> Type :=
 | les : forall n, le m n -> le m (S n)
 .
 
+Fixpoint les_l m n (x : le (S m) n) : le m n.
+Proof.
+ inversion x as [HH | Hn Hp HH]; clear x.
+ -
+  refine (les _ _ _).
+  refine (leo _).
+ -
+  refine (les _ _ _).
+  refine (les_l _ _ _).
+  refine Hp.
+Defined.
+
 Fixpoint fin_le m n (H : le m n) (x : fin m) : fin n.
 Proof.
  inversion H as [HH | Hn Hp HH]; clear H.
@@ -86,9 +98,7 @@ Proof.
   + (* f = 0 *)
    refine x.
   + (* f = n *)
-   refine (
-    undefined (forall m n, le (S m) n -> fin m -> ter n) fm _ _ _
-   ).
+   refine (var_le fm _ _ _).
    *
     rewrite -> fH.
     refine H.
@@ -97,9 +107,7 @@ Proof.
  - (* h = n *)
   inversion f as [fm fH | fm fp fH]; clear f.
   + (* f = 0 *)
-   refine (
-    undefined (forall m n, le (S m) n -> fin m -> ter n) hm _ _ _
-   ).
+   refine (var_le hm _ _ _).
    *
     rewrite -> hH.
     refine H.
@@ -116,9 +124,7 @@ Proof.
      refine (leo _).
     --
      refine (les _ _ _).
-     refine (
-      undefined (forall m n, le (S m) n -> le m n) _ _ _
-     ).
+     refine (les_l _ _ _).
      rewrite -> fH.
      refine Hp.
    *
