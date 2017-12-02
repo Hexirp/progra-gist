@@ -47,6 +47,13 @@ Defined.
 
 Print max.
 
+Inductive fin_max : forall n, fin n -> fin n -> Type :=
+| FMe : forall n, fin_max n (Fino n) (Fino n)
+| FMl : forall n (fi : fin n), fin_max (S n) (Fins n fi) (Fino (S n))
+| FMr : forall n (fi : fin n), fin_max (S n) (Fino (S n)) (Fins n fi)
+| FMs : forall n (fi : fin n), fin_max n fi fi -> fin_max (S n) (Fins n fi) (Fins n fi)
+.
+
 (**
 
 0n B0 xn
