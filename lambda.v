@@ -11,82 +11,12 @@ Inductive ter : nat -> Type :=
 | App : forall n, ter n -> ter n -> ter n
 .
 
-Inductive nat_max : nat -> nat -> Type :=
-| NMe : nat_max 0 0
-| NMl : forall n, nat_max (S n) 0
-| NMr : forall n, nat_max 0 (S n)
-| NMs : forall m n, nat_max m n -> nat_max (S m) (S n)
-.
-
-Fixpoint max m n : nat_max m n.
-Proof.
- destruct m as [ | m]; destruct n as [ | n].
- -
-  refine NMe.
- -
-  refine (NMr _).
- -
-  refine (NMl _).
- -
-  refine (NMs _ _ _).
-  refine (max _ _).
-Defined.
-
-Inductive fin_max : forall n, fin n -> fin n -> Type :=
-| FMe : forall n, fin_max n (Fino n) (Fino n)
-| FMl : forall n (fi : fin n), fin_max (S n) (Fins n fi) (Fino (S n))
-| FMr : forall n (fi : fin n), fin_max (S n) (Fino (S n)) (Fins n fi)
-| FMs : forall n (fi : fin n), fin_max n fi fi -> fin_max (S n) (Fins n fi) (Fins n fi)
+Inductive le (m : nat) : nat -> Type :=
+| Leo : le m m
+| Les : forall n, le m n -> le m (S n)
 .
 
 (**
-
-0n B0 xn
-xn
-
-1n B0 xn
-v2n
-
-0n B1 xn
-v1n
-
-1n B1 xn
-xn
-
-----|====
----|=====
-
----*|====
- ---|====
-
-----|====
------|===
-
-----|*===
- ----|===
-
-----|====
-----|====
-
-----*====
-        #
-
-----|====
----|=====
-
-----|===
----|====
-
-----|==
----|===
-
-----|=
----|==
-
-----|
----|=
-
----|====
 
 (h = 0, f = 0)
 ---|
@@ -112,7 +42,7 @@ xn
 4. 置き換える項
 
 *)
-Fixpoint beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n.
+Fixpoint beta_var m n (H : le m n) (h : fin n) (f : fin n) (x : ter n) : ter n.
 Proof.
  refine (
   match h in fin hn' return n = hn' -> ter hn' with
@@ -162,7 +92,7 @@ Proof.
    refine (Fino _).
   + (* f = n *)
    intros fH hH.
-   
+   refine (_ _).
  -
   intro fH.
   refine (
