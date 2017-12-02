@@ -11,6 +11,11 @@ Inductive ter : nat -> Type :=
 | app : forall n, ter n -> ter n -> ter n
 .
 
+Inductive le (m : nat) : nat -> Type :=
+| Leo : le m m
+| Les : forall n, le m n -> le m (S n)
+.
+
 (**
 
 (h = 0, f = 0)
@@ -37,7 +42,7 @@ Inductive ter : nat -> Type :=
 4. 置き換える項
 
 *)
-Fixpoint beta_var m n (H : m <= n) (h : fin m) (f : fin m) (x : ter n) : ter n.
+Fixpoint beta_var m n (H : le m n) (h : fin m) (f : fin m) (x : ter n) : ter n.
 Proof.
  inversion h as [hm hH | hm hp hH]; clear h.
  - (* h = 0 *)
@@ -46,7 +51,7 @@ Proof.
    refine x.
   + (* f = n *)
    refine (
-    undefined (forall m n, S m <= n -> fin m -> ter n) fm _ _ _
+    undefined (forall m n, le (S m) n -> fin m -> ter n) fm _ _ _
    ).
    *
     rewrite -> fH.
@@ -57,7 +62,7 @@ Proof.
   inversion f as [fm fH | fm fp fH]; clear f.
   + (* f = 0 *)
    refine (
-    undefined (forall m n, S m <= n -> fin m -> ter n) hm _ _ _
+    undefined (forall m n, le (S m) n -> fin m -> ter n) hm _ _ _
    ).
    *
     rewrite -> hH.
@@ -71,12 +76,12 @@ Proof.
     --
      rewrite <- HH.
      rewrite <- fH.
-     refine (le_S _ _ _).
-     refine (le_n _).
+     refine (Les _ _ _).
+     refine (Leo _).
     --
-     refine (le_S _ _ _).
+     refine (Les _ _ _).
      refine (
-      undefined (forall m n, S m <= n -> m <= n) _ _ _
+      undefined (forall m n, le (S m) n -> le m n) _ _ _
      ).
      rewrite -> fH.
      refine Hp.
