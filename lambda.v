@@ -135,7 +135,14 @@ Proof.
    ); clear fH fn.
    apply x.
   + (* f = n *)
-   
+   intros fH hH.
+   refine (
+    match hH in _ = hn' return ter hn' with
+    | eq_refl _ => _
+    end
+   ); clear hH hn.
+   refine (Var _ _).
+   refine fp.
  refine (
   match f in fin fn' return n = fn' -> ter fn' with
   | Fino fn => _
