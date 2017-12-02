@@ -1,14 +1,14 @@
 Axiom undefined : forall a : Type, a.
 
 Inductive fin : nat -> Type :=
-| Fino : forall n, fin n
-| Fins : forall n, fin n -> fin (S n)
+| fino : forall n, fin n
+| fins : forall n, fin n -> fin (S n)
 .
 
 Inductive ter : nat -> Type :=
-| Var : forall n, fin n -> ter (S n)
-| Abs : forall n, ter (S n) -> ter n
-| App : forall n, ter n -> ter n -> ter n
+| var : forall n, fin n -> ter (S n)
+| abs : forall n, ter (S n) -> ter n
+| app : forall n, ter n -> ter n -> ter n
 .
 
 (**
@@ -63,7 +63,7 @@ Proof.
     rewrite -> hH.
     refine H.
    *
-    refine (Fino _).
+    refine (fino _).
   + (* f = n *)
    refine (beta_var fm n _ _ _ _).
    *
