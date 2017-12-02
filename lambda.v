@@ -90,7 +90,7 @@ Defined.
 4. 置き換える項
 
 *)
-Fixpoint beta_var m n (H : le m n) (h : fin m) (f : fin m) (x : ter n) : ter n.
+Fixpoint beta_var_le m n (H : le m n) (h : fin m) (f : fin m) (x : ter n) : ter n.
 Proof.
  inversion h as [hm hH | hm hp hH]; clear h.
  - (* h = 0 *)
@@ -114,7 +114,7 @@ Proof.
    *
     refine (fino _).
   + (* f = n *)
-   refine (beta_var fm n _ _ _ _).
+   refine (beta_var_le fm n _ _ _ _).
    *
     inversion H as [HH | Hn Hp HH]; clear H.
     --
@@ -141,7 +141,8 @@ Proof.
     refine x.
 Qed.
 
-Print beta_var.
+Definition beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n
+ := beta_var_le _ _ (leo _) h f x.
 
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。
 
@@ -173,7 +174,7 @@ Proof.
  intros n h f x.
  inversion f as [fn fv fnH | fn fv fnH | fn fvl fvr fnH].
  -
-  apply (undefined (forall n, fin n -> fin n -> ter n -> ter n) _ h fv x).
+  apply (beta_var _ h fv x).
  -
   apply (undefined _).
  -
