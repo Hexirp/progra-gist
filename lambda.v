@@ -38,6 +38,24 @@ v1n
 1n B1 xn
 xn
 
+----|====
+---|=====
+
+---*|====
+ ---|====
+
+----|====
+-----|===
+
+----|*===
+ ----|===
+
+----|====
+----|====
+
+----*====
+        #
+
 *)
 Definition beta_var : forall n, fin n -> fin n -> ter n -> ter n.
 Proof.
@@ -58,7 +76,7 @@ Proof.
    apply f'.
   + (* h = n *)
    apply go.
-   
+   Show Proof.
    *
     rewrite H0.
     rewrite <- H2.
