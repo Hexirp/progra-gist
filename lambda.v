@@ -100,6 +100,12 @@ xn
 
 ---|==
 
+(h = n, f = 0)
+-----|
+---|==
+
+----|
+
 1. 外側で定義されている変数の数
 2. 置き換えるべき変数
 3. 対象の変数
@@ -143,12 +149,20 @@ Proof.
    ); clear hH hn.
    refine (Var _ _).
    refine fp.
- refine (
-  match f in fin fn' return n = fn' -> ter fn' with
-  | Fino fn => _
-  | Fins fn fp => _
-  end (eq_refl n)
- ); intro fH.
+ - (* h = n *)
+  refine (
+   match f in fin fn' return n = fn' -> fn' = S hn -> ter (S hn) with
+   | Fino fn => _
+   | Fins fn fp => _
+   end (eq_refl n)
+  ); clear f.
+  + (* f = 0 *)
+   intros fH hH.
+   refine (Var _ _).
+   refine (Fino _).
+  + (* f = n *)
+   intros fH hH.
+   
  -
   intro fH.
   refine (
