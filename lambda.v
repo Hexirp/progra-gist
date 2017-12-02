@@ -31,16 +31,26 @@ Proof.
    refine x.
 Defined.
 
-Fixpoint var_le m n (H : le (S m) n) (x : fin m) : ter n.
+Definition var_le_S m n (H : le m n) (x : fin m) : ter (S n).
+Proof.
+ refine (var _ _).
+ refine (fin_le _ _ H x).
+Defined.
+
+Definition var_le m n (H : le (S m) n) (x : fin m) : ter n.
 Proof.
  inversion H as [HH | Hn Hp HH]; clear H.
  -
   refine (var _ _).
   refine x.
  -
-  refine (var_le _ _ _ (fins _ x)).
-  refine (undefined (forall m n, le m n -> le (S m) (S n)) _ _ _).
-  refine Hp.
+  refine (var_le_S _ _ _ _).
+  +
+   refine Hp.
+  +
+   refine (fins _ _).
+   refine x.
+Defined.
 
 (**
 
