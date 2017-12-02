@@ -58,32 +58,25 @@ xn
     |====
 
 *)
-Definition beta_var : forall n, fin n -> fin n -> ter n -> ter n.
+Definition beta_var n0 (h0 : fin n0) (f0 : fin n0) (x0 : ter n0) : ter n0.
 Proof.
- fix go 3.
- intros n h f x.
- inversion f as [fn fH | fn f' fH]; clear f.
- - (* f = 0 *)
-  inversion h as [hn hH | hn h' hH]; clear h.
-  + (* h = 0 *)
-   apply x.
-  + (* h = n *)
-   apply Var.
-   apply Fino.
- - (* f = n *)
-  inversion h as [hn hH | hn h' hH]; clear h.
-  + (* h = 0 *)
-   apply Var.
-   apply f'.
-  + (* h = n *)
-   apply go.
-   Show Proof.
-   *
-    rewrite H0.
-    rewrite <- H2.
-    apply Fins.
-    apply H1.
-   *
+ refine (
+  (fix go n (h : fin n) (f : fin n) (x : ter n) {struct n} := _) n0 h0 f0 x0
+ ); clear x0 f0 h0 n0.
+ refine (
+  _ (@eq_refl _ n)
+ ).
+ refine (
+  match f in fin fn0 return n = fn0 -> ter fn0 with
+  | Fino fn => _
+  | Fins fn fp => _
+  end
+ ).
+ -
+  apply (undefined _).
+ -
+  apply (undefined _).
+ Show Proof.
     
 
 (** fは裸の関数。イメージしづらいけど\x -> foo xをfoo xに変えたようなもの。
