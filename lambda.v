@@ -70,21 +70,36 @@ Proof.
      match fH in _ = m' return le m' n with
      | eq_refl _ => _
      end
-    ).
+    ); clear fH.
     apply H.
    *
    refine fp.
  - (* h = n *)
   refine (
-   match f in fin fn' return n = fn' -> fn' = S hn -> ter (S hn) with
-   | Fino fn => _
-   | Fins fn fp => _
-   end (eq_refl n)
+   match f in fin fm' return m = fm' -> fm' = S hm -> ter n with
+   | Fino fm => _
+   | Fins fm fp => _
+   end (eq_refl m)
   ); clear f.
   + (* f = 0 *)
    intros fH hH.
-   refine (Var _ _).
-   refine (Fino _).
+   refine (
+    undefined (forall m n, le (S m) n -> fin m -> ter n) hm _ _ _
+   ).
+   *
+    refine (
+     match hH in _ = fm' return le fm' n with
+     | eq_refl _ => _
+     end
+    ); clear hH.
+    refine (
+     match fH in _ = m' return le m' n with
+     | eq_refl _ => _
+     end
+    ).
+    refine H.
+   *
+    refine (Fino _).
   + (* f = n *)
    intros fH hH.
    refine (_ _).
