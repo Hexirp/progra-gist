@@ -115,7 +115,7 @@ Proof.
     rewrite -> fH.
     refine H.
    *
-   refine fp.
+    refine fp.
  - (* h = n *)
   inversion f as [fm fH | fm fp fH]; clear f.
   + (* f = 0 *)
