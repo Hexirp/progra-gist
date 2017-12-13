@@ -180,17 +180,24 @@ Definition beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n
 4. 適用される項
 
 *)
-Definition beta : forall n, fin n -> ter (S n) -> ter n -> ter n.
+Fixpoint beta n (h : fin n) (f : ter (S n)) (x : ter n) : ter n.
 Proof.
- fix go 3.
- intros n h f x.
  inversion f as [fn fv fnH | fn fv fnH | fn fvl fvr fnH].
  -
-  apply (beta_var _ h fv x).
+  refine (beta_var _ h fv x).
  -
-  apply (undefined _).
+  refine (abs _ _).
+  refine (beta _ _ _ _).
+  +
+   refine (fins _ _).
+   refine h.
+  +
+   refine fv.
+  +
+   refine (undefined (forall n, ter n -> ter (S n)) _ _).
+   refine x.
  -
   apply (undefined _).
 Qed.
 
-Print beta_var_le.
+Print beta.
