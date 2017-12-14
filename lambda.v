@@ -5,6 +5,18 @@ Inductive fin : nat -> Type :=
 | fins : forall n, fin n -> fin (S n)
 .
 
+Derive Inversion fin_inv with (forall n, fin n) Sort Type.
+
+Print fin_inv.
+
+Section fin_inversion.
+ Variable n : nat.
+ Variable P : forall n, fin n -> Type.
+ Variable Case_fino : fin n -> forall xn, xn = n -> P xn (fino xn).
+ Variable Case_fins : fin n -> forall xn, forall xp : fin xn, S xn = n -> P (S xn) (fins xn xp).
+
+ Definition fin_inv : 
+
 Inductive ter : nat -> Type :=
 | var : forall n, fin n -> ter (S n)
 | abs : forall n, ter (S n) -> ter n
