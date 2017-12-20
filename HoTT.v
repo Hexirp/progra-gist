@@ -12,7 +12,7 @@ Inductive ex (A : Type) (P : A -> Type) : Type :=
 | ex_intro : forall x, P x -> ex A P
 .
 
-Definition contr (A : Type) : Type := ex A (fun x => forall y , eq A x y).
+Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
 
 Fixpoint trunc (n : nat) (A : Type) : Type :=
  match n with 
@@ -63,11 +63,37 @@ Qed.
 Definition trunc_up : forall n A, trunc n A -> trunc (S n) A.
 Proof.
  refine (
-  fun n A H => _
+  nat_rect (fun n => forall A, trunc n A -> trunc (S n) A) _ _
  ).
- unfold trunc.
- fold (forall x y, trunc n (eq A x y)).
- refine (
-  fun x y => _
- ).
- unfold trunc.
+ -
+  refine (
+   fun A H =>
+    fun x y =>
+     _
+  ).
+  refine (
+   match H with
+   | ex_intro _ _ Hx Hp => _
+   end
+  ).
+  refine (
+   match Hp x in eq _ _ x' return contr (eq A x' y) with
+   | eq_refl _ _ => _
+   end
+  ).
+  refine (
+   match Hp y in eq _ _ y' return contr (eq A Hx y') with
+   | eq_refl _ _ => _
+   end
+  ).
+  refine (
+   ex_intro (eq A Hx Hx) (fun h => forall i, eq (eq A Hx Hx) h i) (eq_refl A Hx) _
+  ).
+  refine (
+   fun i => _
+  ).
+  refine (
+   match i as i' in eq _ _ Hx' return eq (eq A Hx' Hx') (eq_refl A Hx') i' with
+   | eq_refl _ _ => _
+   end
+  ).
