@@ -77,23 +77,16 @@ Proof.
    end
   ).
   refine (
-   match Hp x in eq _ _ x' return contr (eq A x' y) with
-   | eq_refl _ _ => _
-   end
-  ).
-  refine (
-   match Hp y in eq _ _ y' return contr (eq A Hx y') with
-   | eq_refl _ _ => _
-   end
-  ).
-  refine (
-   ex_intro (eq A Hx Hx) (fun h => forall i, eq (eq A Hx Hx) h i) (eq_refl A Hx) _
+   ex_intro (eq A x y) (fun h => forall i, eq (eq A x y) h i) _ _
   ).
   refine (
    fun i => _
   ).
   refine (
-   match i as i' in eq _ _ Hx' return eq (eq A Hx' Hx') (eq_refl A Hx') i' with
+   match i as i' in eq _ _ y' return eq (eq A x y') _ i' with
    | eq_refl _ _ => _
    end
+  ).
+  refine (
+   eq_refl _ _
   ).
