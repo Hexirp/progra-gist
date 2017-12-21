@@ -5,18 +5,6 @@ Inductive fin : nat -> Type :=
 | fins : forall n, fin n -> fin (S n)
 .
 
-Derive Inversion fin_inv with (forall n, fin n) Sort Type.
-
-Print fin_inv.
-
-Section fin_inversion.
- Variable n : nat.
- Variable P : forall n, fin n -> Type.
- Variable Case_fino : fin n -> forall xn, xn = n -> P xn (fino xn).
- Variable Case_fins : fin n -> forall xn, forall xp : fin xn, S xn = n -> P (S xn) (fins xn xp).
-
- Definition fin_inv : 
-
 Inductive ter : nat -> Type :=
 | var : forall n, fin n -> ter (S n)
 | abs : forall n, ter (S n) -> ter n
@@ -28,51 +16,45 @@ Inductive le (m : nat) : nat -> Type :=
 | les : forall n, le m n -> le m (S n)
 .
 
-Fixpoint les_l m n (x : le (S m) n) : le m n.
+Definition les_l m n (x : le (S m) n) : le m n.
 Proof.
- inversion x as [HH | Hn Hp HH]; clear x.
+ induction x as [ | xn xp].
  -
-  refine (les _ _ _).
-  refine (leo _).
+  apply les.
+  apply leo.
  -
-  refine (les _ _ _).
-  refine (les_l _ _ _).
-  refine Hp.
+  apply les.
+  apply IHxp.
 Defined.
 
-Fixpoint fin_le m n (H : le m n) (x : fin m) : fin n.
+Definition fin_le m n (H : le m n) (x : fin m) : fin n.
 Proof.
- inversion H as [HH | Hn Hp HH]; clear H.
+ induction H as [ | xn xp].
  -
-  rewrite <- HH.
-  refine x.
+  apply x.
  -
-  refine (fins _ _).
-  refine (fin_le _ _ _ _).
-  +
-   refine Hp.
-  +
-   refine x.
+  apply fins.
+  apply IHxp.
 Defined.
 
 Definition var_le_S m n (H : le m n) (x : fin m) : ter (S n).
 Proof.
- refine (var _ _).
- refine (fin_le _ _ H x).
+ apply var.
+ apply (fin_le _ _ H x).
 Defined.
 
 Definition var_le m n (H : le (S m) n) (x : fin m) : ter n.
 Proof.
  inversion H as [HH | Hn Hp HH]; clear H.
  -
-  refine (var _ _).
-  refine x.
+  apply var.
+  apply x.
  -
-  refine (var_le_S _ _ _ _).
+  apply var_le_S with (S m).
   +
    refine Hp.
   +
-   refine (fins _ _).
+   apply fins.
    refine x.
 Defined.
 
@@ -114,56 +96,38 @@ Defined.
 4. 置き換える項
 
 *)
-Fixpoint beta_var_le m n (H : le m n) (h : fin m) (f : fin m) (x : ter n) : ter n.
+Definition beta_var_le m n (H : le m n) (h : fin m) (f : fin m) (x : ter n) : ter n.
 Proof.
- inversion h as [hm hH | hm hp hH]; clear h.
- - (* h = 0 *)
-  inversion f as [fm fH | fm fp fH]; clear f.
-  + (* f = 0 *)
-   refine x.
-  + (* f = n *)
-   refine (var_le fm _ _ _).
-   *
-    rewrite -> fH.
-    refine H.
-   *
-    refine fp.
- - (* h = n *)
-  inversion f as [fm fH | fm fp fH]; clear f.
-  + (* f = 0 *)
-   refine (var_le hm _ _ _).
+ induction f as [ fn | fn fp ].
+ - (* f = 0 *)
+  inversion h as [hm hH | hm hp hH]; clear h.
+  + (* h = 0 *)
+   apply x.
+  + (* h = n *)
+   apply var_le with hm.
    *
     rewrite -> hH.
-    refine H.
+    apply H.
    *
-    refine (fino _).
-  + (* f = n *)
-   refine (beta_var_le fm n _ _ _ _).
+    apply hp.
+ - (* f = n *)
+  inversion h as [hm hH | hm hp hH]; clear h.
+  + (* h = 0 *)
+   apply var_le with fn.
    *
-    inversion H as [HH | Hn Hp HH]; clear H.
-    --
-     rewrite <- HH.
-     rewrite <- fH.
-     refine (les _ _ _).
-     refine (leo _).
-    --
-     refine (les _ _ _).
-     refine (les_l _ _ _).
-     rewrite -> fH.
-     refine Hp.
+    apply H.
    *
-    replace fm with hm.
-    --
-     refine hp.
-    --
-     refine (eq_add_S _ _ _).
-     rewrite -> fH.
-     refine hH.
+    apply fino.
+  + (* h = n *)
+   apply IHfp.
    *
-    refine fp.
+    apply les_l.
+    apply H.
    *
-    refine x.
+    apply hp.
 Defined.
+
+Print beta_var_le.
 
 Definition beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n
  := beta_var_le _ _ (leo _) h f x.
@@ -192,11 +156,15 @@ Definition beta_var n (h : fin n) (f : fin n) (x : ter n) : ter n
 4. 適用される項
 
 *)
-Fixpoint beta n (h : fin n) (f : ter (S n)) (x : ter n) : ter n.
+Definition beta n (h : fin n) (f : ter (S n)) (x : ter n) : ter n.
 Proof.
- inversion f as [fn fv fnH | fn fv fnH | fn fvl fvr fnH].
+ induction f as [ fn fv | fn fv | fn fvl fvr ].
  -
-  refine (beta_var _ h fv x).
+  apply beta_var.
+  +
+   apply h.
+  +
+   admittd.
  -
   refine (abs _ _).
   refine (beta _ _ _ _).
