@@ -77,8 +77,17 @@ Proof.
    end
   ).
   refine (
-   ex_intro (eq A x y) (fun h => forall i, eq (eq A x y) h i) _ _
+   (fun p : eq A x y => _) _
   ).
+  +
+   refine (
+    ex_intro (eq A x y) (fun px => forall py, eq (eq A x y) px py) p _
+   ).
+   refine (
+    fun q => match q as q' in eq _ _ y' return eq (eq A x y) p q with
+    | eq_refl _ _ => _
+    end
+   ).
   refine (
    fun i => _
   ).
