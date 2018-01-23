@@ -10,8 +10,15 @@ fin_nat O = fo O
 fin_nat (S O) = fs O (fo O)
 fin_nat (S (S O)) = fs (S O) (fs O (fo O))
 *)
-Fixpoint fin_nat (m : nat) fin m.
-admit.
+Definition fin_nat (m : nat) : fin m.
+Proof.
+ induction m.
+ -
+  apply fo.
+ -
+  apply fs.
+  apply IHm.
+Defined.
 
 (*
 fin_ O O = fo O
