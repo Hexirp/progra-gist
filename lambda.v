@@ -5,6 +5,17 @@ Inductive fin : nat -> Type :=
 | fs : forall n, fin n -> fin (S n)
 .
 
+(*
+fin_ O O = fo O
+fin_ (S O) O = fo (S O)
+fin_ (S (S O)) O = fo (S (S O))
+fin_ O (S O) = fs O (fo O)
+fin_ O (S (S O)) = fs (S O) (fs O (fo O))
+fin_ (S O) (S O) = fs (S O) (fo (S O))
+*)
+Fixpoint fin_ (m n : nat) : fin (m + n).
+admit.
+
 Inductive ter : nat -> Type :=
 | var : forall n, fin n -> ter (S n)
 | abs : forall n, ter (S n) -> ter n
