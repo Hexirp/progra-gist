@@ -86,20 +86,17 @@ Defined.
 
 Definition fin_nat : forall n, fin n := cut_nats fin fin_nats_nat.
 
-(*
-fin_nat O = fo O
-fin_nat (S O) = fs O (fo O)
-fin_nat (S (S O)) = fs (S O) (fs O (fo O))
-*)
-Definition fin_nat (m : nat) : fin m.
+Definition fin_nats_ex : forall m, nats m -> forall n, fin n -> fin (m + n).
 Proof.
- induction m.
- -
-  apply fo.
- -
-  apply fs.
-  apply IHm.
-Defined.
+ refine (
+  fix_nats (fun m => forall n, fin n -> fin (m + n)) _
+ ).
+ refine (
+  fun n x => _
+ ).
+ admit.
+
+Definition fin_ex : forall m n, fin n -> fin (m + n).
 
 (*
 fin_ O O = fo O
