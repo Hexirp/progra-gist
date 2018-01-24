@@ -65,7 +65,7 @@ Proof.
  ).
 Defined.
 
-Definition fin_nat : forall n, nats n -> fin n.
+Definition fin_nats_nat : forall n, nats n -> fin n.
 Proof.
  refine (
   fix_nats fin _
@@ -83,6 +83,8 @@ Proof.
   fs np xp
  ).
 Defined.
+
+Definition fin_nat : forall n, fin n := cut_nats fin fin_nats_nat.
 
 (*
 fin_nat O = fo O
