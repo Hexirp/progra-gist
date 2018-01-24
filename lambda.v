@@ -42,12 +42,28 @@ Proof.
   ).
 Defined.
 
-Definition cut_fix : forall P, (forall n, nats n -> P n) -> forall n, P n.
+Definition nats_nat : forall n, nats n.
 Proof.
  refine (
-  fun P H => _
+  fix go n {struct n} := _
  ).
- admit.
+ refine (
+  match n as n' return nats n' with
+  | O => no
+  | S np => ns np (go np)
+  end
+ ).
+Defined.
+
+Definition cut_nats : forall P, (forall n, nats n -> P n) -> forall n, P n.
+Proof.
+ refine (
+  fun P H n => _
+ ).
+ refine (
+  H n (nats_nat n)
+ ).
+Defined.
 
 Definition fin_nat : forall n, nats n -> fin n.
 Proof.
