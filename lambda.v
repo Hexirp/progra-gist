@@ -5,6 +5,62 @@ Inductive fin : nat -> Type :=
 | fs : forall n, fin n -> fin (S n)
 .
 
+Inductive nats' (f : nat -> Type) : nat -> Type :=
+| no' : nats' f O
+| ns' : forall n, f n -> nats' f (S n)
+.
+
+Inductive nats : nat -> Type :=
+| no : nats O
+| ns : forall n, nats n -> nats (S n)
+.
+
+Definition fix_nats : forall P, (forall n, nats' P n -> P n) -> forall n, nats n -> P n.
+Proof.
+ refine (
+  fun P H => _
+ ).
+ refine (
+  fix go n x {struct x} := _
+ ).
+ refine (
+  match x in nats n' return P n' with
+  | no => _
+  | ns np xp => _
+  end
+ ).
+ -
+  refine (
+   H 0 (no' P)
+  ).
+ -
+  refine (
+   H (S np) (ns' P np _)
+  ).
+  refine (
+   go np xp
+  ).
+Defined.
+
+Definition fix_fin_nat : forall n, nats n -> fin n.
+Proof.
+ refine (
+  fix_nats fin _
+ ).
+ refine (
+  fun n x => _
+ ).
+ refine (
+  match x in nats' _ n' return fin n' with
+  | no' _ => fo 0
+  | ns' _ np xp => _
+  end
+ ).
+ refine (
+  fs np xp
+ ).
+Defined.
+
 (*
 fin_nat O = fo O
 fin_nat (S O) = fs O (fo O)
