@@ -42,7 +42,14 @@ Proof.
   ).
 Defined.
 
-Definition fix_fin_nat : forall n, nats n -> fin n.
+Definition cut_fix : forall P, (forall n, nats n -> P n) -> forall n, P n.
+Proof.
+ refine (
+  fun P H => _
+ ).
+ admit.
+
+Definition fin_nat : forall n, nats n -> fin n.
 Proof.
  refine (
   fix_nats fin _
