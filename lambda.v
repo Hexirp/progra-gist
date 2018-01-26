@@ -94,9 +94,11 @@ Proof.
  refine (
   fun n x => _
  ).
- admit.
+Admitted.
 
 Definition fin_ex : forall m n, fin n -> fin (m + n).
+Proof.
+Admitted.
 
 (*
 fin_ O O = fo O
@@ -107,13 +109,39 @@ fin_ O (S (S O)) = fs (S O) (fs O (fo O))
 fin_ (S O) (S O) = fs (S O) (fo (S O))
 *)
 Fixpoint fin_ (m n : nat) : fin (m + n).
-admit.
+Proof.
+Admitted.
 
 Inductive ter : nat -> Type :=
 | var : forall n, fin n -> ter (S n)
 | abs : forall n, ter (S n) -> ter n
 | app : forall n, ter n -> ter n -> ter n
 .
+
+Definition beta : forall m n, ter (S m + n) -> ter m -> ter m.
+Proof.
+ refine (
+  fix go m n x y {struct x} := _
+ ).
+ refine (
+  match x in ter nx' return nx' = S m + n -> ter m with
+  | var nx xa => fun xH => _
+  | abs nx xp => fun xH => _
+  | app nx xl xr => fun xH => _
+  end eq_refl
+ ).
+ -
+  admit.
+ -
+  admit.
+ -
+  refine (
+   (fun f : ter nx -> ter (S m + n) => app m (go m n (f xl) y) (go m n (f xr) y)) _
+  ).
+  refine (
+   fun x => eq_rect nx ter x (S m + n) xH
+  ).
+Admitted.
 
 (** \f \x x *)
 Definition ter_0 : ter 0 := abs 0 (abs 1 (var 1 (fo 1))).
