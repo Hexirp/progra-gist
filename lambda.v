@@ -118,7 +118,11 @@ Inductive ter : nat -> Type :=
 | app : forall n, ter n -> ter n -> ter n
 .
 
-Definition beta : forall m n, ter (S m + n) -> ter m -> ter m.
+Definition betav : forall m n, fin (m + n) -> ter m -> ter m.
+Proof.
+Admitted.
+
+Definition beta3 : forall m n, ter (S m + n) -> ter m -> ter m.
 Proof.
  refine (
   fix go m n x y {struct x} := _
@@ -131,12 +135,17 @@ Proof.
   end eq_refl
  ).
  -
-  admit.
+  refine (
+   betav m n _ y
+  ).
+  refine (
+   eq_rect nx fin xa (m + n) (eq_add_S nx (m + n) xH)
+  ).
  -
   admit.
  -
   refine (
-   (fun f : ter nx -> ter (S m + n) => app m (go m n (f xl) y) (go m n (f xr) y)) _
+   (fun f => app m (go m n (f xl) y) (go m n (f xr) y)) _
   ).
   refine (
    fun x => eq_rect nx ter x (S m + n) xH
