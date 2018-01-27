@@ -151,7 +151,15 @@ Proof.
    eq_rect nx fin xa (m + n) (eq_add_S nx (m + n) xH)
   ).
  -
-  admit.
+  refine (
+   go m (S n) (_ xp) y
+  ).
+  refine (
+   fun x' => _ (eq_rect (S nx) ter x' (S (S m + n)) (eq_S nx (S m + n) xH))
+  ).
+  refine (
+   fun x' => eq_rect (S (S m + n)) ter x' (S m + S n) (plus_n_Sm (S m) n)
+  ).
  -
   refine (
    (fun f => app m (go m n (f xl) y) (go m n (f xr) y)) _
@@ -159,7 +167,7 @@ Proof.
   refine (
    fun x => eq_rect nx ter x (S m + n) xH
   ).
-Admitted.
+Defined.
 
 Definition beta2 : forall m, ter (S m) -> ter m -> ter m.
 Proof.
