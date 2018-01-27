@@ -13,6 +13,16 @@ Inductive ter : nat -> Type :=
 
 Definition betav0 : forall n, fin n -> ter 0 -> ter 0.
 Proof.
+ refine (
+  fix go n x y {struct x} := _
+ ).
+ refine (
+  match x in fin n' return n' = n -> ter 0 with
+  | fo nx => fun xH => _
+  | fs nx xp => fun xH => _
+  end eq_refl
+ ).
+ -
 Admitted.
 
 Definition betav : forall m n, fin (m + n) -> ter m -> ter m.
