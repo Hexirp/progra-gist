@@ -161,6 +161,49 @@ Proof.
   ).
 Admitted.
 
+Definition beta2 : forall m, ter (S m) -> ter m -> ter m.
+Proof.
+ refine (
+  (fun m x y => beta3 m 0 (_ x) y)
+ ).
+ refine (
+  fun x' => eq_rect (S m) ter x' (S m + 0) (plus_n_O (S m))
+ ).
+Defined.
+
+Definition beta1 : forall m, ter m -> ter m -> ter m.
+Proof.
+ refine (
+  fun m x y => _
+ ).
+ refine (
+  match x in ter m' return m' = m -> ter m with
+  | var nx xa => fun xH => _
+  | abs nx xp => fun xH => _
+  | app nx xl xr => fun xH => _
+  end eq_refl
+ ).
+ -
+  refine (
+   app m x y
+  ).
+ -
+  refine (
+   beta2 m (eq_rect (S nx) ter xp (S m) (eq_S nx m xH)) y
+  ).
+ -
+  refine (
+   app m x y
+  ).
+Defined.
+
+Definition beta0 : ter 0 -> ter 0 -> ter 0.
+Proof.
+ refine (
+  beta1 0
+ ).
+Defined.
+
 (** \f \x x *)
 Definition ter_0 : ter 0 := abs 0 (abs 1 (var 1 (fo 1))).
 
