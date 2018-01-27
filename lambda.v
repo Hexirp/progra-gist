@@ -11,6 +11,10 @@ Inductive ter : nat -> Type :=
 | app : forall n, ter n -> ter n -> ter n
 .
 
+Definition betav0 : forall n, fin n -> ter 0 -> ter 0.
+Proof.
+Admitted.
+
 Definition betav : forall m n, fin (m + n) -> ter m -> ter m.
 Proof.
  refine (
@@ -22,6 +26,13 @@ Proof.
   | S mp => fun mH => _
   end eq_refl
  ).
+ -
+  refine (
+   eq_rect 0 ter (betav0 n _ (eq_rect_r ter y mH)) m mH
+  ).
+  refine (
+   eq_rect_r (fun m' => fin (m' + n)) x mH
+  ).
 Admitted.
 
 Definition beta3 : forall m n, ter (S m + n) -> ter m -> ter m.
