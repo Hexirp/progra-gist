@@ -231,3 +231,5 @@ Definition ter_s : ter 0 :=
    (var 2 (fo 2)))
  )))
 .
+
+Eval cbv in beta0 ter_s ter_0.
