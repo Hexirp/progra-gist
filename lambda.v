@@ -11,7 +11,7 @@ Inductive ter : nat -> Type :=
 | app : forall n, ter n -> ter n -> ter n
 .
 
-Definition betav0 : forall n, fin n -> ter 0 -> ter 0.
+Definition betav0 : forall n, fin n -> ter n -> ter 0.
 Proof.
  refine (
   fix go n x y {struct x} := _
@@ -25,7 +25,7 @@ Proof.
  -
 Admitted.
 
-Definition betav : forall m n, fin (m + n) -> ter m -> ter m.
+Definition betav : forall m n, fin (m + n) -> ter (m + n) -> ter m.
 Proof.
  refine (
   fix go m n x y {struct x} := _
@@ -37,15 +37,13 @@ Proof.
   end eq_refl
  ).
  -
-  refine (
-   eq_rect 0 ter (betav0 n _ (eq_rect_r ter y mH)) m mH
-  ).
-  refine (
-   eq_rect_r (fun m' => fin (m' + n)) x mH
-  ).
 Admitted.
 
-Definition beta3 : forall m n, ter (S m + n) -> ter m -> ter m.
+Definition betab : forall m n, ter (m + n) -> ter (S (m + n)).
+Proof.
+Admitted.
+
+Definition beta3 : forall m n, ter (S m + n) -> ter (m + n) -> ter m.
 Proof.
  refine (
   fix go m n x y {struct x} := _
@@ -66,14 +64,19 @@ Proof.
   ).
  -
   refine (
-   go m (S n) (_ xp) y
+   go m (S n) (_ xp) (_ y)
   ).
-  refine (
-   fun x' => _ (eq_rect (S nx) ter x' (S (S m + n)) (eq_S nx (S m + n) xH))
-  ).
-  refine (
-   fun x' => eq_rect (S (S m + n)) ter x' (S m + S n) (plus_n_Sm (S m) n)
-  ).
+  +
+   refine (
+    fun x' => _ (eq_rect (S nx) ter x' (S (S m + n)) (eq_S nx (S m + n) xH))
+   ).
+   refine (
+    fun x' => eq_rect (S (S m + n)) ter x' (S m + S n) (plus_n_Sm (S m) n)
+   ).
+  +
+   refine (
+    fun x' => eq_rect (S (m + n)) ter (betab m n x') (m + S n) (plus_n_Sm m n)
+   ).
  -
   refine (
    (fun f => app m (go m n (f xl) y) (go m n (f xr) y)) _
@@ -86,10 +89,10 @@ Defined.
 Definition beta2 : forall m, ter (S m) -> ter m -> ter m.
 Proof.
  refine (
-  (fun m x y => beta3 m 0 (_ x) y)
+  (fun f : forall m, ter m -> ter (m + 0) => (fun m x y => beta3 m 0 (f (S m) x) (f m y))) _
  ).
  refine (
-  fun x' => eq_rect (S m) ter x' (S m + 0) (plus_n_O (S m))
+  fun m' x' => eq_rect m' ter x' (m' + 0) (plus_n_O m')
  ).
 Defined.
 
