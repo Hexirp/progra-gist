@@ -120,6 +120,15 @@ Inductive ter : nat -> Type :=
 
 Definition betav : forall m n, fin (m + n) -> ter m -> ter m.
 Proof.
+ refine (
+  fix go m n x y {struct x} := _
+ ).
+ refine (
+  match m as m' return m' = m -> ter m with
+  | O => fun mH => _
+  | S mp => fun mH => _
+  end eq_refl
+ ).
 Admitted.
 
 Definition beta3 : forall m n, ter (S m + n) -> ter m -> ter m.
