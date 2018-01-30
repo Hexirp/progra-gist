@@ -1,6 +1,3 @@
-#!/usr/bin/env stack
--- stack --resolver lts-9.14 --install-ghc ghci
-
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RankNTypes, PolyKinds, GADTs #-}
 
