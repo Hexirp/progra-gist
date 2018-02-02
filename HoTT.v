@@ -33,22 +33,32 @@ Proof.
  apply eq_refl.
 Defined.
 
-Inductive ex (A : Type) (P : A -> Type) : Type :=
-| ex_intro : forall x, P x -> ex A P
+Inductive contr (A : Type) : Type :=
+| contr_intro : forall x, (forall y, eq A x y) -> contr A
 .
 
-Scheme ex_ind := Induction for ex Sort Type.
-Scheme ex_rec := Minimality for ex Sort Type.
-Definition ex_rect := ex_ind.
-
-Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
-
-Fixpoint trunc (n : nat) (A : Type) : Type :=
- match n with 
- | O => contr A
- | S np => forall x y, trunc np (eq A x y)
- end
+Inductive trunc : nat -> Type -> Type :=
+| trunc_contr : forall A, contr A -> trunc O A
+| trunc_up : forall n A, (forall x y, trunc n (eq A x y)) -> trunc (S n) A
 .
+
+Definition contr_trunc : forall A, trunc O A -> contr A.
+Proof.
+ intros A H.
+ inversion H as [HA Hc HnH HAH |].
+ apply Hc.
+Defined.
+
+Definition trunc_down : forall n A, trunc (S n) A -> forall x y, trunc n (eq A x y).
+Proof.
+ intros n A H.
+ inversion H as [| Hn HA Ht HnH HAH].
+ apply Ht.
+Defined.
+
+Scheme trunc_ind := Induction for trunc Sort Type.
+Scheme trunc_rec := Minimality for trunc Sort Type.
+Definition trunc_rect := trunc_ind.
 
 Definition eq_contr : forall A, contr A -> forall x y, eq A x y.
 Proof.
@@ -72,7 +82,7 @@ Defined.
 Definition contr_eq_contr : forall A, contr A -> forall x y, contr (eq A x y).
 Proof.
  intros A H x y.
- apply ex_intro with (eq_contr A H x y).
+ apply contr_intro with (eq_contr A H x y).
  apply eq_eq_contr.
 Defined.
 
@@ -81,11 +91,19 @@ Proof.
  intros n.
  induction n as [| n IH].
  -
-  intros A.
-  unfold trunc.
+  intros A H.
+  apply trunc_up.
+  intros x y.
+  apply trunc_contr.
   apply contr_eq_contr.
+  apply contr_trunc.
+  apply H.
  -
-  intros A H x y.
+  intros A H.
+  apply trunc_up.
+  intros x y.
   apply IH.
+  revert x y.
+  apply trunc_down.
   apply H.
 Defined.
