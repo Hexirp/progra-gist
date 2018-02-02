@@ -61,31 +61,19 @@ Proof.
   apply HH.
 Defined.
 
-Definition eq_eq_contr : forall A, contr A -> forall x y p q, eq (eq A x y) p q.
+Definition eq_eq_contr : forall A H x y p, eq (eq A x y) (eq_contr A H x y) p.
 Proof.
- intros A H x y p q.
- assert (K : forall r, eq (eq A x y) (eq_contr A H x y) r).
- -
-  intros r.
-  destruct r.
-  destruct H as [Hc HH].
-  unfold eq_contr.
-  apply eq_eq_xy_zx_zy.
- -
-  apply eq_xy_zx_zy with (eq_contr A H x y).
-  +
-   apply K.
-  +
-   apply K.
+ intros A H x y p.
+ destruct p.
+ destruct H as [Hc HH].
+ apply eq_eq_xy_zx_zy.
 Defined.
 
 Definition contr_eq_contr : forall A, contr A -> forall x y, contr (eq A x y).
 Proof.
  intros A H x y.
  apply ex_intro with (eq_contr A H x y).
- intros c.
  apply eq_eq_contr.
- apply H.
 Defined.
 
 Definition trunc_succ : forall n A, trunc n A -> trunc (S n) A.
@@ -95,9 +83,7 @@ Proof.
  -
   intros A.
   unfold trunc.
-  intros H.
   apply contr_eq_contr.
-  apply H.
  -
   intros A H x y.
   apply IH.
