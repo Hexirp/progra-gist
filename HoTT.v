@@ -1,5 +1,14 @@
 Local Unset Elimination Schemes.
 
+Inductive nat : Type :=
+| O : nat
+| S : nat -> nat
+.
+
+Scheme nat_ind := Induction for nat Sort Type.
+Scheme nat_rec := Minimality for nat Sort Type.
+Definition nat_rect := nat_ind.
+
 Inductive eq (A : Type) (a : A) : A -> Type :=
 | eq_refl : eq A a a
 .
@@ -8,9 +17,29 @@ Scheme eq_ind := Induction for eq Sort Type.
 Scheme eq_rec := Minimality for eq Sort Type.
 Definition eq_rect := eq_ind.
 
+Definition eq_xy_zx_zy : forall A x y z, eq A z x -> eq A z y -> eq A x y.
+Proof.
+ intros A x y z zx zy.
+ destruct zx.
+ destruct zy.
+ apply eq_refl.
+Defined.
+
+Definition eq_eq_xy_zx_zy : forall A x y (p : eq A y x),
+    eq (eq A x x) (eq_xy_zx_zy A x x y p p) (eq_refl A x).
+Proof.
+ intros A x y p.
+ destruct p.
+ apply eq_refl.
+Defined.
+
 Inductive ex (A : Type) (P : A -> Type) : Type :=
 | ex_intro : forall x, P x -> ex A P
 .
+
+Scheme ex_ind := Induction for ex Sort Type.
+Scheme ex_rec := Minimality for ex Sort Type.
+Definition ex_rect := ex_ind.
 
 Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
 
@@ -21,81 +50,56 @@ Fixpoint trunc (n : nat) (A : Type) : Type :=
  end
 .
 
-Inductive Unit : Type :=
-| tt : Unit
-.
-
-Definition unit_trunc : trunc 0 Unit.
+Definition eq_contr : forall A, contr A -> forall x y, eq A x y.
 Proof.
- unfold trunc.
- unfold contr.
- refine (
-  ex_intro Unit (fun x => forall y, eq Unit x y) tt _
- ).
- refine (
-  fun y => _
- ).
- refine (
-  match y as y' return eq Unit tt y' with
-  | tt => _
-  end
- ).
- refine (
-  eq_refl Unit tt
- ).
-Qed.
-
-Inductive Empty : Type :=
-.
-
-Definition empty_trunc : trunc 1 Empty.
-Proof.
- unfold trunc.
- refine (
-  fun x y => _
- ).
- refine (
-  match x as x' return contr (eq Empty x' y) with
-  end
- ).
-Qed.
-
-Definition trunc_up : forall n A, trunc n A -> trunc (S n) A.
-Proof.
- refine (
-  nat_rect (fun n => forall A, trunc n A -> trunc (S n) A) _ _
- ).
+ intros A H x y.
+ destruct H as [Hc HH].
+ apply eq_xy_zx_zy with Hc.
  -
-  refine (
-   fun A H =>
-    fun x y =>
-     _
-  ).
-  refine (
-   match H with
-   | ex_intro _ _ Hx Hp => _
-   end
-  ).
-  refine (
-   (fun p : eq A x y => _) _
-  ).
+  apply HH.
+ -
+  apply HH.
+Defined.
+
+Definition eq_eq_contr : forall A, contr A -> forall x y p q, eq (eq A x y) p q.
+Proof.
+ intros A H x y p q.
+ assert (K : forall r, eq (eq A x y) (eq_contr A H x y) r).
+ -
+  intros r.
+  destruct r.
+  destruct H as [Hc HH].
+  unfold eq_contr.
+  apply eq_eq_xy_zx_zy.
+ -
+  apply eq_xy_zx_zy with (eq_contr A H x y).
   +
-   refine (
-    ex_intro (eq A x y) (fun px => forall py, eq (eq A x y) px py) p _
-   ).
-   refine (
-    fun q => match q as q' in eq _ _ y' return eq (eq A x y) p q with
-    | eq_refl _ _ => _
-    end
-   ).
-  refine (
-   fun i => _
-  ).
-  refine (
-   match i as i' in eq _ _ y' return eq (eq A x y') _ i' with
-   | eq_refl _ _ => _
-   end
-  ).
-  refine (
-   eq_refl _ _
-  ).
+   apply K.
+  +
+   apply K.
+Defined.
+
+Definition contr_eq_contr : forall A, contr A -> forall x y, contr (eq A x y).
+Proof.
+ intros A H x y.
+ apply ex_intro with (eq_contr A H x y).
+ intros c.
+ apply eq_eq_contr.
+ apply H.
+Defined.
+
+Definition trunc_succ : forall n A, trunc n A -> trunc (S n) A.
+Proof.
+ intros n.
+ induction n as [| n IH].
+ -
+  intros A.
+  unfold trunc.
+  intros H.
+  apply contr_eq_contr.
+  apply H.
+ -
+  intros A H x y.
+  apply IH.
+  apply H.
+Defined.
