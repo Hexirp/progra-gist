@@ -1,5 +1,13 @@
 Local Unset Elimination Schemes.
 
+Definition idmap A : A -> A := fun x => x.
+
+Definition const A B : A -> B -> A := fun x _ => x.
+
+Definition compose A B C : (B -> C) -> (A -> B) -> A -> C := fun f g x => f (g x).
+
+Definition flip A B C : (B -> A -> C) -> A -> B -> C := fun f x y => f y x.
+
 Inductive nat : Type :=
 | O : nat
 | S : nat -> nat
