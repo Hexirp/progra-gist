@@ -78,14 +78,13 @@ Defined.
 
 Definition trunc_succ : forall n A, trunc n A -> trunc (S n) A.
 Proof.
- intros n.
- induction n as [| n IH].
+ apply (nat_rect (fun n => forall A, trunc n A -> trunc (S n) A)).
  -
   intros A.
   unfold trunc.
   apply contr_eq_contr.
  -
-  intros A H x y.
+  intros np IH A H x y.
   apply IH.
   apply H.
 Defined.
