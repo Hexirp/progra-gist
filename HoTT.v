@@ -90,11 +90,10 @@ Definition ex_rect := ex_ind.
 Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
 
 (** 切り捨て *)
-Fixpoint trunc (n : nat) (A : Type) : Type :=
- match n with
- | O => contr A
- | S np => forall x y, trunc np (eq A x y)
- end
+Definition trunc : nat -> Type -> Type :=
+ nat_ind (fun _ => Type -> Type)
+  (fun      A => contr A)
+  (fun _ IH A => forall x y, IH (eq A x y))
 .
 
 (** Aがcontrであれば、その値はどのような値でも等しい *)
@@ -133,6 +132,7 @@ Proof.
  -
   intros A.
   unfold trunc.
+  unfold nat_ind.
   apply contr_eq_contr.
  -
   intros np IH A H x y.
