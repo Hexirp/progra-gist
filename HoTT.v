@@ -65,6 +65,8 @@ Proof.
  apply eq_refl.
 Defined.
 
+Declare Left Step eq_stepl.
+
 Definition eq_eq_stepl : forall A x y (p : eq A y x),
     eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
 Proof.
@@ -89,7 +91,7 @@ Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
 
 (** 切り捨て *)
 Fixpoint trunc (n : nat) (A : Type) : Type :=
- match n with 
+ match n with
  | O => contr A
  | S np => forall x y, trunc np (eq A x y)
  end
@@ -100,19 +102,19 @@ Definition eq_contr : forall A, contr A -> forall x y, eq A x y.
 Proof.
  intros A H x y.
  destruct H as [Hc HH].
- apply eq_stepl with Hc.
+ stepl Hc.
  -
   apply HH.
  -
   apply HH.
 Defined.
 
-(* [eq_contr]により構成された道はどのような道とも等しい *)
+(* 可縮であるAにおいて、[eq_contr]により構成された道はどのような道とも等しい *)
 Definition eq_eq_contr : forall A H x y p, eq (eq A x y) (eq_contr A H x y) p.
 Proof.
  intros A H x y p.
  destruct p.
- destruct H as [Hc HH].
+ destruct H as [Hc HH]; unfold eq_contr.
  apply eq_eq_stepl.
 Defined.
 
