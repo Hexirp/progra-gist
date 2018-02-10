@@ -1,85 +1,97 @@
-Local Unset Elimination Schemes.
+(* coqide -nois *)
 
-(** * HoTTを自分で実装する *)
+Global Unset Elimination Schemes.
 
-(** ** 汎用関数。SKIコンビネータ計算とB,C,K,Wシステムで使われるコンビネーターからとった。 *)
+Module Pre.
+ Delimit Scope type_scope with type.
 
-(** 恒等関数 *)
-Definition idmap A : A -> A := fun x => x.
+ Notation "x -> y"
+   := (forall (_ : x), y) (at level 99, right associativity, y at level 200) : type_scope.
+End Pre.
 
-(** 定数関数 *)
-Definition const A B : A -> B -> A := fun x _ => x.
+Module Function.
+ Import Pre.
 
-(** 合成関数 *)
-Definition compose A B C : (B -> C) -> (A -> B) -> A -> C := fun f g x => f (g x).
+ Open Scope type_scope.
 
-(** 反転関数 *)
-Definition flip A B C : (B -> A -> C) -> A -> B -> C := fun f x y => f y x.
+ Definition idmap A : A -> A := fun x => x.
 
-(** 縮約関数 *)
-Definition dep A B : (A -> A -> B) -> A -> B := fun f x => f x x.
+ Definition const A B : A -> B -> A := fun x _ => x.
 
-(** ** 自然数 *)
-Inductive nat : Type :=
-| O : nat
-| S : nat -> nat
-.
+ Definition compose A B C : (B -> C) -> (A -> B) -> A -> C := fun f g x => f (g x).
 
-Scheme nat_ind := Induction for nat Sort Type.
-Scheme nat_rec := Minimality for nat Sort Type.
-Definition nat_rect := nat_ind.
+ Definition flip A B C : (B -> A -> C) -> A -> B -> C := fun f x y => f y x.
 
-(** ** 乗法単位元 *)
+ Definition dep A B : (A -> A -> B) -> A -> B := fun f x => f x x.
+End Function.
 
-Inductive unit : Type :=
-| tt : unit
-.
+Module Unit.
+ Inductive unit : Type :=
+ | I : unit
+ .
 
-Scheme unit_ind := Induction for unit Sort Type.
-Scheme unit_rec := Minimality for unit Sort Type.
-Definition unit_rect := unit_ind.
+ Scheme unit_ind := Induction for unit Sort Type.
+ Scheme unit_rec := Minimality for unit Sort Type.
+ Definition unit_rect := unit_ind.
+End Unit.
 
-(** ** 空の型 *)
+Module Empty.
+ Import Pre.
 
-Inductive empty : Type :=
-.
+ Open Scope type_scope.
 
-Scheme empty_ind := Induction for empty Sort Type.
-Scheme empty_rec := Minimality for empty Sort Type.
-Definition empty_rect := empty_ind.
+ Inductive empty : Type :=
+ .
 
-Definition not (A : Type) : Type := A -> empty.
+ Scheme empty_ind := Induction for empty Sort Type.
+ Scheme empty_rec := Minimality for empty Sort Type.
+ Definition empty_rect := empty_ind.
 
-Definition exfalso := empty_rec.
+ Definition not (A : Type) : Type := A -> empty.
 
-Definition absurd : forall A B, A -> (not A) -> B.
-Proof.
- intros A B H Hn.
- apply exfalso.
- apply Hn.
- apply H.
-Defined.
+ Notation "~ x" := (not x) (at level 75, right associativity) : type_scope.
 
-(** ** 直積 *)
-Inductive and (A B : Type) : Type :=
-| prod : A -> B -> and A B
-.
+ Definition exfalso := empty_rec.
 
-Scheme and_ind := Induction for and Sort Type.
-Scheme and_rec := Minimality for and Sort Type.
-Definition and_rect := and_ind.
+ Definition absurd A B : A -> ~ A -> B := fun H nH => exfalso B (nH H).
+End Empty.
 
-(** ** 直和 *)
-Inductive or (A B : Type) : Type :=
-| left : A -> or A B
-| right : B -> or A B
-.
+Module And.
+ Import Pre.
 
-Scheme or_ind := Induction for or Sort Type.
-Scheme or_rec := Minimality for or Sort Type.
-Definition or_rect := or_ind.
+ Open Scope type_scope.
 
-(** ** 等式 *)
+ Inductive and (A B : Type) : Type :=
+ | prod : A -> B -> and A B
+ .
+
+ Scheme and_ind := Induction for and Sort Type.
+ Scheme and_rec := Minimality for and Sort Type.
+ Definition and_rect := and_ind.
+
+ Notation "x /\ y" := (and x y) (at level 80, right associativity) : type_scope.
+
+ Definition first A B : A /\ B -> A := fun H => match H with prod _ _ Ha _ => Ha end.
+
+ Definition second A B : A /\ B -> B := fun H => match H with prod _ _ _ Hb => Hb end.
+End And.
+
+Module Or.
+ Import Pre.
+
+ Open Scope type_scope.
+
+ Inductive or (A B : Type) : Type :=
+ | left : A -> or A B
+ | right : B -> or A B
+ .
+
+ Scheme or_ind := Induction for or Sort Type.
+ Scheme or_rec := Minimality for or Sort Type.
+ Definition or_rect := or_ind.
+Module Or.
+
+Module 
 Inductive eq (A : Type) (a : A) : A -> Type :=
 | eq_refl : eq A a a
 .
