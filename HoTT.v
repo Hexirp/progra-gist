@@ -57,15 +57,34 @@ Scheme eq_ind := Induction for eq Sort Type.
 Scheme eq_rec := Minimality for eq Sort Type.
 Definition eq_rect := eq_ind.
 
+Definition eq_sym : forall A x y, eq A x y -> eq A y x.
+Proof.
+ intros A x y p.
+ destruct p.
+ apply eq_refl.
+Defined.
+
+Definition eq_trans : forall A x y z, eq A x y -> eq A y z -> eq A x z.
+Proof.
+ intros A x y z p q.
+ destruct p.
+ destruct q.
+ apply eq_refl.
+Defined.
+
 Definition eq_stepl : forall A x y z, eq A z x -> eq A z y -> eq A x y.
 Proof.
- intros A x y z zx zy.
- destruct zx.
- destruct zy.
+ intros A x y z p q.
+ destruct p.
+ destruct q.
  apply eq_refl.
 Defined.
 
 Declare Left Step eq_stepl.
+
+Definition eq_stepr := eq_trans.
+
+Declare Right Step eq_stepr.
 
 Definition eq_eq_stepl : forall A x y (p : eq A y x),
     eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
@@ -131,8 +150,7 @@ Proof.
  apply (nat_rect (fun n => forall A, trunc n A -> trunc (S n) A)).
  -
   intros A.
-  unfold trunc.
-  unfold nat_ind.
+  unfold trunc, nat_ind.
   apply contr_eq_contr.
  -
   intros np IH A H x y.
