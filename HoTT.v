@@ -274,6 +274,23 @@ Proof.
     apply p.
 Defined.
 
+Definition trunc_eq_nat : forall m n, trunc (S O) (eq nat m n).
+Proof.
+ intros m n.
+ destruct (dec_eq_nat m n) as [H | nH].
+ -
+  destruct H.
+  apply trunc_succ.
+  apply ex_intro with (eq_refl nat m).
+  intros p.
+  admit.
+ -
+  intros p.
+  apply exfalso.
+  apply nH.
+  apply p.
+Admitted.
+
 (** ** 等価性 *)
 
 Definition fiber (A B : Type) (f : A -> B) (b : B) : Type :=
