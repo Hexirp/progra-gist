@@ -29,6 +29,37 @@ Scheme nat_ind := Induction for nat Sort Type.
 Scheme nat_rec := Minimality for nat Sort Type.
 Definition nat_rect := nat_ind.
 
+(** ** 乗法単位元 *)
+
+Inductive unit : Type :=
+| tt : unit
+.
+
+Scheme unit_ind := Induction for unit Sort Type.
+Scheme unit_rec := Minimality for unit Sort Type.
+Definition unit_rect := unit_ind.
+
+(** ** 空の型 *)
+
+Inductive empty : Type :=
+.
+
+Scheme empty_ind := Induction for empty Sort Type.
+Scheme empty_rec := Minimality for empty Sort Type.
+Definition empty_rect := empty_ind.
+
+Definition not (A : Type) : Type := A -> empty.
+
+Definition exfalso := empty_rec.
+
+Definition absurd : forall A B, A -> (not A) -> B.
+Proof.
+ intros A B H Hn.
+ apply exfalso.
+ apply Hn.
+ apply H.
+Defined.
+
 (** ** 直積 *)
 Inductive and (A B : Type) : Type :=
 | prod : A -> B -> and A B
