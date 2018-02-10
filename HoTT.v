@@ -189,6 +189,20 @@ Proof.
   apply H.
 Defined.
 
+Definition unit_trunc : trunc O unit.
+Proof.
+ apply ex_intro with tt.
+ intros y.
+ destruct y.
+ apply eq_refl.
+Defined.
+
+Definition empty_trunc : trunc (S O) empty.
+Proof.
+ intros x.
+ destruct x.
+Defined.
+
 (** ** 等価性 *)
 
 Definition fiber (A B : Type) (f : A -> B) (b : B) : Type :=
