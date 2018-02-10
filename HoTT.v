@@ -189,7 +189,7 @@ Proof.
   apply H.
 Defined.
 
-Definition unit_trunc : trunc O unit.
+Definition trunc_unit : trunc O unit.
 Proof.
  apply ex_intro with tt.
  intros y.
@@ -197,7 +197,7 @@ Proof.
  apply eq_refl.
 Defined.
 
-Definition empty_trunc : trunc (S O) empty.
+Definition trunc_empty : trunc (S O) empty.
 Proof.
  intros x.
  destruct x.
