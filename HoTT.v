@@ -105,38 +105,65 @@ Module Eq.
  Scheme eq_ind := Induction for eq Sort Type.
  Scheme eq_rec := Minimality for eq Sort Type.
  Definition eq_rect := eq_ind.
+
+ Definition eq_sym : forall A x y, eq A x y -> eq A y x := fun A x y p =>
+  match p with
+  | eq_refl _ _ => eq_refl A x
+  end
+ .
+
+ Definition eq_trans : forall A x y z, eq A x y -> eq A y z -> eq A x z := fun A x y z p =>
+  match p with
+  | eq_refl _ _ => fun q =>
+   match q with
+   | eq_refl _ _ => eq_refl A x
+   end
+  end
+ .
+
+ Definition eq_stepl : forall A x y z, eq A z x -> eq A z y -> eq A x y := fun A x y z p =>
+  match p with
+  | eq_refl _ _ => fun q =>
+   match q with
+   | eq_refl _ _ => eq_refl A z
+   end
+  end
+ .
+
+ Definition eq_stepr := eq_trans.
 End Eq.
 
-Import Pre Function Unit And Or Iff.
+Module Ex.
+ Import Pre.
 
-Definition eq_sym : forall A x y, eq A x y -> eq A y x.
+ Inductive ex (A : Type) (P : A -> Type) : Type :=
+ | ex_intro : forall x, P x -> ex A P
+ .
+
+ Scheme ex_ind := Induction for ex Sort Type.
+ Scheme ex_rec := Minimality for ex Sort Type.
+ Definition ex_rect := ex_ind.
+End Ex.
+
+Module Path.
+ Export Eq.
+
+ Fail Definition eq_eq_stepl : forall A x y (p : eq A y x),
+     eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x) := fun A x y p =>
+  match p as p' in eq _ _ y' return eq (eq A x x) (eq_stepl A x x y' p' p') (eq_refl A x) with
+  | eq_refl _ _ => eq_refl (eq A x x) (eq_refl A x)
+  end
+ .
+
+Definition eq_eq_stepl : forall A x y (p : eq A y x),
+     eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
 Proof.
  intros A x y p.
  destruct p.
  apply eq_refl.
 Defined.
 
-Definition eq_trans : forall A x y z, eq A x y -> eq A y z -> eq A x z.
-Proof.
- intros A x y z p q.
- destruct p.
- destruct q.
- apply eq_refl.
-Defined.
-
-Definition eq_stepl : forall A x y z, eq A z x -> eq A z y -> eq A x y.
-Proof.
- intros A x y z p q.
- destruct p.
- destruct q.
- apply eq_refl.
-Defined.
-
-Declare Left Step eq_stepl.
-
-Definition eq_stepr := eq_trans.
-
-Declare Right Step eq_stepr.
+Import Pre Function Unit And Or Iff Eq Ex.
 
 Definition eq_eq_stepl : forall A x y (p : eq A y x),
     eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
@@ -145,15 +172,6 @@ Proof.
  destruct p.
  apply eq_refl.
 Defined.
-
-(** ** 存在量化 *)
-Inductive ex (A : Type) (P : A -> Type) : Type :=
-| ex_intro : forall x, P x -> ex A P
-.
-
-Scheme ex_ind := Induction for ex Sort Type.
-Scheme ex_rec := Minimality for ex Sort Type.
-Definition ex_rect := ex_ind.
 
 (** ** 可縮性と切り捨て *)
 
