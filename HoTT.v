@@ -167,6 +167,12 @@ Module Path.
   | eq_refl _ _ => eq_refl (eq A y y) (eq_refl A y)
   end
  .
+
+ Definition ap : forall A B (f : A -> B) x y, eq A x y -> eq B (f x) (f y) := fun A B f x y p =>
+  match p with
+  | eq_refl _ _ => eq_refl B (f x)
+  end
+ .
 End Path.
 
 Module Contr.
@@ -199,7 +205,7 @@ Module Contr.
 End Contr.
 
 Module Trunc.
- Import Pre Ex Nat Eq Path.
+ Export Pre Ex Nat Eq Contr.
 
  Definition trunc : nat -> Type -> Type :=
   nat_ind (fun _ => Type -> Type)
@@ -207,62 +213,20 @@ Module Trunc.
    (fun _ IH A => forall x y, IH (eq A x y))
  .
 
+ Definition trunc_succ : forall n A, trunc n A -> trunc (S n) A :=
+  nat_ind (fun n => forall A, trunc n A -> forall x y, trunc n (eq A x y))
+   (fun A H x y => contr_eq_contr A H x y)
+   (fun np IH A H x y => IH (eq A x y) (H x y))
+ .
+End Trunc.
+
+Module Truncs.
+ Export Trunc.
+ Import Unit Empty.
+
+ Print trunc_succ.
+
 Import Pre Function Unit And Or Iff Eq Ex.
-
-(** ** 可縮性と切り捨て *)
-
-(** 可縮性 *)
-Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
-
-(** 切り捨て *)
-Definition trunc : nat -> Type -> Type :=
- nat_ind (fun _ => Type -> Type)
-  (fun      A => contr A)
-  (fun _ IH A => forall x y, IH (eq A x y))
-.
-
-(** Aがcontrであれば、その値はどのような値でも等しい *)
-Definition eq_contr : forall A, contr A -> forall x y, eq A x y.
-Proof.
- intros A H x y.
- destruct H as [Hc HH].
- stepl Hc.
- -
-  apply HH.
- -
-  apply HH.
-Defined.
-
-(* 可縮であるAにおいて、[eq_contr]により構成された道はどのような道とも等しい *)
-Definition eq_eq_contr : forall A H x y p, eq (eq A x y) (eq_contr A H x y) p.
-Proof.
- intros A H x y p.
- destruct p.
- destruct H as [Hc HH]; unfold eq_contr.
- apply eq_eq_stepl.
-Defined.
-
-(* Aが可縮であればそのどのような道空間も可縮である *)
-Definition contr_eq_contr : forall A, contr A -> forall x y, contr (eq A x y).
-Proof.
- intros A H x y.
- apply ex_intro with (eq_contr A H x y).
- apply eq_eq_contr.
-Defined.
-
-(* n切り捨て可能なAはn+1切り捨て可能である *)
-Definition trunc_succ : forall n A, trunc n A -> trunc (S n) A.
-Proof.
- apply (nat_rect (fun n => forall A, trunc n A -> trunc (S n) A)).
- -
-  intros A.
-  unfold trunc, nat_ind.
-  apply contr_eq_contr.
- -
-  intros np IH A H x y.
-  apply IH.
-  apply H.
-Defined.
 
 Definition trunc_unit : trunc O unit.
 Proof.
