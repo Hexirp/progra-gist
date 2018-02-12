@@ -5,14 +5,14 @@ Global Unset Elimination Schemes.
 Module Pre.
  Delimit Scope type_scope with type.
 
+ Open Scope type_scope.
+
  Notation "x -> y"
    := (forall (_ : x), y) (at level 99, right associativity, y at level 200) : type_scope.
 End Pre.
 
 Module Function.
  Import Pre.
-
- Open Scope type_scope.
 
  Definition idmap A : A -> A := fun x => x.
 
@@ -38,8 +38,6 @@ End Unit.
 Module Empty.
  Import Pre.
 
- Open Scope type_scope.
-
  Inductive empty : Type :=
  .
 
@@ -59,8 +57,6 @@ End Empty.
 Module And.
  Import Pre.
 
- Open Scope type_scope.
-
  Inductive and (A B : Type) : Type :=
  | prod : A -> B -> and A B
  .
@@ -78,8 +74,6 @@ End And.
 
 Module Or.
  Import Pre.
-
- Open Scope type_scope.
 
  Inductive or (A B : Type) : Type :=
  | left : A -> or A B
