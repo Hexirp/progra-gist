@@ -168,11 +168,39 @@ Module Path.
   end
  .
 
- Definition ap : forall A B (f : A -> B) x y, eq A x y -> eq B (f x) (f y) := fun A B f x y p =>
+ Definition inverse := eq_sym.
+
+ Definition concat := eq_trans.
+
+ Definition transport : forall A (P : A -> Type) x y,
+     eq A x y -> P x -> P y := fun A P x y p xP =>
+  match p with
+  | eq_refl _ _ => xP
+  end
+ .
+
+ Definition ap : forall A B (f : A -> B) x y,
+     eq A x y -> eq B (f x) (f y) := fun A B f x y p =>
   match p with
   | eq_refl _ _ => eq_refl B (f x)
   end
  .
+
+ Definition ap01 := ap.
+
+ Definition apD10 : forall A (B : A -> Type) (f g : forall x : A, B x),
+     eq (forall x : A, B x) f g -> forall x, eq (B x) (f x) (g x) := fun A B f g p x =>
+  match p with
+  | eq_refl _ _ => eq_refl (B x) (f x)
+  end
+ .
+
+ Definition ap10 : forall A B (f g : A -> B), eq (A -> B) f g -> forall x, eq B (f x) (g x)
+     := fun A B => apD10 A (fun _ => B).
+
+ Definition ap11 :
+
+ Definition eq_pointwise A (P : A -> Type) (f g : forall x, P x) x := eq (P x) (f x) (g x).
 End Path.
 
 Module Contr.
