@@ -83,16 +83,31 @@ Module Or.
  Scheme or_ind := Induction for or Sort Type.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
-Module Or.
 
-Module 
-Inductive eq (A : Type) (a : A) : A -> Type :=
-| eq_refl : eq A a a
-.
+ Notation "x \/ y" := (or x y) (at level 85, right associativity) : type_scope.
+End Or.
 
-Scheme eq_ind := Induction for eq Sort Type.
-Scheme eq_rec := Minimality for eq Sort Type.
-Definition eq_rect := eq_ind.
+Module Iff.
+ Import Pre And.
+
+ Definition iff A B := A -> B /\ B -> A.
+
+ Notation "x <-> y" := (iff x y) (at level 95, no associativity) : type_scope.
+End Iff.
+
+Module Eq.
+ Import Pre.
+
+ Inductive eq (A : Type) (a : A) : A -> Type :=
+ | eq_refl : eq A a a
+ .
+
+ Scheme eq_ind := Induction for eq Sort Type.
+ Scheme eq_rec := Minimality for eq Sort Type.
+ Definition eq_rect := eq_ind.
+End Eq.
+
+Import Pre Function Unit And Or Iff.
 
 Definition eq_sym : forall A x y, eq A x y -> eq A y x.
 Proof.
