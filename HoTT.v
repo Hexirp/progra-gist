@@ -145,8 +145,21 @@ Module Ex.
  Definition ex_rect := ex_ind.
 End Ex.
 
+Module Nat.
+ Import Pre.
+
+ Inductive nat : Type :=
+ | O : nat
+ | S : nat -> nat
+ .
+
+ Scheme nat_ind := Induction for nat Sort Type.
+ Scheme nat_rec := Minimality for nat Sort Type.
+ Definition nat_rect := nat_ind.
+End Nat.
+
 Module Path.
- Export Eq.
+ Import Pre Eq.
 
  Definition eq_eq_stepl : forall A x y (p : eq A y x),
      eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x) := fun A x y p =>
@@ -156,10 +169,43 @@ Module Path.
  .
 End Path.
 
-Module Trunc.
- Export Ex Path.
+Module Contr.
+ Import Pre Ex Eq Path.
 
  Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
+
+ Definition eq_contr : forall A, contr A -> forall x y, eq A x y := fun A H x y =>
+  match H with
+  | ex_intro _ _ Hc HH => eq_stepl A x y Hc (HH x) (HH y)
+  end
+ .
+
+ Definition eq_eq_contr : forall A H x y (p : eq A x y),
+     eq (eq A x y) (eq_contr A H x y) p := fun A H x y p =>
+  match H with
+  | ex_intro _ _ Hc HH =>
+   match p with
+   | eq_refl _ _ => eq_eq_stepl A x Hc (HH x)
+   end
+  end
+ .
+
+ Definition contr_eq_contr : forall A, contr A -> forall x y, contr (eq A x y) := fun A H x y =>
+  ex_intro
+   (eq A x y)
+   (fun p => forall q, eq (eq A x y) p q)
+   (eq_contr A H x y)
+   (fun q => eq_eq_contr A H x y q).
+End Contr.
+
+Module Trunc.
+ Import Pre Ex Nat Eq Path.
+
+ Definition trunc : nat -> Type -> Type :=
+  nat_ind (fun _ => Type -> Type)
+   (fun      A => contr A)
+   (fun _ IH A => forall x y, IH (eq A x y))
+ .
 
 Import Pre Function Unit And Or Iff Eq Ex.
 
