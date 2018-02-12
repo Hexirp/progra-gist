@@ -148,30 +148,20 @@ End Ex.
 Module Path.
  Export Eq.
 
- Fail Definition eq_eq_stepl : forall A x y (p : eq A y x),
+ Definition eq_eq_stepl : forall A x y (p : eq A y x),
      eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x) := fun A x y p =>
-  match p as p' in eq _ _ y' return eq (eq A x x) (eq_stepl A x x y' p' p') (eq_refl A x) with
-  | eq_refl _ _ => eq_refl (eq A x x) (eq_refl A x)
+  match p with
+  | eq_refl _ _ => eq_refl (eq A y y) (eq_refl A y)
   end
  .
+End Path.
 
-Definition eq_eq_stepl : forall A x y (p : eq A y x),
-     eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
-Proof.
- intros A x y p.
- destruct p.
- apply eq_refl.
-Defined.
+Module Trunc.
+ Export Ex Path.
+
+ Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
 
 Import Pre Function Unit And Or Iff Eq Ex.
-
-Definition eq_eq_stepl : forall A x y (p : eq A y x),
-    eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
-Proof.
- intros A x y p.
- destruct p.
- apply eq_refl.
-Defined.
 
 (** ** 可縮性と切り捨て *)
 
