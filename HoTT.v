@@ -198,7 +198,15 @@ Module Path.
  Definition ap10 : forall A B (f g : A -> B), eq (A -> B) f g -> forall x, eq B (f x) (g x)
      := fun A B => apD10 A (fun _ => B).
 
- Definition ap11 :
+ Definition ap11 : forall A B (f g : A -> B),
+     eq (A -> B) f g -> forall x y, eq A x y -> eq B (f x) (g y) := fun A B f g p x y q =>
+  match p with
+  | eq_refl _ _ =>
+   match q with
+   | eq_refl _ _ => eq_refl B (f x)
+   end
+  end
+ .
 
  Definition eq_pointwise A (P : A -> Type) (f g : forall x, P x) x := eq (P x) (f x) (g x).
 End Path.
