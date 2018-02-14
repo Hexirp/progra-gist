@@ -260,7 +260,38 @@ Module Truncs.
  Export Trunc.
  Import Unit Empty.
 
- Print trunc_succ.
+ Definition contr_unit : contr unit :=
+  ex_intro unit (fun x => forall y, eq unit x y) I (
+   fun x => match x with | I => eq_refl unit I end
+  ).
+
+ Definition trunc_unit : trunc O unit := contr_unit.
+
+ Definition trunc_empty : trunc (S O) empty := fun x y => exfalso (trunc O (eq empty x y)) x.
+End Truncs.
+
+Module Decidable.
+ Export Trunc.
+ Import Unit Empty Or.
+
+ Definition decidable A := A \/ ~ A.
+
+ Definition constant A B (f : A -> B) := forall x y, eq B (f x) (f y).
+
+ Definition collapsable A := ex (A -> A) (fun f => constant A A f).
+
+ Definition trunc_collapsable_eq A x y : collapsable (eq A x y) -> trunc (S O) (eq A x y) :=
+  fun H p q =>
+   contr_eq_contr
+    (eq A x y)
+    (ex_intro
+     (eq A x y)
+     (fun p => forall q, eq (eq A x y) p q)
+     p
+     _)
+    p
+    q
+ .
 
 Import Pre Function Unit And Or Iff Eq Ex.
 
