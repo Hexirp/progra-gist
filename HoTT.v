@@ -271,7 +271,7 @@ Module Truncs.
 End Truncs.
 
 Module Decidable.
- Export Trunc.
+ Export Trunc Path.
  Import Unit Empty Or.
 
  Definition decidable A := A \/ ~ A.
@@ -280,17 +280,23 @@ Module Decidable.
 
  Definition collapsable A := ex (A -> A) (fun f => constant A A f).
 
- Definition trunc_collapsable_eq A x y : collapsable (eq A x y) -> trunc (S O) (eq A x y) :=
-  fun H p q =>
-   contr_eq_contr
-    (eq A x y)
-    (ex_intro
-     (eq A x y)
-     (fun p => forall q, eq (eq A x y) p q)
-     p
-     _)
-    p
-    q
+ Definition collapse A : collapsable A -> A -> A := fun H =>
+  match H with
+  | ex_intro _ _ f _ => f
+  end
+ .
+
+ Definition trunc_collapsable A
+     : (forall x y, collapsable (eq A x y)) -> trunc (S (S O)) A :=
+  fun C x y =>
+   let k
+       : forall (p : eq A x y), eq (eq A x y)
+           (eq_stepl A x y x
+               (collapse (eq A x x) (C x x) (eq_refl A x))
+               (collapse (eq A x y) (C x y) p))
+           p :=
+    fun p => match p with eq_refl _ _ => eq_eq_stepl A x x (collapse (eq A x x) (C x x) (eq_refl A x)) end
+   in _
  .
 
 Import Pre Function Unit And Or Iff Eq Ex.
