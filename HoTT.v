@@ -286,6 +286,22 @@ Module Decidable.
   end
  .
 
+ Definition eq_steptri A x y z w : eq A z w -> eq A z x -> eq A w y -> eq A x y := fun p =>
+  match p with
+  | eq_refl _ _ => fun q =>
+   match q with
+   | eq_refl _ _ => fun r =>
+    match r with
+    | eq_refl _ _ => eq_refl A z
+    end
+   end
+  end
+ .
+
+ Definition trunc_forall_eq A : (forall x y, eq A x y) -> trunc (S O) A := fun H x y =>
+  contr_eq_contr A (ex_intro A (fun x => forall y, eq A x y) x (H x)) x y
+ .
+
  Definition trunc_collapsable A
      : (forall x y, collapsable (eq A x y)) -> trunc (S (S O)) A :=
   fun C x y =>
@@ -296,7 +312,17 @@ Module Decidable.
                (collapse (eq A x y) (C x y) p))
            p :=
     fun p => match p with eq_refl _ _ => eq_eq_stepl A x x (collapse (eq A x x) (C x x) (eq_refl A x)) end
-   in _
+   in trunc_forall_eq (eq A x y) (fun p q =>
+    eq_steptri (eq A x y) p q
+        (eq_stepl A x y x
+             (collapse (eq A x x) (C x x) (eq_refl A x))
+             (collapse (eq A x y) (C x y) p))
+        (eq_stepl A x y x
+             (collapse (eq A x x) (C x x) (eq_refl A x))
+             (collapse (eq A x y) (C x y) q))
+     _
+     (k p)
+     (k q))
  .
 
 Import Pre Function Unit And Or Iff Eq Ex.
