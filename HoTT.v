@@ -286,6 +286,12 @@ Module Decidable.
   end
  .
 
+ Definition collapse_H A : forall C x y, eq A (collapse A C x) (collapse A C y) := fun C x y =>
+  match C with
+  | ex_intro _ _ f H => H x y
+  end
+ .
+
  Definition eq_steptri A x y z w : eq A z w -> eq A z x -> eq A w y -> eq A x y := fun p =>
   match p with
   | eq_refl _ _ => fun q =>
@@ -318,7 +324,9 @@ Module Decidable.
                (collapse (eq A x x) (C x x) (eq_refl A x))
                (collapse (eq A x y) (C x y) p))
            p :=
-    fun p => match p with eq_refl _ _ => eq_eq_stepl A x x (collapse (eq A x x) (C x x) (eq_refl A x)) end
+    fun p => match p with
+    | eq_refl _ _ => eq_eq_stepl A x x (collapse (eq A x x) (C x x) (eq_refl A x))
+    end
    in trunc_forall_eq (eq A x y) (fun p q =>
     eq_steptri (eq A x y) p q
         (eq_stepl A x y x
@@ -331,7 +339,7 @@ Module Decidable.
       (collapse (eq A x x) (C x x) (eq_refl A x))
       (collapse (eq A x y) (C x y) p)
       (collapse (eq A x y) (C x y) q)
-      _)
+      (collapse_H (eq A x y) (C x y) p q))
      (k p)
      (k q))
  .
