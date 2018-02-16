@@ -302,6 +302,13 @@ Module Decidable.
   contr_eq_contr A (ex_intro A (fun x => forall y, eq A x y) x (H x)) x y
  .
 
+ Definition wisker A x y z : forall (p : eq A z x) (q r : eq A z y),
+     eq (eq A z y) q r -> eq (eq A x y) (eq_stepl A x y z p q) (eq_stepl A x y z p r) :=
+  fun p q r h => match h with
+  | eq_refl _ _ => eq_refl (eq A x y) (eq_stepl A x y z p q)
+  end
+ .
+
  Definition trunc_collapsable A
      : (forall x y, collapsable (eq A x y)) -> trunc (S (S O)) A :=
   fun C x y =>
@@ -320,7 +327,11 @@ Module Decidable.
         (eq_stepl A x y x
              (collapse (eq A x x) (C x x) (eq_refl A x))
              (collapse (eq A x y) (C x y) q))
-     _
+     (wisker A x y x
+      (collapse (eq A x x) (C x x) (eq_refl A x))
+      (collapse (eq A x y) (C x y) p)
+      (collapse (eq A x y) (C x y) q)
+      _)
      (k p)
      (k q))
  .
