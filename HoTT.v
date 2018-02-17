@@ -336,34 +336,42 @@ Module Collapse.
   rf (cH x y).
  Defined.
 
- Definition trunc_collapsable A
-     : (forall x y, collapsable (eq A x y)) -> trunc (S (S O)) A :=
-  fun C x y =>
-   let k
-       : forall (p : eq A x y), eq (eq A x y)
-           (eq_stepl A x y x
-               (collapse (eq A x x) (C x x) (eq_refl A x))
-               (collapse (eq A x y) (C x y) p))
-           p :=
-    fun p => match p with
-    | eq_refl _ _ => eq_eq_stepl A x x (collapse (eq A x x) (C x x) (eq_refl A x))
-    end
-   in trunc_forall_eq (eq A x y) (fun p q =>
-    eq_steptri (eq A x y) p q
-        (eq_stepl A x y x
-             (collapse (eq A x x) (C x x) (eq_refl A x))
-             (collapse (eq A x y) (C x y) p))
-        (eq_stepl A x y x
-             (collapse (eq A x x) (C x x) (eq_refl A x))
-             (collapse (eq A x y) (C x y) q))
-     (wisker A x y x
-      (collapse (eq A x x) (C x x) (eq_refl A x))
-      (collapse (eq A x y) (C x y) p)
-      (collapse (eq A x y) (C x y) q)
-      (collapse_H (eq A x y) (C x y) p q))
-     (k p)
-     (k q))
- .
+ Definition path_collapsable A := forall x y, collapsable (eq A x y).
+
+ Definition path_collapse A x y : path_collapsable A -> eq A x y -> eq A x y
+     := fun H => collapse (eq A x y) (H x y).
+
+ Definition path_collapse_H A x y
+     : forall c p q, eq (eq A x y) (path_collapse A x y c p) (path_collapse A x y c q).
+ Proof.
+  rf (fun c p q => _).
+  rf (collapse_H (eq A x y) (c x y) p q).
+ Defined.
+
+ Definition collapse_ansym A x y c p
+     := eq_stepl A x y x (path_collapse A x x c (eq_refl A x)) (path_collapse A x y c p).
+
+ Definition collapse_k A x y c p : eq (eq A x y) (collapse_ansym A x y c p) p.
+ Proof.
+  rf (match p with eq_refl _ _ => _ end).
+  rf (eq_eq_stepl A x x (path_collapse A x x c (eq_refl A x))).
+ Defined.
+
+ Definition trunc_path_collapsable A : path_collapsable A -> trunc (S (S O)) A.
+ Proof.
+  rf (fun c x y => _).
+  rf (hprop_forall (eq A x y) _).
+  rf (fun p q => _).
+  rf (eq_stepc (eq A x y) p q (collapse_ansym A x y c p) (collapse_ansym A x y c q) _ _ _).
+  -
+   rf (let p_co t p := path_collapse A x t c p in _).
+   rf (wiskerL A x y x (p_co x (eq_refl A x)) (p_co y p) (p_co y q) _).
+   rf (path_collapse_H A x y c p q).
+  -
+   rf (collapse_k A x y c p).
+  -
+   rf (collapse_k A x y c q).
+ Defined.
 
 Import Pre Function Unit And Or Iff Eq Ex.
 
