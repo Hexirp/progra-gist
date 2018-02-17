@@ -171,6 +171,7 @@ Module Path.
  Definition eq_eq_stepl A x y p : eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
  Proof.
   rf (match p with eq_refl _ _ => _ end).
+  cbn.
   rf (eq_refl (eq A y y) (eq_refl A y)).
  Defined.
 
@@ -194,21 +195,19 @@ Module Path.
 
  Definition ap01 := ap.
 
- Definition apD10 A (B : A -> Type) (f g : forall x : A, B x)
-     : eq (forall x : A, B x) f g -> forall x, eq (B x) (f x) (g x).
+ Definition apD10 A B f g : eq (forall x : A, B x) f g -> forall x, eq (B x) (f x) (g x).
  Proof.
   rf (fun p => _).
   rf (match p with eq_refl _ _ => _ end).
   rf (fun x => eq_refl (B x) (f x)).
  Defined.
 
- Definition ap10 A B (f g : A -> B) : eq (A -> B) f g -> forall x, eq B (f x) (g x).
+ Definition ap10 A B f g : eq (A -> B) f g -> forall x, eq B (f x) (g x).
  Proof.
   rf (apD10 A (fun _ => B) f g).
  Defined.
 
- Definition ap11 A B (f g : A -> B) :
-     eq (A -> B) f g -> forall x y, eq A x y -> eq B (f x) (g y).
+ Definition ap11 A B f g : eq (A -> B) f g -> forall x y, eq A x y -> eq B (f x) (g y).
  Proof.
   rf (fun p => _).
   rf (match p with eq_refl _ _ => _ end).
@@ -225,28 +224,32 @@ Module Contr.
 
  Definition contr (A : Type) : Type := ex A (fun x => forall y, eq A x y).
 
- Definition eq_contr : forall A, contr A -> forall x y, eq A x y := fun A H x y =>
-  match H with
-  | ex_intro _ _ Hc HH => eq_stepl A x y Hc (HH x) (HH y)
-  end
- .
+ Definition eq_contr A : contr A -> forall x y, eq A x y.
+ Proof.
+  rf (fun H x y => _).
+  rf (match H with ex_intro _ _ Hc HH => _ end).
+  rf (eq_stepl A x y Hc _ _).
+  -
+   rf (HH x).
+  -
+   rf (HH y).
+ Defined.
 
- Definition eq_eq_contr : forall A H x y (p : eq A x y),
-     eq (eq A x y) (eq_contr A H x y) p := fun A H x y p =>
-  match H with
-  | ex_intro _ _ Hc HH =>
-   match p with
-   | eq_refl _ _ => eq_eq_stepl A x Hc (HH x)
-   end
-  end
- .
+ Definition eq_eq_contr A : forall H x y (p : eq A x y), eq (eq A x y) (eq_contr A H x y) p.
+ Proof.
+  rf (fun H x y p => _).
+  rf (match H with ex_intro _ _ Hc HH => _ end).
+  cbn.
+  rf (match p with eq_refl _ _ => _ end).
+  rf (eq_eq_stepl A x Hc (HH x)).
+ Defined.
 
- Definition contr_eq_contr : forall A, contr A -> forall x y, contr (eq A x y) := fun A H x y =>
-  ex_intro
-   (eq A x y)
-   (fun p => forall q, eq (eq A x y) p q)
-   (eq_contr A H x y)
-   (fun q => eq_eq_contr A H x y q).
+ Definition contr_eq_contr A : contr A -> forall x y, contr (eq A x y).
+ Proof.
+  rf (fun H x y => _).
+  rf (ex_intro (eq A x y) (fun p => forall q, eq (eq A x y) p q) (eq_contr A H x y) _).
+  rf (fun p => eq_eq_contr A H x y p).
+ Defined.
 End Contr.
 
 Module Trunc.
