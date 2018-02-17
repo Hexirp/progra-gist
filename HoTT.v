@@ -294,27 +294,24 @@ Module Truncs.
  Defined.
 End Truncs.
 
-Module Decidable.
+Module Collapse.
  Export Trunc Path.
  Import Unit Empty Or.
-
- Definition decidable A := A \/ ~ A.
 
  Definition constant A B (f : A -> B) := forall x y, eq B (f x) (f y).
 
  Definition collapsable A := ex (A -> A) (fun f => constant A A f).
 
- Definition collapse A : collapsable A -> A -> A := fun H =>
-  match H with
-  | ex_intro _ _ f _ => f
-  end
- .
+ Definition collapse A : collapsable A -> A -> A
+     := fun H => match H with ex_intro _ _ f _ => f end.
 
- Definition collapse_H A : forall C x y, eq A (collapse A C x) (collapse A C y) := fun C x y =>
-  match C with
-  | ex_intro _ _ f H => H x y
-  end
- .
+ Definition collapse_H A : forall c x y, eq A (collapse A c x) (collapse A c y).
+ Proof.
+  rf (fun c x y => _).
+  rf (match c with ex_intro _ _ cf cH => _ end).
+  cbn.
+  rf (cH x y).
+ Defined.
 
  Definition eq_steptri A x y z w : eq A z w -> eq A z x -> eq A w y -> eq A x y := fun p =>
   match p with
