@@ -1,5 +1,11 @@
 (* coqide -nois *)
 
+Declare ML Module "ltac_plugin".
+
+Print Ltac Signatures.
+
+Require Import Coq.Init.Tactics.
+
 Global Unset Elimination Schemes.
 
 Module Pre.
@@ -9,6 +15,8 @@ Module Pre.
 
  Notation "x -> y"
    := (forall (_ : x), y) (at level 99, right associativity, y at level 200) : type_scope.
+
+ Tactic Notation "rf" uconstr(x) := refine x.
 End Pre.
 
 Module Function.
@@ -106,29 +114,30 @@ Module Eq.
  Scheme eq_rec := Minimality for eq Sort Type.
  Definition eq_rect := eq_ind.
 
- Definition eq_sym : forall A x y, eq A x y -> eq A y x := fun A x y p =>
-  match p with
-  | eq_refl _ _ => eq_refl A x
-  end
- .
+ Definition eq_sym A x y : eq A x y -> eq A y x.
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (eq_refl A x).
+ Defined.
 
- Definition eq_trans : forall A x y z, eq A x y -> eq A y z -> eq A x z := fun A x y z p =>
-  match p with
-  | eq_refl _ _ => fun q =>
-   match q with
-   | eq_refl _ _ => eq_refl A x
-   end
-  end
- .
+ Definition eq_trans A x y z : eq A x y -> eq A y z -> eq A x z.
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (fun q => _).
+  rf (match q with eq_refl _ _ => _ end).
+  rf (eq_refl A x).
+ Defined.
 
- Definition eq_stepl : forall A x y z, eq A z x -> eq A z y -> eq A x y := fun A x y z p =>
-  match p with
-  | eq_refl _ _ => fun q =>
-   match q with
-   | eq_refl _ _ => eq_refl A z
-   end
-  end
- .
+ Definition eq_stepl A x y z : eq A z x -> eq A z y -> eq A x y.
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (fun q => _).
+  rf (match q with eq_refl _ _ => _ end).
+  rf (eq_refl A z).
+ Defined.
 
  Definition eq_stepr := eq_trans.
 End Eq.
