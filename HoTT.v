@@ -138,6 +138,13 @@ Module Eq.
  Defined.
 
  Definition eq_stepr := eq_trans.
+
+ Definition eq_stepc A x y z w : eq A z w -> eq A z x -> eq A w y -> eq A x y.
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (eq_stepl A x y z).
+ Defined.
 End Eq.
 
 Module Ex.
@@ -312,18 +319,6 @@ Module Collapse.
   cbn.
   rf (cH x y).
  Defined.
-
- Definition eq_steptri A x y z w : eq A z w -> eq A z x -> eq A w y -> eq A x y := fun p =>
-  match p with
-  | eq_refl _ _ => fun q =>
-   match q with
-   | eq_refl _ _ => fun r =>
-    match r with
-    | eq_refl _ _ => eq_refl A z
-    end
-   end
-  end
- .
 
  Definition trunc_forall_eq A : (forall x y, eq A x y) -> trunc (S O) A := fun H x y =>
   contr_eq_contr A (ex_intro A (fun x => forall y, eq A x y) x (H x)) x y
