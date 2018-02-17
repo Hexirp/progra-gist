@@ -261,11 +261,17 @@ Module Trunc.
    (fun _ IH A => forall x y, IH (eq A x y))
  .
 
- Definition trunc_succ : forall n A, trunc n A -> trunc (S n) A :=
-  nat_ind (fun n => forall A, trunc n A -> forall x y, trunc n (eq A x y))
-   (fun A H x y => contr_eq_contr A H x y)
-   (fun np IH A H x y => IH (eq A x y) (H x y))
- .
+ Definition trunc_succ : forall n A, trunc n A -> trunc (S n) A.
+ Proof.
+  rf (nat_ind (fun n => forall A, trunc n A -> forall x y, trunc n (eq A x y)) _ _).
+  -
+   rf (fun A H x y => _).
+   rf (contr_eq_contr A H x y).
+  -
+   rf (fun np go A H x y => _).
+   rf (go (eq A x y) _).
+   rf (H x y).
+ Defined.
 End Trunc.
 
 Module Truncs.
