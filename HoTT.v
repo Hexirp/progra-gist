@@ -279,6 +279,13 @@ Module Trunc.
    rf (go (eq A x y) _).
    rf (H x y).
  Defined.
+
+ Definition trunc_forall_eq A : (forall x y, eq A x y) -> trunc (S O) A.
+ Proof.
+  rf (fun H x y => _).
+  rf (ex_intro (eq A x y) (fun p => forall q, eq (eq A x y) p q) (H x y) _).
+  rf (fun q => _).
+  rf (match q with eq_refl _ _ => _ end).
 End Trunc.
 
 Module Truncs.
@@ -319,10 +326,6 @@ Module Collapse.
   cbn.
   rf (cH x y).
  Defined.
-
- Definition trunc_forall_eq A : (forall x y, eq A x y) -> trunc (S O) A := fun H x y =>
-  contr_eq_contr A (ex_intro A (fun x => forall y, eq A x y) x (H x)) x y
- .
 
  Definition wisker A x y z : forall (p : eq A z x) (q r : eq A z y),
      eq (eq A z y) q r -> eq (eq A x y) (eq_stepl A x y z p q) (eq_stepl A x y z p r) :=
