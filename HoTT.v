@@ -278,14 +278,20 @@ Module Truncs.
  Export Trunc.
  Import Unit Empty.
 
- Definition contr_unit : contr unit :=
-  ex_intro unit (fun x => forall y, eq unit x y) I (
-   fun x => match x with | I => eq_refl unit I end
-  ).
+ Definition contr_unit : contr unit.
+ Proof.
+  rf (ex_intro unit (fun x => forall y, eq unit x y) I _).
+  rf (fun u => match u with I => _ end).
+  rf (eq_refl unit I).
+ Defined.
 
  Definition trunc_unit : trunc O unit := contr_unit.
 
- Definition trunc_empty : trunc (S O) empty := fun x y => exfalso (trunc O (eq empty x y)) x.
+ Definition trunc_empty : trunc (S O) empty.
+ Proof.
+  rf (fun x y => _).
+  rf (exfalso (trunc O (eq empty x y)) x).
+ Defined.
 End Truncs.
 
 Module Decidable.
