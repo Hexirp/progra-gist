@@ -223,6 +223,14 @@ Module Path.
   rf (eq_refl B (f x)).
  Defined.
 
+ Definition wiskerL A x y z (p : eq A z x) (q r : eq A z y)
+     : eq (eq A z y) q r -> eq (eq A x y) (eq_stepl A x y z p q) (eq_stepl A x y z p r).
+ Proof.
+  rf (fun s => _).
+  rf (match s with eq_refl _ _ => _ end).
+  rf (eq_refl (eq A x y) (eq_stepl A x y z p q)).
+ Defined.
+
  Definition eq_pointwise A (P : A -> Type) (f g : forall x, P x) x := eq (P x) (f x) (g x).
 End Path.
 
@@ -280,12 +288,13 @@ Module Trunc.
    rf (H x y).
  Defined.
 
- Definition trunc_forall_eq A : (forall x y, eq A x y) -> trunc (S O) A.
+ Definition hprop_forall A : (forall x y, eq A x y) -> trunc (S O) A.
  Proof.
   rf (fun H x y => _).
-  rf (ex_intro (eq A x y) (fun p => forall q, eq (eq A x y) p q) (H x y) _).
-  rf (fun q => _).
-  rf (match q with eq_refl _ _ => _ end).
+  rf (contr_eq_contr A _ x y).
+  rf (ex_intro A (fun x => forall y, eq A x y) x _).
+  rf (H x).
+ Defined.
 End Trunc.
 
 Module Truncs.
@@ -326,13 +335,6 @@ Module Collapse.
   cbn.
   rf (cH x y).
  Defined.
-
- Definition wisker A x y z : forall (p : eq A z x) (q r : eq A z y),
-     eq (eq A z y) q r -> eq (eq A x y) (eq_stepl A x y z p q) (eq_stepl A x y z p r) :=
-  fun p q r h => match h with
-  | eq_refl _ _ => eq_refl (eq A x y) (eq_stepl A x y z p q)
-  end
- .
 
  Definition trunc_collapsable A
      : (forall x y, collapsable (eq A x y)) -> trunc (S (S O)) A :=
