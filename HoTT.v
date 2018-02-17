@@ -2,8 +2,6 @@
 
 Declare ML Module "ltac_plugin".
 
-Print Ltac Signatures.
-
 Require Import Coq.Init.Tactics.
 
 Global Unset Elimination Schemes.
@@ -170,52 +168,54 @@ End Nat.
 Module Path.
  Import Pre Eq.
 
- Definition eq_eq_stepl : forall A x y (p : eq A y x),
-     eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x) := fun A x y p =>
-  match p with
-  | eq_refl _ _ => eq_refl (eq A y y) (eq_refl A y)
-  end
- .
+ Definition eq_eq_stepl A x y p : eq (eq A x x) (eq_stepl A x x y p p) (eq_refl A x).
+ Proof.
+  rf (match p with eq_refl _ _ => _ end).
+  rf (eq_refl (eq A y y) (eq_refl A y)).
+ Defined.
 
  Definition inverse := eq_sym.
 
  Definition concat := eq_trans.
 
- Definition transport : forall A (P : A -> Type) x y,
-     eq A x y -> P x -> P y := fun A P x y p xP =>
-  match p with
-  | eq_refl _ _ => xP
-  end
- .
+ Definition transport A (P : A -> Type) x y : eq A x y -> P x -> P y.
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (fun H => H).
+ Defined.
 
- Definition ap : forall A B (f : A -> B) x y,
-     eq A x y -> eq B (f x) (f y) := fun A B f x y p =>
-  match p with
-  | eq_refl _ _ => eq_refl B (f x)
-  end
- .
+ Definition ap A B (f : A -> B) x y : eq A x y -> eq B (f x) (f y).
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (eq_refl B (f x)).
+ Defined.
 
  Definition ap01 := ap.
 
- Definition apD10 : forall A (B : A -> Type) (f g : forall x : A, B x),
-     eq (forall x : A, B x) f g -> forall x, eq (B x) (f x) (g x) := fun A B f g p x =>
-  match p with
-  | eq_refl _ _ => eq_refl (B x) (f x)
-  end
- .
+ Definition apD10 A (B : A -> Type) (f g : forall x : A, B x)
+     : eq (forall x : A, B x) f g -> forall x, eq (B x) (f x) (g x).
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (fun x => eq_refl (B x) (f x)).
+ Defined.
 
- Definition ap10 : forall A B (f g : A -> B), eq (A -> B) f g -> forall x, eq B (f x) (g x)
-     := fun A B => apD10 A (fun _ => B).
+ Definition ap10 A B (f g : A -> B) : eq (A -> B) f g -> forall x, eq B (f x) (g x).
+ Proof.
+  rf (apD10 A (fun _ => B) f g).
+ Defined.
 
- Definition ap11 : forall A B (f g : A -> B),
-     eq (A -> B) f g -> forall x y, eq A x y -> eq B (f x) (g y) := fun A B f g p x y q =>
-  match p with
-  | eq_refl _ _ =>
-   match q with
-   | eq_refl _ _ => eq_refl B (f x)
-   end
-  end
- .
+ Definition ap11 A B (f g : A -> B) :
+     eq (A -> B) f g -> forall x y, eq A x y -> eq B (f x) (g y).
+ Proof.
+  rf (fun p => _).
+  rf (match p with eq_refl _ _ => _ end).
+  rf (fun x y q => _).
+  rf (match q with eq_refl _ _ => _ end).
+  rf (eq_refl B (f x)).
+ Defined.
 
  Definition eq_pointwise A (P : A -> Type) (f g : forall x, P x) x := eq (P x) (f x) (g x).
 End Path.
