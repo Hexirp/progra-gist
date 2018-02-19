@@ -374,7 +374,7 @@ Module Collapse.
  Defined.
 End Collapse.
 
-Import Pre Function Unit And Or Iff Eq Ex .
+Import Pre Function Unit And Or Iff Eq Ex.
 
 (** ** 等価性 *)
 
