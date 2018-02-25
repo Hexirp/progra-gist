@@ -373,27 +373,3 @@ Module Collapse.
    rf (collapse_k A x y c q).
  Defined.
 End Collapse.
-
-Import Pre Function Unit And Or Iff Eq Ex .
-
-(** ** 等価性 *)
-
-Definition fiber (A B : Type) (f : A -> B) (b : B) : Type :=
- ex A (fun a => eq B (f a) b)
-.
-
-Definition equiv (A B : Type) (f : A -> B) : Type := forall b, contr (fiber A B f b).
-
-Definition equiv_hom (A B : Type) (f : A -> B) (g : B -> A) : Type :=
- and (forall a, eq A (g (f a)) a) (forall b, eq B (f (g b)) b)
-.
-
-Definition equiv_adj (A B : Type) (f : A -> B) (g : B -> A) : Type.
-Proof.
-Admitted.
-
-Definition iso_hom (A B : Type) (f : A -> B) : Type :=
- and
-  (ex (B -> A) (fun g => forall a, eq A (g (f a)) a))
-  (ex (B -> A) (fun h => forall b, eq B (f (h b)) b))
-.
