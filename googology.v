@@ -32,8 +32,25 @@ Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
    end
 .
 
+Definition id : forall (A : Type), A -> A := fun (A : Type) (x : A) => x.
+
 Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
  fun (A B C : Type) (f : B -> C) (g : A -> B) (x : A) => f (g x)
+.
+
+Definition compD
+ :
+  forall (A : Type) (B : A -> Type) (C : A -> Type),
+   (forall (x : A), B x -> C x) -> (forall (x : A), B x) -> forall x, C x
+ :=
+  fun
+   (A : Type)
+   (B : A -> Type)
+   (C : A -> Type)
+   (f : forall (x : A), B x -> C x)
+   (g : forall (x : A), B x)
+   (x : A)
+  => f x (g x)
 .
 
 Definition t0 : Type := ts t.
@@ -76,11 +93,11 @@ Definition t01 : nat -> Type := ind Type to ts.
 
 Definition s01 : (forall (x : nat), t01 x) -> forall (x : nat), t01 x :=
  let
-  s01_u : forall (x : nat), t01 x -> t01 x :=
+  f : forall (x : nat), t01 x -> t01 x :=
    nat_rect
     (fun (x : nat) => t01 x -> t01 x)
-    (fun (x : t01 O) => x)
-    (fun (xp : nat) (go : t01 xp -> t01 xp) => comp nat (t01 xp) (t01 xp) go)
+    (fun (s : t01 O) => s)
+    (fun (xp : nat) (go : t01 xp -> t01 xp) (s : t01 (S xp)) => comp nat (t01 xp) (t01 xp) go s)
  in
-  fun (f : forall (x : nat), t01 x) (x : nat) => s01_u x (f x)
+  fun (g : forall (x : nat), t01 x) (x : nat) => f x (g x)
 .
