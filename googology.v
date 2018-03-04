@@ -38,15 +38,15 @@ Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
 
 Definition t0 : Type := ts t.
 
-Definition o0 : nat -> nat := ind nat o s.
+Definition o0 : t0 := ind nat o s.
 
-Definition s0 : (nat -> nat) -> (nat -> nat) := comp nat nat nat S.
+Definition s0 : t0 -> t0 := comp nat t t S.
 
-Definition f01 : nat -> nat := o0.
+Definition f01 : t0 := o0.
 
-Definition f010 : nat -> nat := s0 f01.
+Definition f010 : t0 := s0 f01.
 
-Definition f0100 : nat -> nat := s0 f010.
+Definition f0100 : t0 := s0 f010.
 
 Definition o00 : nat -> nat -> nat := ind (nat -> nat) o0 s0.
 
