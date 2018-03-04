@@ -7,11 +7,15 @@ Inductive nat : Type :=
 | S : nat -> nat
 .
 
-Definition f : nat := O.
+Definition o : nat := O.
 
-Definition f0 : nat := S f.
+Definition s : nat -> nat := S.
 
-Definition f00 : nat := S f0.
+Definition f : nat := o.
+
+Definition f0 : nat := s f.
+
+Definition f00 : nat := s f0.
 
 Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
  fun (P : Type) (cO : P) (cS : P -> P) =>
