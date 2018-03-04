@@ -29,3 +29,13 @@ Definition f01 : nat -> nat := ind nat O S.
 Definition f010 : nat -> nat := comp nat nat nat S f01.
 
 Definition f0100 : nat -> nat := comp nat nat nat S f010.
+
+Definition f0101 : nat -> nat -> nat := ind (nat -> nat) f01 (comp nat nat nat S).
+
+Definition f01010 : nat -> nat -> nat :=
+ comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S) f0101
+.
+
+Definition f010100 : nat -> nat -> nat :=
+ comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S) f01010
+.
