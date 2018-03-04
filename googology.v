@@ -13,8 +13,6 @@ Definition ts : Type -> Type := fun t => nat -> t.
 
 Definition t : Type := to.
 
-Definition t0 : Type := ts t.
-
 Definition o : t := O.
 
 Definition s : t -> t := S.
@@ -37,6 +35,8 @@ Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
 Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
  fun (A B C : Type) (f : B -> C) (g : A -> B) (x : A) => f (g x)
 .
+
+Definition t0 : Type := ts t.
 
 Definition o0 : nat -> nat := ind nat o s.
 
