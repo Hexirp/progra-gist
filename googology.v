@@ -60,14 +60,14 @@ Definition f01010 : t00 := s00 f0101.
 
 Definition f010100 : t00 := s00 f01010.
 
-Definition o000 : nat -> nat -> nat -> nat := ind (nat -> nat -> nat) o00 s00.
+Definition t000 : Type := ts t00.
 
-Definition s000 : (nat -> nat -> nat -> nat) -> (nat -> nat -> nat -> nat) :=
- comp nat (nat -> nat -> nat) (nat -> nat -> nat) s00
-.
+Definition o000 : t000 := ind t00 o00 s00.
 
-Definition f010101 : nat -> nat -> nat -> nat := o000.
+Definition s000 : t000 -> t000 := comp nat t00 t00 s00.
 
-Definition f0101010 : nat -> nat -> nat -> nat := s000 f010101.
+Definition f010101 : t000 := o000.
 
-Definition f01010100 : nat -> nat -> nat -> nat := s000 f0101010.
+Definition f0101010 : t000 := s000 f010101.
+
+Definition f01010100 : t000 := s000 f0101010.
