@@ -40,15 +40,17 @@ Definition f010 : nat -> nat := s0 f01.
 
 Definition f0100 : nat -> nat := s0 f010.
 
-Definition f0101 : nat -> nat -> nat := ind (nat -> nat) f01 (comp nat nat nat S).
+Definition o00 : nat -> nat -> nat := ind (nat -> nat) o0 s0.
 
-Definition f01010 : nat -> nat -> nat :=
- comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S) f0101
+Definition s00 : (nat -> nat -> nat) -> (nat -> nat -> nat) :=
+ comp nat (nat -> nat) (nat -> nat) s0
 .
 
-Definition f010100 : nat -> nat -> nat :=
- comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S) f01010
-.
+Definition f0101 : nat -> nat -> nat := o00.
+
+Definition f01010 : nat -> nat -> nat := s00 f0101.
+
+Definition f010100 : nat -> nat -> nat := s00 f01010.
 
 Definition f010101 : nat -> nat -> nat -> nat :=
  ind (nat -> nat -> nat) f0101 (comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S))
