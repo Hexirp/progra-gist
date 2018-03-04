@@ -73,3 +73,8 @@ Definition f0101010 : t000 := s000 f010101.
 Definition f01010100 : t000 := s000 f0101010.
 
 Definition t01 : nat -> Type := ind Type to ts.
+
+Definition s01 :(forall (x : nat), t01 x) -> forall (x : nat), t01 x :=
+ fun (f : forall (x : nat), t01 x) =>
+  nat_rect t01 O (_)
+.
