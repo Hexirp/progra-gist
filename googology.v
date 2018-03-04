@@ -15,15 +15,15 @@ Definition t : Type := to.
 
 Definition t0 : Type := ts t.
 
-Definition o : nat := O.
+Definition o : t := O.
 
-Definition s : nat -> nat := S.
+Definition s : t -> t := S.
 
-Definition f : nat := o.
+Definition f : t := o.
 
-Definition f0 : nat := s f.
+Definition f0 : t := s f.
 
-Definition f00 : nat := s f0.
+Definition f00 : t := s f0.
 
 Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
  fun (P : Type) (cO : P) (cS : P -> P) =>
