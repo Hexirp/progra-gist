@@ -71,3 +71,5 @@ Definition f010101 : t000 := o000.
 Definition f0101010 : t000 := s000 f010101.
 
 Definition f01010100 : t000 := s000 f0101010.
+
+Definition t01 : nat -> Type := ind Type to ts.
