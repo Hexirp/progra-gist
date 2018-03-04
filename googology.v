@@ -30,11 +30,15 @@ Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
  fun (A B C : Type) (f : B -> C) (g : A -> B) (x : A) => f (g x)
 .
 
-Definition f01 : nat -> nat := ind nat O S.
+Definition o0 : nat -> nat := ind nat o s.
 
-Definition f010 : nat -> nat := comp nat nat nat S f01.
+Definition s0 : (nat -> nat) -> (nat -> nat) := comp nat nat nat S.
 
-Definition f0100 : nat -> nat := comp nat nat nat S f010.
+Definition f01 : nat -> nat := o0.
+
+Definition f010 : nat -> nat := s0 f01.
+
+Definition f0100 : nat -> nat := s0 f010.
 
 Definition f0101 : nat -> nat -> nat := ind (nat -> nat) f01 (comp nat nat nat S).
 
