@@ -40,7 +40,7 @@ Definition t0 : Type := ts t.
 
 Definition o0 : t0 := ind t o s.
 
-Definition s0 : t0 -> t0 := comp nat t t S.
+Definition s0 : t0 -> t0 := comp nat t t s.
 
 Definition f01 : t0 := o0.
 
