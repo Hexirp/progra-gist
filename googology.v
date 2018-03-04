@@ -30,6 +30,10 @@ Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
  fun (A B C : Type) (f : B -> C) (g : A -> B) (x : A) => f (g x)
 .
 
+Definition to : Type := nat.
+
+Definition ts : Type -> Type := fun t => nat -> t.
+
 Definition o0 : nat -> nat := ind nat o s.
 
 Definition s0 : (nat -> nat) -> (nat -> nat) := comp nat nat nat S.
