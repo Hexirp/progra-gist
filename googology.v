@@ -34,6 +34,10 @@ Definition to : Type := nat.
 
 Definition ts : Type -> Type := fun t => nat -> t.
 
+Definition t : Type := to.
+
+Definition t0 : Type := ts t.
+
 Definition o0 : nat -> nat := ind nat o s.
 
 Definition s0 : (nat -> nat) -> (nat -> nat) := comp nat nat nat S.
