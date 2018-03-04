@@ -32,6 +32,13 @@ Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
    end
 .
 
+Definition indD
+ :
+  forall (P : nat -> Type), P O -> (forall (x : nat), P x -> P (S x)) -> forall (x : nat), P x
+ :=
+  nat_rect
+.
+
 Definition id : forall (A : Type), A -> A := fun (A : Type) (x : A) => x.
 
 Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
@@ -94,7 +101,7 @@ Definition t01 : nat -> Type := ind Type to ts.
 Definition s01 : (forall (x : nat), t01 x) -> forall (x : nat), t01 x :=
  let
   f : forall (x : nat), t01 x -> t01 x :=
-   nat_rect
+   indD
     (fun (x : nat) => t01 x -> t01 x)
     (fun (s : t01 O) => s)
     (fun (xp : nat) (go : t01 xp -> t01 xp) (s : t01 (S xp)) => comp nat (t01 xp) (t01 xp) go s)
