@@ -19,3 +19,9 @@ Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
    | S xp => cS (go xp)
    end
 .
+
+Definition f01 : nat -> nat := ind nat O S.
+
+Definition f010 : nat -> nat := fun (x : nat) => S (f01 x).
+
+Definition f0100 : nat -> nat := fun (x : nat) => S (f010 x).
