@@ -41,3 +41,19 @@ Definition f01010 : nat -> nat -> nat :=
 Definition f010100 : nat -> nat -> nat :=
  comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S) f01010
 .
+
+Definition f010101 : nat -> nat -> nat -> nat :=
+ ind (nat -> nat -> nat) f0101 (comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S))
+.
+
+Definition f0101010 : nat -> nat -> nat -> nat :=
+ comp nat (nat -> nat -> nat) (nat -> nat -> nat)
+  (comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S))
+  f010101
+.
+
+Definition f01010100 : nat -> nat -> nat -> nat :=
+ comp nat (nat -> nat -> nat) (nat -> nat -> nat)
+  (comp nat (nat -> nat) (nat -> nat) (comp nat nat nat S))
+  f0101010
+.
