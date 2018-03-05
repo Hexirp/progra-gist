@@ -101,8 +101,8 @@ Definition s01 : (forall (x : nat), t01 x) -> forall (x : nat), t01 x :=
   f : forall (x : nat), t01 x -> t01 x :=
    indD
     (fun (x : nat) => t01 x -> t01 x)
-    (fun (s : t01 O) => s)
-    (fun (xp : nat) (go : t01 xp -> t01 xp) (s : t01 (S xp)) => comp nat (t01 xp) (t01 xp) go s)
+    S
+    (fun (xp : nat) (go : t01 xp -> t01 xp) => comp nat (t01 xp) (t01 xp) go)
  in
   fun (g : forall (x : nat), t01 x) (x : nat) => f x (g x)
 .
