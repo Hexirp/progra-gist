@@ -106,3 +106,10 @@ Definition s01 : (forall (x : nat), t01 x) -> forall (x : nat), t01 x :=
  in
   fun (g : forall (x : nat), t01 x) (x : nat) => f x (g x)
 .
+
+Definition o01 : forall (x : nat), t01 x :=
+ indD
+  t01
+  o
+  (fun (xp : nat) (go : t01 xp) => ind (t01 xp) go _)
+.
