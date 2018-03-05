@@ -1,5 +1,3 @@
-(* coqtop -nois *)
-
 Set Printing Universes.
 
 Inductive nat : Type :=
