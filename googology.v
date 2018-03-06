@@ -37,8 +37,6 @@ Definition indD
   nat_rect
 .
 
-Definition id : forall (A : Type), A -> A := fun (A : Type) (x : A) => x.
-
 Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
  fun (A B C : Type) (f : B -> C) (g : A -> B) (x : A) => f (g x)
 .
