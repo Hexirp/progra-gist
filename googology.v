@@ -113,3 +113,7 @@ Definition f011 : forall (x : nat), t01 x := o01.
 Definition f0110 : forall (x : nat), t01 x := compD nat t01 t01 s01 f011.
 
 Definition f01100 : forall (x : nat), t01 x := compD nat t01 t01 s01 f0110.
+
+Definition t010 : Type := nat -> forall (x : nat), t01 x.
+
+Definition f01101 : t010 := ind (forall (x : nat), t01 x) o01 (compD nat t01 t01 s01).
