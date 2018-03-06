@@ -109,3 +109,9 @@ Definition o01 : forall (x : nat), t01 x :=
   o
   (fun (xp : nat) (go : t01 xp) => ind (t01 xp) go (s01 xp))
 .
+
+Definition f011 : forall (x : nat), t01 x := o01.
+
+Definition f0110 : forall (x : nat), t01 x := compD nat t01 t01 s01 f011.
+
+Definition f01100 : forall (x : nat), t01 x := compD nat t01 t01 s01 f0110.
