@@ -118,6 +118,6 @@ Definition f0110 : t01 := s01 f011.
 
 Definition f01100 : t01 := s01 f0110.
 
-Definition t010 : Type := nat -> t01.
+Definition t010 : Type := ts t01.
 
 Definition f01101 : t010 := ind t01 o01 s01.
