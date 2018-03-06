@@ -94,6 +94,8 @@ Definition f01010100 : t000 := s000 f0101010.
 
 Definition t01D : nat -> Type := ind Type to ts.
 
+Definition t01 : Type := forall (x : nat), t01D x.
+
 Definition s01D : forall (x : nat), t01D x -> t01D x :=
  indD
   (fun (x : nat) => t01D x -> t01D x)
@@ -101,21 +103,21 @@ Definition s01D : forall (x : nat), t01D x -> t01D x :=
   (fun (xp : nat) (go : t01D xp -> t01D xp) => comp nat (t01D xp) (t01D xp) go)
 .
 
-Definition s01 : (forall (x : nat), t01D x) -> forall (x : nat), t01D x := compD nat t01D t01D s01D.
+Definition s01 : t01 -> t01 := compD nat t01D t01D s01D.
 
-Definition o01 : forall (x : nat), t01D x :=
+Definition o01 : t01 :=
  indD
   t01D
   o
   (fun (xp : nat) (go : t01D xp) => ind (t01D xp) go (s01D xp))
 .
 
-Definition f011 : forall (x : nat), t01D x := o01.
+Definition f011 : t01 := o01.
 
-Definition f0110 : forall (x : nat), t01D x := s01 f011.
+Definition f0110 : t01 := s01 f011.
 
-Definition f01100 : forall (x : nat), t01D x := s01 f0110.
+Definition f01100 : t01 := s01 f0110.
 
-Definition t010 : Type := nat -> forall (x : nat), t01D x.
+Definition t010 : Type := nat -> t01.
 
-Definition f01101 : t010 := ind (forall (x : nat), t01D x) o01 s01.
+Definition f01101 : t010 := ind t01 o01 s01.
