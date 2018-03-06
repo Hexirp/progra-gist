@@ -97,7 +97,7 @@ Definition t01 : nat -> Type := ind Type to ts.
 Definition s01D : forall (x : nat), t01 x -> t01 x :=
  indD
   (fun (x : nat) => t01 x -> t01 x)
-  S
+  s
   (fun (xp : nat) (go : t01 xp -> t01 xp) => comp nat (t01 xp) (t01 xp) go)
 .
 
