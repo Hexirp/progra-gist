@@ -5,22 +5,6 @@ Inductive nat : Type :=
 | S : nat -> nat
 .
 
-Definition to : Type := nat.
-
-Definition ts : Type -> Type := fun t => nat -> t.
-
-Definition t : Type := to.
-
-Definition o : t := O.
-
-Definition s : t -> t := S.
-
-Definition f : t := o.
-
-Definition f0 : t := s f.
-
-Definition f00 : t := s f0.
-
 Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
  fun (P : Type) (cO : P) (cS : P -> P) =>
   fix go (x : nat) : P :=
@@ -55,6 +39,22 @@ Definition compD
    (x : A)
   => f x (g x)
 .
+
+Definition to : Type := nat.
+
+Definition ts : Type -> Type := fun t => nat -> t.
+
+Definition t : Type := to.
+
+Definition o : t := O.
+
+Definition s : t -> t := S.
+
+Definition f : t := o.
+
+Definition f0 : t := s f.
+
+Definition f00 : t := s f0.
 
 Definition t0 : Type := ts t.
 
