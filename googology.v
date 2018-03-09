@@ -30,30 +30,8 @@ Definition ind : forall (P : Type), P -> (P -> P) -> nat -> P :=
    end
 .
 
-Definition indD
- :
-  forall (P : nat -> Type), P O -> (forall (x : nat), P x -> P (S x)) -> forall (x : nat), P x
- :=
-  nat_rect
-.
-
 Definition comp : forall (A B C : Type), (B -> C) -> (A -> B) -> A -> C :=
  fun (A B C : Type) (f : B -> C) (g : A -> B) (x : A) => f (g x)
-.
-
-Definition compD
- :
-  forall (A : Type) (B : A -> Type) (C : A -> Type),
-   (forall (x : A), B x -> C x) -> (forall (x : A), B x) -> forall x, C x
- :=
-  fun
-   (A : Type)
-   (B : A -> Type)
-   (C : A -> Type)
-   (f : forall (x : A), B x -> C x)
-   (g : forall (x : A), B x)
-   (x : A)
-  => f x (g x)
 .
 
 Definition t0 : Type := ts t.
@@ -91,6 +69,28 @@ Definition f010101 : t000 := o000.
 Definition f0101010 : t000 := s000 f010101.
 
 Definition f01010100 : t000 := s000 f0101010.
+
+Definition indD
+ :
+  forall (P : nat -> Type), P O -> (forall (x : nat), P x -> P (S x)) -> forall (x : nat), P x
+ :=
+  nat_rect
+.
+
+Definition compD
+ :
+  forall (A : Type) (B : A -> Type) (C : A -> Type),
+   (forall (x : A), B x -> C x) -> (forall (x : A), B x) -> forall x, C x
+ :=
+  fun
+   (A : Type)
+   (B : A -> Type)
+   (C : A -> Type)
+   (f : forall (x : A), B x -> C x)
+   (g : forall (x : A), B x)
+   (x : A)
+  => f x (g x)
+.
 
 Definition to0 : nat -> Type := ind Type to ts.
 
