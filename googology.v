@@ -127,3 +127,7 @@ Definition f01101 : t010 := ind t01 o01 s01.
 Definition s01101 : t010 -> t010 := comp nat t01 t01 s01.
 
 Definition f011010 : t010 := s01101 f01101.
+
+Definition t0100 : Type := ts t010.
+
+Definition o0110101 : t0100 := ind t010 f01101 s01101.
