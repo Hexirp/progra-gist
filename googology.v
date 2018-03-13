@@ -122,16 +122,16 @@ Definition f01100 : t01 := s01 f0110.
 
 Definition t010 : Type := ts t01.
 
-Definition o01101 : t010 := ind t01 o01 s01.
+Definition o010 : t010 := ind t01 o01 s01.
 
-Definition s01101 : t010 -> t010 := comp nat t01 t01 s01.
+Definition s010 : t010 -> t010 := comp nat t01 t01 s01.
 
-Definition f01101 : t010 := o01101.
+Definition f01101 : t010 := o010.
 
-Definition f011010 : t010 := s01101 f01101.
+Definition f011010 : t010 := s010 f01101.
 
 Definition t0100 : Type := ts t010.
 
-Definition o0110101 : t0100 := ind t010 f01101 s01101.
+Definition o0100 : t0100 := ind t010 o010 s010.
 
-Definition s0110101 : t0100 -> t0100 := comp nat t010 t010 s01101.
+Definition s0100 : t0100 -> t0100 := comp nat t010 t010 s010.
