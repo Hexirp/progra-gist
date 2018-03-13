@@ -135,3 +135,5 @@ Definition t0100 : Type := ts t010.
 Definition o0100 : t0100 := ind t010 o010 s010.
 
 Definition s0100 : t0100 -> t0100 := comp nat t010 t010 s010.
+
+Definition to00 : nat -> Type := ind Type t01 ts.
