@@ -53,3 +53,8 @@ Section Not_lt_inf_dec_chain.
    apply eq_refl.
  Qed.
 End Not_lt_inf_dec_chain.
+
+Definition not_not_least_ele
+  : forall p : ord -> Prop, ~ ~ (exists x, forall y, p y -> lt x y).
+Proof.
+Admitted.
