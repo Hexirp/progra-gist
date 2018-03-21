@@ -7,7 +7,7 @@ Axiom ind : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a)
 
 Definition not_lt_refl : forall a, ~ lt a a.
 Proof.
- apply (ind (fun a => ~ lt a a)).
+ apply (ind _).
  intros a IH H.
  apply IH with a.
  -
