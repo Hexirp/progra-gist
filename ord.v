@@ -20,8 +20,7 @@ Definition not_lt_sym : forall a b, ~ (lt a b /\ lt b a).
 Proof.
  apply (ind (fun a => forall b, ~ (lt a b /\ lt b a))).
  intros a IHa.
- apply (ind (fun b => ~ (lt a b /\ lt b a))).
- intros b IHb [Hl Hr].
+ intros b [Hl Hr].
  apply IHa with b a.
  -
   apply Hr.
