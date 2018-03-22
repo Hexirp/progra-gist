@@ -58,7 +58,7 @@ Section Not_not_least_element.
  Variable non_empty : ~ forall x, ~ p x.
 
  Definition not_not_least_element
-   : ~ forall a, p a -> (forall x, p x <-> lt a x \/ a = x) -> False.
+   : ~ forall a, p a -> (forall x, p x -> lt a x \/ a = x) -> False.
  Proof.
   intros not_least_element.
   apply non_empty.
@@ -69,10 +69,6 @@ Section Not_not_least_element.
    apply Ha.
   -
    intros x.
-   split.
-   +
-    admit.
-   +
-    admit.
+   admit.
  Admitted.
 End Not_not_least_element.
