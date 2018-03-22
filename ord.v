@@ -1,5 +1,30 @@
 Require Import Coq.Init.Prelude.
 
+Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
+Proof.
+ intros A B H I.
+ apply (@and_ind A B False H I).
+Qed.
+
+Definition not_then_and : forall A B : Prop, ~ (A /\ B) -> A -> ~ B.
+Proof.
+ intros A B H a b.
+ apply H.
+ apply (conj a b).
+Qed.
+
+Definition not_map : forall A B : Prop, (A -> B) -> ~ B -> ~ A.
+Proof.
+ intros A B H nb a.
+ apply nb, H, a.
+Qed.
+
+Definition not_then_then : forall A B : Prop, (A -> ~ B) -> B -> ~ A.
+Proof.
+ intros A B H b a.
+ apply (H a b).
+Qed.
+
 Axiom ord : Type.
 Axiom lt : ord -> ord -> Prop.
 
@@ -17,31 +42,24 @@ Proof.
   apply H.
 Qed.
 
-Definition not_lt_and_sym : forall a b, ~ (lt a b /\ lt b a).
-Proof.
- apply (ind (fun a => forall b, ~ (lt a b /\ lt b a))).
- intros a IHa.
- intros b [Hl Hr].
- apply IHa with b a.
- -
-  apply Hr.
- -
-  split.
-  +
-   apply Hr.
-  +
-   apply Hl.
-Qed.
-
 Definition not_lt_sym : forall a b, lt a b -> ~ lt b a.
 Proof.
- intros a b Hl Hr.
- apply not_lt_and_sym with a b.
- split.
+ apply (ind (fun a => forall b, lt a b -> ~ lt b a)).
+ intros a IH b Ha Hb.
+ apply IH with b a.
  -
-  apply Hl.
+  apply Hb.
  -
-  apply Hr.
+  apply Hb.
+ -
+  apply Ha.
+Qed.
+
+Definition not_lt_sym_and : forall a b, ~ (lt a b /\ lt b a).
+Proof.
+ intros a b.
+ apply not_and_then.
+ apply not_lt_sym.
 Qed.
 
 Section Not_lt_inf_dec_chain.
@@ -69,20 +87,18 @@ Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
 Definition le_lt : forall a b, lt a b -> le a b.
 Proof.
  intros a b H.
- left.
- apply H.
+ apply (or_introl H).
 Qed.
 
 Definition le_eq : forall a b, a = b -> le a b.
 Proof.
  intros a b H.
- right.
- apply H.
+ apply (or_intror H).
 Qed.
 
-Definition not_and_lt_le : forall a b, ~ (lt a b /\ le b a).
+Definition not_le_lt : forall a b, lt a b -> ~ le b a.
 Proof.
- intros a b [H [L | R]].
+ intros a b H [L | R].
  -
   apply not_lt_sym with a b.
   +
@@ -95,26 +111,18 @@ Proof.
   apply H.
 Qed.
 
-Definition not_le_lt : forall a b, lt a b -> ~ le b a.
+Definition not_and_lt_le : forall a b, ~ (lt a b /\ le b a).
 Proof.
- intros a b H I.
- apply not_and_lt_le with a b.
- split.
- -
-  apply H.
- -
-  apply I.
+ intros a b.
+ apply not_and_then.
+ apply not_le_lt.
 Qed.
 
 Definition not_lt_le : forall a b, le a b -> ~ lt b a.
 Proof.
- intros a b I H.
- apply not_and_lt_le with b a.
- split.
- -
-  apply H.
- -
-  apply I.
+ intros a b.
+ apply not_then_then.
+ apply not_le_lt.
 Qed.
 
 Section Not_not_least_element.
