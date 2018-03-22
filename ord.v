@@ -89,6 +89,8 @@ Section Not_not_least_element.
  Variable p : ord -> Prop.
  Variable non_empty : exists x, p x.
 
+ Variable classic : forall p : Prop, ~ ~ p -> p.
+
  Definition not_not_least_element
    : exists a, forall x, p x <-> le a x.
  Proof.
