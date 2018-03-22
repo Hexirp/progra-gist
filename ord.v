@@ -114,6 +114,25 @@ Section Not_not_least_element.
    +
     apply He.
   -
-   admit.
+   intros a Ha.
+   cut (forall a, ~ p a \/ exists x, p x /\ ~ le a x).
+   +
+    intros not_least_element'.
+    case (not_least_element' a).
+    *
+     intros nHa.
+     contradiction.
+    *
+     intros [x [Hx nLa]].
+     split with x.
+     split.
+     --
+      apply Hx.
+     --
+      apply classic.
+      intros nLx.
+      admit.
+   +
+    admit.
  Admitted.
 End Not_not_least_element.
