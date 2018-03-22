@@ -53,6 +53,38 @@ Section Not_lt_inf_dec_chain.
  Qed.
 End Not_lt_inf_dec_chain.
 
+Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
+
+Definition le_lt : forall a b, lt a b -> le a b.
+Proof.
+ intros a b H.
+ left.
+ apply H.
+Qed.
+
+Definition le_eq : forall a b, a = b -> le a b.
+Proof.
+ intros a b H.
+ right.
+ apply H.
+Qed.
+
+Definition not_le_lt : forall a b, ~ (lt a b /\ le b a).
+Proof.
+ intros a b [H [L | R]].
+ -
+  apply not_lt_sym with a b.
+  split.
+  +
+   apply H.
+  +
+   apply L.
+ -
+  apply not_lt_refl with a.
+  refine (match R in _ = a' return lt a a' with eq_refl => _ end).
+  apply H.
+Qed.
+
 Section Not_not_least_element.
  Variable p : ord -> Prop.
  Variable non_empty : ~ forall x, ~ p x.
