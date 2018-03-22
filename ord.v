@@ -17,7 +17,7 @@ Proof.
   apply H.
 Qed.
 
-Definition not_lt_sym : forall a b, ~ (lt a b /\ lt b a).
+Definition not_lt_and_sym : forall a b, ~ (lt a b /\ lt b a).
 Proof.
  apply (ind (fun a => forall b, ~ (lt a b /\ lt b a))).
  intros a IHa.
@@ -31,6 +31,17 @@ Proof.
    apply Hr.
   +
    apply Hl.
+Qed.
+
+Definition not_lt_sym : forall a b, lt a b -> ~ lt b a.
+Proof.
+ intros a b Hl Hr.
+ apply not_lt_and_sym with a b.
+ split.
+ -
+  apply Hl.
+ -
+  apply Hr.
 Qed.
 
 Section Not_lt_inf_dec_chain.
@@ -69,12 +80,11 @@ Proof.
  apply H.
 Qed.
 
-Definition not_lt_le : forall a b, ~ (lt a b /\ le b a).
+Definition not_and_lt_le : forall a b, ~ (lt a b /\ le b a).
 Proof.
  intros a b [H [L | R]].
  -
   apply not_lt_sym with a b.
-  split.
   +
    apply H.
   +
@@ -83,6 +93,28 @@ Proof.
   apply not_lt_refl with a.
   refine (match R in _ = a' return lt a a' with eq_refl => _ end).
   apply H.
+Qed.
+
+Definition not_le_lt : forall a b, lt a b -> ~ le b a.
+Proof.
+ intros a b H I.
+ apply not_and_lt_le with a b.
+ split.
+ -
+  apply H.
+ -
+  apply I.
+Qed.
+
+Definition not_lt_le : forall a b, le a b -> ~ lt b a.
+Proof.
+ intros a b I H.
+ apply not_and_lt_le with b a.
+ split.
+ -
+  apply H.
+ -
+  apply I.
 Qed.
 
 Section Not_not_least_element.
