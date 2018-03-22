@@ -53,7 +53,26 @@ Section Not_lt_inf_dec_chain.
  Qed.
 End Not_lt_inf_dec_chain.
 
-Definition not_not_least_ele
-  : forall p : ord -> Prop, ~ ~ (exists x, forall y, p y -> lt x y).
-Proof.
-Admitted.
+Section Not_not_least_element.
+ Variable p : ord -> Prop.
+ Variable non_empty : ~ forall x, ~ p x.
+
+ Definition not_not_least_element
+   : ~ forall a, p a -> (forall x, p x <-> lt a x \/ a = x) -> False.
+ Proof.
+  intros not_least_element.
+  apply non_empty.
+  apply (ind (fun a => ~ p a)).
+  intros a IH Ha.
+  apply not_least_element with a.
+  -
+   apply Ha.
+  -
+   intros x.
+   split.
+   +
+    admit.
+   +
+    admit.
+ Admitted.
+End Not_not_least_element.
