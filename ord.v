@@ -95,23 +95,25 @@ Section Not_not_least_element.
    : exists a, p a /\ forall x, p x -> le a x.
  Proof.
   case non_empty.
-  intros x Hx.
+  intros e He.
   apply classic.
   intros not_least_element.
-  apply (ind (fun a => ~ p a)) with x.
+  cut (forall a, p a -> exists x, p x /\ lt x a).
   -
-   intros a IH Ha.
-   apply IH with x.
+   intros ex_dec.
+   apply (ind (fun a => ~ p a)) with e.
    +
-    apply classic.
-    intros H.
-    apply not_least_element.
-   +
-    intros b Hb.
-    apply classic.
-    intros LE.
-    apply IH with b.
+    intros a IH Ha.
+    case (ex_dec a Ha).
+    intros x [Hx Lx].
+    apply IH with x.
     *
-     
+     apply Lx.
+    *
+     apply Hx.
+   +
+    apply He.
+  -
+   admit.
  Admitted.
 End Not_not_least_element.
