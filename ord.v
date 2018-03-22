@@ -69,7 +69,7 @@ Proof.
  apply H.
 Qed.
 
-Definition not_le_lt : forall a b, ~ (lt a b /\ le b a).
+Definition not_lt_le : forall a b, ~ (lt a b /\ le b a).
 Proof.
  intros a b [H [L | R]].
  -
@@ -92,7 +92,26 @@ Section Not_not_least_element.
  Variable classic : forall p : Prop, ~ ~ p -> p.
 
  Definition not_not_least_element
-   : exists a, forall x, p x <-> le a x.
+   : exists a, p a /\ forall x, p x -> le a x.
  Proof.
+  case non_empty.
+  intros x Hx.
+  apply classic.
+  intros not_least_element.
+  apply (ind (fun a => ~ p a)) with x.
+  -
+   intros a IH Ha.
+   apply IH with x.
+   +
+    apply classic.
+    intros H.
+    apply not_least_element.
+   +
+    intros b Hb.
+    apply classic.
+    intros LE.
+    apply IH with b.
+    *
+     
  Admitted.
 End Not_not_least_element.
