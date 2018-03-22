@@ -39,18 +39,16 @@ Section Not_lt_inf_dec_chain.
 
  Definition not_lt_inf_dec_chain : False.
  Proof.
-  apply (ind (fun a => ~ (exists n, f n = a))) with (f 0).
+  apply (ind (fun a => forall n, ~ f n = a)) with (f 0) 0.
   -
-   intros a IH [n H].
-   apply IH with (f (S n)).
+   intros a IH n H.
+   apply IH with (f (S n)) (S n).
    +
     case H.
     apply inf_dec_chain.
    +
-    split with (S n).
     apply eq_refl.
   -
-   split with O.
    apply eq_refl.
  Qed.
 End Not_lt_inf_dec_chain.
