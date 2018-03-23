@@ -159,39 +159,17 @@ Module Nat_Induction <: Induction Nat_Ord.
   -
    apply f.
    intros x H.
-   refine (
-    match H in Peano.le _ y' return 0 = y' -> p x with le_n _ => _ | le_S _ y pH => _ end _
-   ).
-   +
-    intros HH.
-    apply False_ind.
-    apply O_S with x.
-    apply HH.
-   +
-    intros HH.
-    apply False_ind.
-    apply O_S with y.
-    apply HH.
-   +
-    apply eq_refl.
+   inversion H.
   -
    intros n nH.
    apply f.
    intros x xH.
-   refine (
-    match xH in Peano.le _ y' return S n = y' -> p x with le_n _ => _ | le_S _ y pH => _ end _
-   ).
+   inversion xH as [ HH | px pxH HH ].
    +
-    intro HH.
-    replace x with n.
-    *
-     apply nH.
-    *
-     apply eq_add_S.
-     apply HH.
+    apply nH.
    +
-    admit.
-   +
-    apply eq_refl.
+    exfalso.
+    clear p f nH HH.
+    unfold lt, Peano.lt in xH.
  Admitted.
 End Nat_Induction.
