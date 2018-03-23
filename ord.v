@@ -31,7 +31,7 @@ Module Type Ord.
 End Ord.
 
 Module Ord_Defs (Model : Ord).
- Import Model.
+ Export Model.
 
  Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
 
@@ -49,13 +49,17 @@ Module Ord_Defs (Model : Ord).
 End Ord_Defs.
 
 Module Type Induction (Model : Ord).
- Import Model.
-
- Module Defs := Ord_Defs Model.
- Import Defs.
+ Export Model.
 
  Axiom ind
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
+End Induction.
+
+Module Induction_Defs (X : Ord) (Model : Induction X).
+ Export Model.
+
+ Module Defs := Ord_Defs X.
+ Export Defs.
 
  Definition not_lt_refl : forall a, ~ lt a a.
  Proof.
@@ -136,7 +140,7 @@ Module Type Induction (Model : Ord).
   apply not_then_then.
   apply not_le_lt.
  Qed.
-End Induction.
+End Induction_Defs.
 
 Module Nat <: Ord.
  Definition ord : Set := nat.
