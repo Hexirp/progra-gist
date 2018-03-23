@@ -25,8 +25,15 @@ Proof.
  apply (H a b).
 Qed.
 
-Axiom ord : Type.
-Axiom lt : ord -> ord -> Prop.
+Module Type Ord.
+ Axiom ord : Type.
+ Axiom lt : ord -> ord -> Prop.
+
+ Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
+End Ord.
+
+Declare Module Model : Ord.
+Import Model.
 
 Axiom ind
   : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
@@ -81,8 +88,6 @@ Section Not_lt_inf_dec_chain.
    apply eq_refl.
  Qed.
 End Not_lt_inf_dec_chain.
-
-Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
 
 Definition le_lt : forall a b, lt a b -> le a b.
 Proof.
