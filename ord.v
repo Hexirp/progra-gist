@@ -147,6 +147,19 @@ Module Nat_Ord <: Ord.
  Definition lt : ord -> ord -> Prop := Peano.lt.
 End Nat_Ord.
 
+Definition le_trans : forall m n o, m <= n -> n <= o -> m <= o.
+Proof.
+ intros m n o H0.
+ revert o.
+ apply le_ind.
+ -
+  apply H0.
+ -
+  intros o IH H1.
+  apply le_S.
+  apply H1.
+Qed.
+
 Module Nat_Induction <: Induction Nat_Ord.
  Module Nat_Ord_Defs := Ord_Defs Nat_Ord.
  Export Nat_Ord_Defs.
@@ -173,12 +186,5 @@ Module Nat_Induction <: Induction Nat_Ord.
     apply f.
     intros y yH.
     apply Hp.
-    inversion yH.
-    *
-     apply le_S_n.
-     rewrite H.
-     apply xH.
-    *
-     admit.
  Admitted.
 End Nat_Induction.
