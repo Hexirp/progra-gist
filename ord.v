@@ -28,12 +28,31 @@ Qed.
 Module Type Ord.
  Parameter ord : Type.
  Parameter lt : ord -> ord -> Prop.
+End Ord.
+
+Module Ord_Defs (Model : Ord).
+ Import Model.
 
  Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
-End Ord.
+
+ Definition le_lt : forall a b, lt a b -> le a b.
+ Proof.
+  intros a b H.
+  apply (or_introl H).
+ Qed.
+
+ Definition le_eq : forall a b, a = b -> le a b.
+ Proof.
+  intros a b H.
+  apply (or_intror H).
+ Qed.
+End Ord_Defs.
 
 Module Type Induction (Model : Ord).
  Import Model.
+
+ Module Defs := Ord_Defs Model.
+ Import Defs.
 
  Axiom ind
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
@@ -89,18 +108,6 @@ Module Type Induction (Model : Ord).
   Qed.
  End Not_lt_inf_dec_chain.
 
- Definition le_lt : forall a b, lt a b -> le a b.
- Proof.
-  intros a b H.
-  apply (or_introl H).
- Qed.
-
- Definition le_eq : forall a b, a = b -> le a b.
- Proof.
-  intros a b H.
-  apply (or_intror H).
- Qed.
-
  Definition not_le_lt : forall a b, lt a b -> ~ le b a.
  Proof.
   intros a b H [L | R].
@@ -130,3 +137,8 @@ Module Type Induction (Model : Ord).
   apply not_le_lt.
  Qed.
 End Induction.
+
+Module Nat <: Ord.
+ Definition ord : Set := nat.
+ Definition lt : ord -> ord -> Prop := Peano.lt.
+End Nat.
