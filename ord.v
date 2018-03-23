@@ -186,5 +186,11 @@ Module Nat_Induction <: Induction Nat_Ord.
     apply f.
     intros y yH.
     apply Hp.
- Admitted.
+    apply le_S_n.
+    apply le_trans with x.
+    *
+     apply yH.
+    *
+     apply xH.
+ Qed.
 End Nat_Induction.
