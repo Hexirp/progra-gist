@@ -142,11 +142,6 @@ Module Induction_Defs (X : Ord) (Model : Induction X).
  Qed.
 End Induction_Defs.
 
-Module Nat_Ord <: Ord.
- Definition ord : Type := nat.
- Definition lt : ord -> ord -> Prop := Peano.lt.
-End Nat_Ord.
-
 Definition le_trans : forall m n o, m <= n -> n <= o -> m <= o.
 Proof.
  intros m n o H0.
@@ -160,6 +155,11 @@ Proof.
   apply H1.
 Qed.
 
+Module Nat_Ord <: Ord.
+ Definition ord : Type := nat.
+ Definition lt : ord -> ord -> Prop := Peano.lt.
+End Nat_Ord.
+
 Module Nat_Induction <: Induction Nat_Ord.
  Module Nat_Ord_Defs := Ord_Defs Nat_Ord.
  Export Nat_Ord_Defs.
@@ -168,7 +168,8 @@ Module Nat_Induction <: Induction Nat_Ord.
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
  Proof.
   intros p f.
-  cut (forall n x, x <= n -> p x). (* Π x (x <= n -> p x) <~> P 0 /\ P 1 ... /\ P n *)
+  (* Π x (x <= n -> p x) <~> P 0 /\ P 1 ... /\ P n is cumulative *)
+  cut (forall n x, x <= n -> p x).
   -
    intros H a.
    apply H with a.
