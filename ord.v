@@ -155,21 +155,30 @@ Module Nat_Induction <: Induction Nat_Ord.
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
  Proof.
   intros p f.
-  apply nat_ind.
+  cut (forall n x, x <= n -> p x). (* Π x (x <= n -> p x) <~> P 0 /\ P 1 ... /\ P n *)
   -
-   apply f.
-   intros x H.
-   inversion H.
+   intros H a.
+   apply H with a.
+   apply le_n.
   -
-   intros n nH.
-   apply f.
-   intros x xH.
-   inversion xH as [ HH | px pxH HH ].
+   apply (nat_ind (fun n => forall x, x <= n -> p x)).
    +
-    apply nH.
+    intros x xH.
+    inversion xH as [ HH | ].
+    apply f.
+    intros y yH.
+    inversion yH.
    +
-    exfalso.
-    clear p f nH HH.
-    unfold lt, Peano.lt in xH.
+    intros n Hp x xH.
+    apply f.
+    intros y yH.
+    apply Hp.
+    inversion yH.
+    *
+     apply le_S_n.
+     rewrite H.
+     apply xH.
+    *
+     admit.
  Admitted.
 End Nat_Induction.
