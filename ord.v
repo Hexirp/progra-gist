@@ -58,8 +58,8 @@ End Induction.
 Module Induction_Defs (X : Ord) (Model : Induction X).
  Export Model.
 
- Module Defs := Ord_Defs X.
- Export Defs.
+ Module X_Ord_Defs := Ord_Defs X.
+ Export X_Ord_Defs.
 
  Definition not_lt_refl : forall a, ~ lt a a.
  Proof.
@@ -142,7 +142,56 @@ Module Induction_Defs (X : Ord) (Model : Induction X).
  Qed.
 End Induction_Defs.
 
-Module Nat <: Ord.
- Definition ord : Set := nat.
+Module Nat_Ord <: Ord.
+ Definition ord : Type := nat.
  Definition lt : ord -> ord -> Prop := Peano.lt.
-End Nat.
+End Nat_Ord.
+
+Module Nat_Induction <: Induction Nat_Ord.
+ Module Nat_Ord_Defs := Ord_Defs Nat_Ord.
+ Export Nat_Ord_Defs.
+
+ Definition ind
+   : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
+ Proof.
+  intros p f.
+  apply nat_ind.
+  -
+   apply f.
+   intros x H.
+   refine (
+    match H in Peano.le _ y' return 0 = y' -> p x with le_n _ => _ | le_S _ y pH => _ end _
+   ).
+   +
+    intros HH.
+    apply False_ind.
+    apply O_S with x.
+    apply HH.
+   +
+    intros HH.
+    apply False_ind.
+    apply O_S with y.
+    apply HH.
+   +
+    apply eq_refl.
+  -
+   intros n nH.
+   apply f.
+   intros x xH.
+   refine (
+    match xH in Peano.le _ y' return S n = y' -> p x with le_n _ => _ | le_S _ y pH => _ end _
+   ).
+   +
+    intro HH.
+    replace x with n.
+    *
+     apply nH.
+    *
+     apply eq_add_S.
+     apply HH.
+   +
+    admit.
+   +
+    apply eq_refl.
+ Admitted.
+End Nat_Induction.
