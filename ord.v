@@ -30,9 +30,7 @@ Module Type Ord.
  Parameter lt : ord -> ord -> Prop.
 End Ord.
 
-Module Ord_Defs (Model : Ord).
- Export Model.
-
+Module Ord_Defs (Export Model : Ord).
  Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
 
  Definition le_lt : forall a b, lt a b -> le a b.
@@ -48,16 +46,12 @@ Module Ord_Defs (Model : Ord).
  Qed.
 End Ord_Defs.
 
-Module Type Induction (Model : Ord).
- Export Model.
-
+Module Type Induction (Export Model : Ord).
  Axiom ind
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
 End Induction.
 
-Module Induction_Defs (Model : Ord) (IndModel : Induction Model).
- Export IndModel.
-
+Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
  Module Model_Ord_Defs := Ord_Defs Model.
  Export Model_Ord_Defs.
 
@@ -141,6 +135,10 @@ Module Induction_Defs (Model : Ord) (IndModel : Induction Model).
   apply not_le_lt.
  Qed.
 End Induction_Defs.
+
+Module Type Extensionality (Export Model : Ord).
+ Axiom extension : forall a b, (forall x, lt x a <-> lt x b) -> a = b.
+End Extensionality.
 
 Definition le_trans : forall m n o, m <= n -> n <= o -> m <= o.
 Proof.
