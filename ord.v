@@ -9,8 +9,7 @@ Qed.
 Definition not_then_and : forall A B : Prop, ~ (A /\ B) -> A -> ~ B.
 Proof.
  intros A B H a b.
- apply H.
- apply (conj a b).
+ apply H, (conj a b).
 Qed.
 
 Definition not_map : forall A B : Prop, (A -> B) -> ~ B -> ~ A.
