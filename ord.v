@@ -55,11 +55,11 @@ Module Type Induction (Model : Ord).
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
 End Induction.
 
-Module Induction_Defs (X : Ord) (Model : Induction X).
- Export Model.
+Module Induction_Defs (Model : Ord) (IndModel : Induction Model).
+ Export IndModel.
 
- Module X_Ord_Defs := Ord_Defs X.
- Export X_Ord_Defs.
+ Module Model_Ord_Defs := Ord_Defs Model.
+ Export Model_Ord_Defs.
 
  Definition not_lt_refl : forall a, ~ lt a a.
  Proof.
@@ -161,8 +161,7 @@ Module Nat_Ord <: Ord.
 End Nat_Ord.
 
 Module Nat_Induction <: Induction Nat_Ord.
- Module Nat_Ord_Defs := Ord_Defs Nat_Ord.
- Export Nat_Ord_Defs.
+ Export Nat_Ord.
 
  Definition ind
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
