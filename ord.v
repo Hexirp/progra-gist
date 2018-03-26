@@ -169,26 +169,26 @@ Module Nat_Induction <: Induction Nat_Ord.
  Proof.
   intros p f.
   (* Π x (lt x n -> p x) <~> P 0 /\ P 1 ... /\ P (n - 1) is cumulative. *)
-  cut (forall n x, lt x n -> p x).
+  cut (forall n k, lt k n -> p k).
   -
    intros H a.
    apply f.
    apply H.
   -
-   apply (nat_ind (fun n => forall x, lt x n -> p x)).
+   apply (nat_ind (fun n => forall k, lt k n -> p k)).
    +
-    intros x xH.
-    inversion xH.
+    intros k kH.
+    inversion kH.
    +
-    intros n Hp x xH.
+    intros n Hp k kH.
     apply f.
-    intros y yH.
+    intros x xH.
     apply Hp.
-    apply le_trans with x.
+    apply le_trans with k.
     *
-     apply yH.
+     apply xH.
     *
      apply le_S_n.
-     apply xH.
+     apply kH.
  Qed.
 End Nat_Induction.
