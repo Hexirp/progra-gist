@@ -86,25 +86,24 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
   apply not_lt_sym.
  Qed.
 
- Section Not_lt_inf_dec_chain.
-  Variable f : nat -> ord.
-  Variable inf_dec_chain : forall n, lt (f (S n)) (f n).
-
-  Definition not_lt_inf_dec_chain : False.
-  Proof.
-   apply (ind (fun a => forall n, ~ f n = a)) with (f 0) 0.
-   -
-    intros a IH n H.
-    apply IH with (f (S n)) (S n).
-    +
-     case H.
-     apply inf_dec_chain.
-    +
-     apply eq_refl.
-   -
+ Definition not_lt_inf_dec_chain : forall f, ~ (forall n, lt (f (S n)) (f n)).
+ Proof.
+  intros f inf_dec_chain.
+  cut (forall a x, f x <> a).
+  -
+   intros H.
+   apply H with (f 0) 0.
+   apply eq_refl.
+  -
+   apply (ind (fun a => forall x, f x <> a)).
+   intros a IH x H.
+   apply IH with (f (S x)) (S x).
+   +
+    case H.
+    apply inf_dec_chain.
+   +
     apply eq_refl.
-  Qed.
- End Not_lt_inf_dec_chain.
+ Qed.
 
  Definition not_le_lt : forall a b, lt a b -> ~ le b a.
  Proof.
