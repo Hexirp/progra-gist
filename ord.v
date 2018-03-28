@@ -54,15 +54,15 @@ Module Predicate.
 
  Notation "A -> B" := (forall (_ : A), B) : type_scope.
 
- Inductive False : Type :=
+ Inductive Empty : Type :=
  .
 
- Definition not (A : Type) := A -> False.
+ Definition not (A : Type) := A -> Empty.
 
  Notation "~ x" := (not x) : type_scope.
 
- Inductive True : Type :=
- | tt : True
+ Inductive Unit : Type :=
+ | tt : Unit
  .
 
  Inductive and (A B : Type) : Type :=
@@ -123,25 +123,25 @@ End Predicate.
 
 Export Predicate.
 
-Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
+Definition not_and_then : forall A B : Type, (A -> ~ B) -> ~ (A /\ B).
 Proof.
- intros A B H I.
- apply (@and_ind A B False H I).
+ intros A B H [a b].
+ apply H; assumption.
 Qed.
 
-Definition not_then_and : forall A B : Prop, ~ (A /\ B) -> A -> ~ B.
+Definition not_then_and : forall A B : Type, ~ (A /\ B) -> A -> ~ B.
 Proof.
  intros A B H a b.
- apply H, (conj a b).
+ apply H, pair; assumption.
 Qed.
 
-Definition not_map : forall A B : Prop, (A -> B) -> ~ B -> ~ A.
+Definition not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
 Proof.
  intros A B H nb a.
  apply nb, H, a.
 Qed.
 
-Definition not_then_then : forall A B : Prop, (A -> ~ B) -> B -> ~ A.
+Definition not_then_then : forall A B : Type, (A -> ~ B) -> B -> ~ A.
 Proof.
  intros A B H b a.
  apply (H a b).
@@ -149,22 +149,22 @@ Qed.
 
 Module Type Ord.
  Parameter ord : Type.
- Parameter lt : ord -> ord -> Prop.
+ Parameter lt : ord -> ord -> Type.
 End Ord.
 
 Module Ord_Defs (Export Model : Ord).
- Definition le : ord -> ord -> Prop := fun a b => lt a b \/ a = b.
+ Definition le : ord -> ord -> Type := fun a b => lt a b \/ a = b.
 
  Definition le_lt : forall a b, lt a b -> le a b.
  Proof.
   intros a b H.
-  apply (or_introl H).
+  apply left, H.
  Qed.
 
  Definition le_eq : forall a b, a = b -> le a b.
  Proof.
   intros a b H.
-  apply (or_intror H).
+  apply right, H.
  Qed.
 End Ord_Defs.
 
@@ -241,8 +241,10 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
    +
     apply L.
   -
-   apply not_lt_refl with a.
-   refine (match R in _ = a' return lt a a' with eq_refl => _ end).
+   revert H.
+   case R.
+   intros H.
+   apply not_lt_refl with b.
    apply H.
  Qed.
 
