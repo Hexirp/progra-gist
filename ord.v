@@ -121,7 +121,16 @@ Module Predicate.
  Notation "x <> y" := (x <> y :> _) : type_scope.
 End Predicate.
 
-Export Predicate.
+Module Peano.
+ Export Predicate.
+
+ Inductive nat : Type :=
+ | O : nat
+ | S : nat -> nat
+ .
+End Peano.
+
+Export Peano.
 
 Definition not_and_then : forall A B : Type, (A -> ~ B) -> ~ (A /\ B).
 Proof.
@@ -218,7 +227,7 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
   cut (forall a x, f x <> a).
   -
    intros H.
-   apply H with (f 0) 0.
+   apply H with (f O) O.
    apply eq_refl.
   -
    apply (ind (fun a => forall x, f x <> a)).
@@ -303,7 +312,7 @@ Proof.
  apply le_rect_simple.
 Qed.
 
-Definition le_0_n : forall n : nat, le 0 n.
+Definition le_0_n : forall n : nat, le O n.
 Proof.
  intros n.
  induction n as [ | n IHn ].
