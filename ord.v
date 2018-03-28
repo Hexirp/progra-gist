@@ -83,6 +83,30 @@ Module Predicate.
  Definition iff (A B : Type) := (A -> B) /\ (B -> A).
 
  Notation "A <-> B" := (iff A B) : type_scope.
+
+ Definition iff_refl : forall A, A <-> A.
+ Proof.
+ Admitted.
+
+ Definition iff_trans : forall A B C, (A <-> B) -> (B <-> C) -> (A <-> C).
+ Proof.
+ Admitted.
+
+ Definition iff_sym : forall A B, (A <-> B) -> (B <-> A).
+ Proof.
+ Admitted.
+
+ Inductive ex (A : Type) (P : A -> Type) :=
+ | ex_pair : forall x, P x -> ex A P
+ .
+
+ Definition all (A : Type) (P : A -> Type) := forall x, P x.
+
+ Inductive eq (A : Type) (x : A) : A -> Type :=
+ | eq_refl : eq A x x
+ where
+   "x = y :> A" := (eq A x y) : type_scope
+ .
 End Predicate.
 
 Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
