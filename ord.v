@@ -196,7 +196,7 @@ Proof.
  -
   apply le_n.
  -
-  intros ? ? H.
+  intros n nH H.
   apply le_S.
   apply H.
 Qed.
@@ -208,7 +208,7 @@ Proof.
  -
   apply le_n.
  -
-  intros [ | np ] ? H.
+  intros [ | np ] nH H.
   +
    apply H.
   +
@@ -225,7 +225,10 @@ Qed.
 
 Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
 Proof.
-Admitted.
+ intros m n H.
+ apply (le_pred (S m) (S n)).
+ apply H.
+Qed.
 
 Definition le_trans : forall m n o, le m n -> le n o -> le m o.
 Proof. (*
