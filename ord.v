@@ -5,16 +5,22 @@ Declare ML Module "ltac_plugin".
 Global Set Default Proof Mode "Classic".
 
 Module Pre.
+ Reserved Notation "'exists' x .. y , p" (
+   at level 200,
+   x binder,
+   right associativity,
+   format "'[' 'exists'  '/  ' x  ..  y ,  '/  ' p ']'").
+
  Reserved Notation "x -> y" (at level 99, right associativity, y at level 200).
  Reserved Notation "x <-> y" (at level 95, no associativity).
  Reserved Notation "x /\ y" (at level 80, right associativity).
  Reserved Notation "x \/ y" (at level 85, right associativity).
  Reserved Notation "~ x" (at level 75, right associativity).
 
- Reserved Notation "x = y  :>  T" (at level 70, y at next level, no associativity).
+ Reserved Notation "x = y :> T" (at level 70, y at next level, no associativity).
  Reserved Notation "x = y" (at level 70, no associativity).
 
- Reserved Notation "x <> y  :>  T"(at level 70, y at next level, no associativity).
+ Reserved Notation "x <> y :> T"(at level 70, y at next level, no associativity).
  Reserved Notation "x <> y" (at level 70, no associativity).
 
  Reserved Notation "x <= y" (at level 70, no associativity).
@@ -100,14 +106,22 @@ Module Predicate.
  | ex_pair : forall x, P x -> ex A P
  .
 
+ Notation "'exists' x .. y , p" := (ex (fun x => .. (ex (fun y => p)) ..)) : type_scope.
+
  Definition all (A : Type) (P : A -> Type) := forall x, P x.
 
  Inductive eq (A : Type) (x : A) : A -> Type :=
- | eq_refl : eq A x x
+ | eq_refl : x = x :> A
  where
    "x = y :> A" := (eq A x y) : type_scope
  .
+
+ Notation "x = y" := (x = y :> _) : type_scope.
+ Notation "x <> y :> T" := (~ x = y :> T) : type_scope.
+ Notation "x <> y" := (x <> y :> _) : type_scope.
 End Predicate.
+
+Export Predicate.
 
 Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
 Proof.
