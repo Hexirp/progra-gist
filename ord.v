@@ -149,6 +149,35 @@ Inductive le (m : nat) : nat -> Type :=
 | le_S : forall n, le m n -> le m (S n)
 .
 
+Definition le_rect_simple : forall (m : nat) (P : nat -> Prop),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+ intros m P cN cS.
+ apply le_rect.
+ -
+  apply cN.
+ -
+  apply cS.
+Qed.
+
+Definition le_ind_simple : forall (m : nat) (P : nat -> Prop),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+ intros m P cN cS.
+ apply le_rect.
+ -
+  apply cN.
+ -
+  apply cS.
+Qed.
+
+Definition le_rec_simple : forall (m : nat) (P : nat -> Prop),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+ intros m P.
+ apply le_rect_simple.
+Qed.
+
 Definition le_0_n : forall n : nat, le 0 n.
 Proof.
 Admitted.
@@ -159,19 +188,6 @@ Definition le_pred : forall m n : nat, le m n -> le (pred m) (pred n).
 Proof.
 Admitted.
 Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
-Proof.
-Admitted.
-
-Definition le_rect_simple : forall (m : nat) (P : nat -> Prop),
-  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
-Proof.
-Admitted.
-Definition le_ind_simple : forall (m : nat) (P : nat -> Prop),
-  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
-Proof.
-Admitted.
-Definition le_rec_simple : forall (m : nat) (P : nat -> Prop),
-  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
 Proof.
 Admitted.
 
