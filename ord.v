@@ -72,6 +72,17 @@ Module Predicate.
  Definition second : forall A B, A /\ B -> B :=
   fun _ _ x => match x with pair _ _ _ xR => xR end
  .
+
+ Inductive or (A B : Type) : Type :=
+ | left : A -> A \/ B
+ | right : B -> A \/ B
+ where
+   "A \/ B" := (or A B) : type_scope
+ .
+
+ Definition iff (A B : Type) := (A -> B) /\ (B -> A).
+
+ Notation "A <-> B" := (iff A B) : type_scope.
 End Predicate.
 
 Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
