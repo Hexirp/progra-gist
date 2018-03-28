@@ -1,4 +1,12 @@
-Require Import Coq.Init.Prelude.
+(* -*- mode: coq; coq-prog-args: ("-nois") -*- *)
+
+Declare ML Module "ltac_plugin".
+
+Global Set Default Proof Mode "Classic".
+
+Definition id : forall (A : Type) (_ : A), A.
+Proof.
+ refine (fun (A : Type) (a : A) => (a : A)).
 
 Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
 Proof.
