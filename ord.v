@@ -231,18 +231,17 @@ Proof.
 Qed.
 
 Definition le_trans : forall m n o, le m n -> le n o -> le m o.
-Proof. (*
- intros m n o H0.
+Proof.
+ intros m n o H.
  revert o.
- apply le_ind.
+ apply le_rect_simple.
  -
-  apply H0.
+  apply H.
  -
-  intros o IH H1.
+  intros o oH IH.
   apply le_S.
-  apply H1.
-Qed. *)
-Admitted.
+  apply IH.
+Qed.
 
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
