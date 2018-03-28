@@ -387,6 +387,50 @@ Qed.
 
 Definition lt m n := le (S m) n.
 
+Definition not_lt_n_0 : forall n, ~ lt n O.
+Proof.
+ intros n nH.
+ cut (O = O).
+ -
+  cut (forall k, O <> S k).
+  +
+   intros Lem.
+   refine (
+    match nH in le _ o' return O <> o' with
+    | le_n _ => _
+    | le_S _ o pH => _
+    end
+   ).
+   *
+    apply Lem.
+   *
+    apply Lem.
+  +
+   clear n nH.
+   intros k kH.
+   cut (ex (nat -> Type) (fun f => Unit = f O :> Type /\ forall k, f (S k) = Empty :> Type)).
+   *
+    intros [f [fHO fHS]].
+    refine (
+     match (fHS k) in _ = t' return t' with
+     | eq_refl _ _ => _
+     end
+    ).
+    case kH.
+    case fHO.
+    apply tt.
+   *
+    apply ex_pair with (fun x => match x with O => Unit | S xp => Empty end).
+    apply pair.
+    --
+     apply eq_refl.
+    --
+     intros ?.
+     apply eq_refl.
+ -
+  apply eq_refl.
+Qed.
+
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
  Definition lt : ord -> ord -> Type := lt.
