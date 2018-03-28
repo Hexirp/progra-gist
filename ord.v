@@ -144,8 +144,39 @@ Module Type Extensionality (Export Model : Ord).
  Axiom extension : forall a b, (forall x, lt x a <-> lt x b) -> a = b.
 End Extensionality.
 
-Definition le_trans : forall m n o, m <= n -> n <= o -> m <= o.
+Inductive le (m : nat) : nat -> Type :=
+| le_n : le m m
+| le_S : forall n, le m n -> le m (S n)
+.
+
+Definition le_0_n : forall n : nat, le 0 n.
 Proof.
+Admitted.
+Definition le_n_S : forall m n : nat, le m n -> le (S m) (S n).
+Proof.
+Admitted.
+Definition le_pred : forall m n : nat, le m n -> le (pred m) (pred n).
+Proof.
+Admitted.
+Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
+Proof.
+Admitted.
+
+Definition le_rect_simple : forall (m : nat) (P : nat -> Prop),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+Admitted.
+Definition le_ind_simple : forall (m : nat) (P : nat -> Prop),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+Admitted.
+Definition le_rec_simple : forall (m : nat) (P : nat -> Prop),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+Admitted.
+
+Definition le_trans : forall m n o, le m n -> le n o -> le m o.
+Proof. (*
  intros m n o H0.
  revert o.
  apply le_ind.
@@ -155,7 +186,8 @@ Proof.
   intros o IH H1.
   apply le_S.
   apply H1.
-Qed.
+Qed. *)
+Admitted.
 
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
