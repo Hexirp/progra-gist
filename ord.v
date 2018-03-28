@@ -48,6 +48,10 @@ End Ord_Defs.
 Module Type Induction (Export Model : Ord).
  Axiom ind
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
+ Axiom rec
+   : forall p : ord -> Set, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
+ Axiom rect
+   : forall p : ord -> Type, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
 End Induction.
 
 Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
@@ -161,31 +165,45 @@ End Nat_Ord.
 Module Nat_Induction <: Induction Nat_Ord.
  Export Nat_Ord.
 
+ Local Ltac scheme :=
+  intros p f;
+  (* Π x (lt x n -> p x) <~> P 0 /\ P 1 ... /\ P (n - 1) is cumulative. *)
+  cut (forall n k, lt k n -> p k);
+  [>
+   intros H a;
+   apply f;
+   apply H
+  |
+   intros n;
+   induction n as [ | n Hp ];
+   [>
+    intros k kH;
+    inversion kH
+   |
+    intros k kH;
+    apply f;
+    intros x xH;
+    apply Hp;
+    apply le_trans with k;
+    [>
+     apply xH
+    |
+     apply le_S_n;
+     apply kH
+    ]
+   ]
+  ]
+ .
+
  Definition ind
    : forall p : ord -> Prop, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
  Proof.
-  intros p f.
-  (* Π x (lt x n -> p x) <~> P 0 /\ P 1 ... /\ P (n - 1) is cumulative. *)
-  cut (forall n k, lt k n -> p k).
-  -
-   intros H a.
-   apply f.
-   apply H.
-  -
-   apply (nat_ind (fun n => forall k, lt k n -> p k)).
-   +
-    intros k kH.
-    inversion kH.
-   +
-    intros n Hp k kH.
-    apply f.
-    intros x xH.
-    apply Hp.
-    apply le_trans with k.
-    *
-     apply xH.
-    *
-     apply le_S_n.
-     apply kH.
+  scheme.
+ Qed.
+
+ Definition rec
+  : forall p : ord -> Set, (forall a, (forall x, lt x a -> p x) -> p a) -> forall a, p a.
+ Proof.
+  scheme.
  Qed.
 End Nat_Induction.
