@@ -4,7 +4,7 @@ Declare ML Module "ltac_plugin".
 
 Global Set Default Proof Mode "Classic".
 
-Module Notations.
+Module Pre.
  Reserved Notation "x -> y" (at level 99, right associativity, y at level 200).
  Reserved Notation "x <-> y" (at level 95, no associativity).
  Reserved Notation "x /\ y" (at level 80, right associativity).
@@ -41,7 +41,7 @@ Module Notations.
  Open Scope core_scope.
  Open Scope function_scope.
  Open Scope type_scope.
-End Notations.
+End Pre.
 
 Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
 Proof.
