@@ -43,6 +43,37 @@ Module Pre.
  Open Scope type_scope.
 End Pre.
 
+Module Predicate.
+ Export Pre.
+
+ Notation "A -> B" := (forall (_ : A), B) : type_scope.
+
+ Inductive False : Type :=
+ .
+
+ Definition not (A : Type) := A -> False.
+
+ Notation "~ x" := (not x) : type_scope.
+
+ Inductive True : Type :=
+ | tt : True
+ .
+
+ Inductive and (A B : Type) : Type :=
+ | pair : A -> B -> A /\ B
+ where
+   "A /\ B" := (and A B) : type_scope
+ .
+
+ Definition first : forall A B, A /\ B -> A :=
+  fun _ _ x => match x with pair _ _ xL _ => xL end
+ .
+
+ Definition second : forall A B, A /\ B -> B :=
+  fun _ _ x => match x with pair _ _ _ xR => xR end
+ .
+End Predicate.
+
 Definition not_and_then : forall A B : Prop, (A -> ~ B) -> ~ (A /\ B).
 Proof.
  intros A B H I.
