@@ -1,8 +1,8 @@
-(* coqide -nois *)
+(* -*- mode: coq; coq-prog-args: ("-nois") -*- *)
 
 Declare ML Module "ltac_plugin".
 
-Require Import Coq.Init.Tactics.
+Global Set Default Proof Mode "Classic".
 
 Global Unset Elimination Schemes.
 
