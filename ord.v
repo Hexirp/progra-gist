@@ -128,6 +128,14 @@ Module Peano.
  | O : nat
  | S : nat -> nat
  .
+
+ Definition pred : nat -> nat :=
+  fun x =>
+   match x with
+   | O => O
+   | S xp => xp
+   end
+ .
 End Peano.
 
 Export Peano.
@@ -377,9 +385,11 @@ Proof.
   apply IH.
 Qed.
 
+Definition lt m n := le (S m) n.
+
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
- Definition lt : ord -> ord -> Prop := Peano.lt.
+ Definition lt : ord -> ord -> Type := lt.
 End Nat_Ord.
 
 Module Nat_Induction <: Induction Nat_Ord.
