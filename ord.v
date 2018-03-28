@@ -452,7 +452,7 @@ Module Nat_Induction <: Induction Nat_Ord.
    induction n as [ | n Hp ];
    [>
     intros k kH;
-    inversion kH
+    case (not_lt_n_0 kH)
    |
     intros k kH;
     apply f;
