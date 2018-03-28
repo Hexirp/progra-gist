@@ -208,19 +208,20 @@ Proof.
  -
   apply le_n.
  -
-  intros ? ? H.
-  cbn.
-  cut (forall k, S (pred k) = k).
+  intros [ | np ] ? H.
   +
-   intros Lem.
-   case (Lem n).
-   apply le_S.
    apply H.
   +
-   intros k.
-   induction k as [ | k IHk ].
+   cut (forall k, S (pred (S k)) = pred (S (S k))).
    *
-Admitted.
+    intros Lem.
+    case (Lem np).
+    apply le_S.
+    apply H.
+   *
+    intros k.
+    apply eq_refl.
+Qed.
 
 Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
 Proof.
