@@ -203,7 +203,25 @@ Qed.
 
 Definition le_pred : forall m n : nat, le m n -> le (pred m) (pred n).
 Proof.
+ intros m.
+ apply le_rect_simple.
+ -
+  apply le_n.
+ -
+  intros ? ? H.
+  cbn.
+  cut (forall k, S (pred k) = k).
+  +
+   intros Lem.
+   case (Lem n).
+   apply le_S.
+   apply H.
+  +
+   intros k.
+   induction k as [ | k IHk ].
+   *
 Admitted.
+
 Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
 Proof.
 Admitted.
