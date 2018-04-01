@@ -92,15 +92,53 @@ Module Predicate.
 
  Definition iff_refl : forall A, A <-> A.
  Proof.
- Admitted.
+  intros A.
+  apply pair.
+  -
+   intros x.
+   apply x.
+  -
+   intros x.
+   apply x.
+ Qed.
 
  Definition iff_trans : forall A B C, (A <-> B) -> (B <-> C) -> (A <-> C).
  Proof.
- Admitted.
+  intros A B C x y.
+  apply pair.
+  -
+   intros a.
+   case y.
+   intros yL yR.
+   apply yL.
+   case x.
+   intros xL xR.
+   apply xL.
+   apply a.
+  -
+   intros c.
+   case x.
+   intros xL xR.
+   apply xR.
+   case y.
+   intros yL yR.
+   apply yR.
+   apply c.
+ Qed.
 
  Definition iff_sym : forall A B, (A <-> B) -> (B <-> A).
  Proof.
- Admitted.
+  intros A B x.
+  apply pair.
+  -
+   case x.
+   intros xL xR.
+   apply xR.
+  -
+   case x.
+   intros xL xR.
+   apply xL.
+ Qed.
 
  Inductive ex (A : Type) (P : A -> Type) :=
  | ex_pair : forall x, P x -> ex A P
