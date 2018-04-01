@@ -90,6 +90,20 @@ Module Predicate.
 
  Notation "A <-> B" := (iff A B) : type_scope.
 
+ Definition iff_apply_l : forall A B, A <-> B -> A -> B.
+ Proof.
+  intros A B x.
+  apply first with (B -> A).
+  apply x.
+ Qed.
+
+ Definition iff_apply_r : forall A B, A <-> B -> B -> A.
+ Proof.
+  intros A B x.
+  apply second with (A -> B).
+  apply x.
+ Qed.
+
  Definition iff_refl : forall A, A <-> A.
  Proof.
   intros A.
@@ -108,21 +122,13 @@ Module Predicate.
   apply pair.
   -
    intros a.
-   case y.
-   intros yL yR.
-   apply yL.
-   case x.
-   intros xL xR.
-   apply xL.
+   apply (iff_apply_l _ _ y).
+   apply (iff_apply_l _ _ x).
    apply a.
   -
    intros c.
-   case x.
-   intros xL xR.
-   apply xR.
-   case y.
-   intros yL yR.
-   apply yR.
+   apply (iff_apply_r _ _ x).
+   apply (iff_apply_r _ _ y).
    apply c.
  Qed.
 
@@ -131,13 +137,9 @@ Module Predicate.
   intros A B x.
   apply pair.
   -
-   case x.
-   intros xL xR.
-   apply xR.
+   apply (iff_apply_r _ _ x).
   -
-   case x.
-   intros xL xR.
-   apply xL.
+   apply (iff_apply_l _ _ x).
  Qed.
 
  Inductive ex (A : Type) (P : A -> Type) :=
