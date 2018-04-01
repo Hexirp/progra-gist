@@ -185,6 +185,17 @@ Module Peano.
  | S : nat -> nat
  .
 
+ Definition not_eq_O_S : forall n, O <> S n.
+ Proof.
+  intros n p.
+  refine (
+   match p in _ = x' return (match x' with O => Unit | S xp => Empty end) with
+   | eq_refl _ _ => _
+   end
+  ).
+  apply tt.
+ Qed.
+
  Definition pred : nat -> nat :=
   fun x =>
    match x with
@@ -299,45 +310,19 @@ Module Peano.
   intros n nH.
   cut (O = O).
   -
-   cut (forall k, O <> S k).
+   refine (
+    match nH in le _ o' return O <> o' with
+    | le_n _ => _
+    | le_S _ o pH => _
+    end
+   ).
    +
-    intros Lem.
-    refine (
-     match nH in le _ o' return O <> o' with
-     | le_n _ => _
-     | le_S _ o pH => _
-     end
-    ).
-    *
-     apply Lem.
-    *
-     apply Lem.
+    apply not_eq_O_S.
    +
-    clear n nH.
-    intros k kH.
-    cut (ex (nat -> Type) (fun f => Unit = f O :> Type /\ forall k, f (S k) = Empty :> Type)).
-    *
-     intros [f [fHO fHS]].
-     refine (
-      match (fHS k) in _ = t' return t' with
-      | eq_refl _ _ => _
-      end
-     ).
-     case kH.
-     case fHO.
-     apply tt.
-    *
-     apply ex_pair with (fun x => match x with O => Unit | S xp => Empty end).
-     apply pair.
-     --
-      apply eq_refl.
-     --
-      intros ?.
-      apply eq_refl.
+    apply not_eq_O_S.
   -
    apply eq_refl.
  Qed.
-
 End Peano.
 
 Export Peano.
