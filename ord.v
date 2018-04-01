@@ -54,6 +54,8 @@ Module Predicate.
 
  Notation "A -> B" := (forall (_ : A), B) : type_scope.
 
+ Definition idfunc : forall A, A -> A := fun _ x => x.
+
  Inductive Empty : Type :=
  .
 
@@ -109,11 +111,9 @@ Module Predicate.
   intros A.
   apply pair.
   -
-   intros x.
-   apply x.
+   apply idfunc.
   -
-   intros x.
-   apply x.
+   apply idfunc.
  Qed.
 
  Definition iff_trans : forall A B C, (A <-> B) -> (B <-> C) -> (A <-> C).
