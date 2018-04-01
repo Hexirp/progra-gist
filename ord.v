@@ -54,12 +54,14 @@ Module Predicate.
 
  Notation "A -> B" := (forall (_ : A), B) : type_scope.
 
+ Definition arrow (A B : Type) : Type := A -> B.
+
  Definition idfunc : forall A, A -> A := fun _ x => x.
 
  Inductive Empty : Type :=
  .
 
- Definition not (A : Type) := A -> Empty.
+ Definition not (A : Type) : Type := A -> Empty.
 
  Notation "~ x" := (not x) : type_scope.
 
@@ -88,7 +90,7 @@ Module Predicate.
    "A \/ B" := (or A B) : type_scope
  .
 
- Definition iff (A B : Type) := (A -> B) /\ (B -> A).
+ Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
 
  Notation "A <-> B" := (iff A B) : type_scope.
 
@@ -148,7 +150,7 @@ Module Predicate.
 
  Notation "'exists' x .. y , p" := (ex (fun x => .. (ex (fun y => p)) ..)) : type_scope.
 
- Definition all (A : Type) (P : A -> Type) := forall x, P x.
+ Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
  Inductive eq (A : Type) (x : A) : A -> Type :=
  | eq_refl : x = x :> A
