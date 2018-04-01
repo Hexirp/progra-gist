@@ -136,6 +136,152 @@ Module Peano.
    | S xp => xp
    end
  .
+
+Inductive le (m : nat) : nat -> Type :=
+| le_n : le m m
+| le_S : forall n, le m n -> le m (S n)
+.
+
+Definition le_rect_simple : forall (m : nat) (P : nat -> Type),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+ intros m P cN cS.
+ apply le_rect.
+ -
+  apply cN.
+ -
+  apply cS.
+Qed.
+
+Definition le_ind_simple : forall (m : nat) (P : nat -> Prop),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+ intros m P cN cS.
+ apply le_rect.
+ -
+  apply cN.
+ -
+  apply cS.
+Qed.
+
+Definition le_rec_simple : forall (m : nat) (P : nat -> Set),
+  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
+Proof.
+ intros m P.
+ apply le_rect_simple.
+Qed.
+
+Definition le_0_n : forall n : nat, le O n.
+Proof.
+ intros n.
+ induction n as [ | n IHn ].
+ -
+  apply le_n.
+ -
+  apply le_S.
+  apply IHn.
+Qed.
+
+Definition le_n_S : forall m n : nat, le m n -> le (S m) (S n).
+Proof.
+ intros m.
+ apply le_rect_simple.
+ -
+  apply le_n.
+ -
+  intros n nH H.
+  apply le_S.
+  apply H.
+Qed.
+
+Definition le_pred : forall m n : nat, le m n -> le (pred m) (pred n).
+Proof.
+ intros m.
+ apply le_rect_simple.
+ -
+  apply le_n.
+ -
+  intros [ | np ] nH H.
+  +
+   apply H.
+  +
+   cut (forall k, S (pred (S k)) = pred (S (S k))).
+   *
+    intros Lem.
+    case (Lem np).
+    apply le_S.
+    apply H.
+   *
+    intros k.
+    apply eq_refl.
+Qed.
+
+Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
+Proof.
+ intros m n H.
+ apply (le_pred (S m) (S n)).
+ apply H.
+Qed.
+
+Definition le_trans : forall m n o, le m n -> le n o -> le m o.
+Proof.
+ intros m n o H.
+ revert o.
+ apply le_rect_simple.
+ -
+  apply H.
+ -
+  intros o oH IH.
+  apply le_S.
+  apply IH.
+Qed.
+
+Definition lt m n := le (S m) n.
+
+Definition not_lt_n_0 : forall n, ~ lt n O.
+Proof.
+ intros n nH.
+ cut (O = O).
+ -
+  cut (forall k, O <> S k).
+  +
+   intros Lem.
+   refine (
+    match nH in le _ o' return O <> o' with
+    | le_n _ => _
+    | le_S _ o pH => _
+    end
+   ).
+   *
+    apply Lem.
+   *
+    apply Lem.
+  +
+   clear n nH.
+   intros k kH.
+   cut (ex (nat -> Type) (fun f => Unit = f O :> Type /\ forall k, f (S k) = Empty :> Type)).
+   *
+    intros [f [fHO fHS]].
+    refine (
+     match (fHS k) in _ = t' return t' with
+     | eq_refl _ _ => _
+     end
+    ).
+    case kH.
+    case fHO.
+    apply tt.
+   *
+    apply ex_pair with (fun x => match x with O => Unit | S xp => Empty end).
+    apply pair.
+    --
+     apply eq_refl.
+    --
+     intros ?.
+     apply eq_refl.
+ -
+  apply eq_refl.
+Qed.
+
 End Peano.
 
 Export Peano.
@@ -285,151 +431,6 @@ Definition pointwise_iff (A : Type) (P Q : A -> Prop) := forall x, P x <-> Q x.
 Module Type Extensionality (Export Model : Ord).
  Axiom extension : forall a b, (forall x, lt x a <-> lt x b) -> a = b.
 End Extensionality.
-
-Inductive le (m : nat) : nat -> Type :=
-| le_n : le m m
-| le_S : forall n, le m n -> le m (S n)
-.
-
-Definition le_rect_simple : forall (m : nat) (P : nat -> Type),
-  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
-Proof.
- intros m P cN cS.
- apply le_rect.
- -
-  apply cN.
- -
-  apply cS.
-Qed.
-
-Definition le_ind_simple : forall (m : nat) (P : nat -> Prop),
-  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
-Proof.
- intros m P cN cS.
- apply le_rect.
- -
-  apply cN.
- -
-  apply cS.
-Qed.
-
-Definition le_rec_simple : forall (m : nat) (P : nat -> Set),
-  P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
-Proof.
- intros m P.
- apply le_rect_simple.
-Qed.
-
-Definition le_0_n : forall n : nat, le O n.
-Proof.
- intros n.
- induction n as [ | n IHn ].
- -
-  apply le_n.
- -
-  apply le_S.
-  apply IHn.
-Qed.
-
-Definition le_n_S : forall m n : nat, le m n -> le (S m) (S n).
-Proof.
- intros m.
- apply le_rect_simple.
- -
-  apply le_n.
- -
-  intros n nH H.
-  apply le_S.
-  apply H.
-Qed.
-
-Definition le_pred : forall m n : nat, le m n -> le (pred m) (pred n).
-Proof.
- intros m.
- apply le_rect_simple.
- -
-  apply le_n.
- -
-  intros [ | np ] nH H.
-  +
-   apply H.
-  +
-   cut (forall k, S (pred (S k)) = pred (S (S k))).
-   *
-    intros Lem.
-    case (Lem np).
-    apply le_S.
-    apply H.
-   *
-    intros k.
-    apply eq_refl.
-Qed.
-
-Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
-Proof.
- intros m n H.
- apply (le_pred (S m) (S n)).
- apply H.
-Qed.
-
-Definition le_trans : forall m n o, le m n -> le n o -> le m o.
-Proof.
- intros m n o H.
- revert o.
- apply le_rect_simple.
- -
-  apply H.
- -
-  intros o oH IH.
-  apply le_S.
-  apply IH.
-Qed.
-
-Definition lt m n := le (S m) n.
-
-Definition not_lt_n_0 : forall n, ~ lt n O.
-Proof.
- intros n nH.
- cut (O = O).
- -
-  cut (forall k, O <> S k).
-  +
-   intros Lem.
-   refine (
-    match nH in le _ o' return O <> o' with
-    | le_n _ => _
-    | le_S _ o pH => _
-    end
-   ).
-   *
-    apply Lem.
-   *
-    apply Lem.
-  +
-   clear n nH.
-   intros k kH.
-   cut (ex (nat -> Type) (fun f => Unit = f O :> Type /\ forall k, f (S k) = Empty :> Type)).
-   *
-    intros [f [fHO fHS]].
-    refine (
-     match (fHS k) in _ = t' return t' with
-     | eq_refl _ _ => _
-     end
-    ).
-    case kH.
-    case fHO.
-    apply tt.
-   *
-    apply ex_pair with (fun x => match x with O => Unit | S xp => Empty end).
-    apply pair.
-    --
-     apply eq_refl.
-    --
-     intros ?.
-     apply eq_refl.
- -
-  apply eq_refl.
-Qed.
 
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
