@@ -118,6 +118,16 @@ Module Predicate.
    apply idfunc.
  Qed.
 
+ Definition iff_sym : forall A B, (A <-> B) -> (B <-> A).
+ Proof.
+  intros A B x.
+  apply pair.
+  -
+   apply (iff_apply_r _ _ x).
+  -
+   apply (iff_apply_l _ _ x).
+ Qed.
+
  Definition iff_trans : forall A B C, (A <-> B) -> (B <-> C) -> (A <-> C).
  Proof.
   intros A B C x y.
@@ -132,16 +142,6 @@ Module Predicate.
    apply (iff_apply_r _ _ x).
    apply (iff_apply_r _ _ y).
    apply c.
- Qed.
-
- Definition iff_sym : forall A B, (A <-> B) -> (B <-> A).
- Proof.
-  intros A B x.
-  apply pair.
-  -
-   apply (iff_apply_r _ _ x).
-  -
-   apply (iff_apply_l _ _ x).
  Qed.
 
  Inductive ex (A : Type) (P : A -> Type) :=
