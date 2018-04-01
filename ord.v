@@ -161,6 +161,20 @@ Module Predicate.
  Notation "x = y" := (x = y :> _) : type_scope.
  Notation "x <> y :> T" := (~ x = y :> T) : type_scope.
  Notation "x <> y" := (x <> y :> _) : type_scope.
+
+ Definition eq_sym : forall A (x y : A), x = y -> y = x.
+ Proof.
+  intros A x y p.
+  case p.
+  apply eq_refl.
+ Qed.
+
+ Definition eq_trans : forall A (x y z : A), x = y -> y = z -> x = z.
+ Proof.
+  intros A x y z p q.
+  case q.
+  apply p.
+ Qed.
 End Predicate.
 
 Module Peano.
