@@ -175,6 +175,30 @@ Module Predicate.
   case q.
   apply p.
  Qed.
+
+ Definition not_and_then : forall A B : Type, (A -> ~ B) -> ~ (A /\ B).
+ Proof.
+  intros A B H [a b].
+  apply H; assumption.
+ Qed.
+
+ Definition not_then_and : forall A B : Type, ~ (A /\ B) -> A -> ~ B.
+ Proof.
+  intros A B H a b.
+  apply H, pair; assumption.
+ Qed.
+
+ Definition not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
+ Proof.
+  intros A B H nb a.
+  apply nb, H, a.
+ Qed.
+
+ Definition not_then_then : forall A B : Type, (A -> ~ B) -> B -> ~ A.
+ Proof.
+  intros A B H b a.
+  apply (H a b).
+ Qed.
 End Predicate.
 
 Module Peano.
@@ -326,30 +350,6 @@ Module Peano.
 End Peano.
 
 Export Peano.
-
-Definition not_and_then : forall A B : Type, (A -> ~ B) -> ~ (A /\ B).
-Proof.
- intros A B H [a b].
- apply H; assumption.
-Qed.
-
-Definition not_then_and : forall A B : Type, ~ (A /\ B) -> A -> ~ B.
-Proof.
- intros A B H a b.
- apply H, pair; assumption.
-Qed.
-
-Definition not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
-Proof.
- intros A B H nb a.
- apply nb, H, a.
-Qed.
-
-Definition not_then_then : forall A B : Type, (A -> ~ B) -> B -> ~ A.
-Proof.
- intros A B H b a.
- apply (H a b).
-Qed.
 
 Module Type Ord.
  Parameter ord : Type.
