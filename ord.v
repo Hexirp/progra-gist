@@ -178,26 +178,38 @@ Module Predicate.
 
  Definition not_and_then : forall A B : Type, (A -> ~ B) -> ~ (A /\ B).
  Proof.
-  intros A B H [a b].
-  apply H; assumption.
+  intros A B H x.
+  case x.
+  apply H.
  Qed.
 
  Definition not_then_and : forall A B : Type, ~ (A /\ B) -> A -> ~ B.
  Proof.
   intros A B H a b.
-  apply H, pair; assumption.
+  apply H.
+  apply pair.
+  -
+   apply a.
+  -
+   apply b.
  Qed.
 
  Definition not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
  Proof.
   intros A B H nb a.
-  apply nb, H, a.
+  apply nb.
+  apply H.
+  apply a.
  Qed.
 
  Definition not_then_then : forall A B : Type, (A -> ~ B) -> B -> ~ A.
  Proof.
   intros A B H b a.
-  apply (H a b).
+  apply H.
+  -
+   apply a.
+  -
+   apply b.
  Qed.
 End Predicate.
 
