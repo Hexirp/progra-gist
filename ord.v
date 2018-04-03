@@ -144,11 +144,11 @@ Module Predicate.
    apply c.
  Qed.
 
- Inductive ex (A : Type) (P : A -> Type) :=
+ Inductive ex (A : Type) (P : A -> Type) : Type :=
  | ex_pair : forall x, P x -> ex A P
  .
 
- Notation "'exists' x .. y , p" := (ex (fun x => .. (ex (fun y => p)) ..)) : type_scope.
+ Notation "'exists' x .. y , p" := (ex _ (fun x => .. (ex _ (fun y => p)) ..)) : type_scope.
 
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
@@ -506,11 +506,16 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
   apply not_then_then.
   apply not_le_lt.
  Qed.
+
+ Definition least_element : exists x, ~ exists y, lt y x.
 End Induction_Defs.
 
 Module Type Extensionality (Export Model : Ord).
  Axiom extension : forall a b, (forall x, lt x a <-> lt x b) -> a = b.
 End Extensionality.
+
+Module Extensionality_Defs (Model : Ord) (ExModel : Extensionality Model).
+End Extensionality_Defs.
 
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
