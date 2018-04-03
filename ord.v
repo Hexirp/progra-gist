@@ -506,40 +506,6 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
   apply not_then_then.
   apply not_le_lt.
  Qed.
-
- Section Not_exists_latter.
-  Variable base : ord.
-  Variable ex_latter : forall x, exists y, lt y x.
-
-  Definition f : nat -> ord.
-  Proof.
-   apply (nat_rect (fun _ => ord)).
-   -
-    apply base.
-   -
-    intros n IHn.
-    case (ex_latter IHn).
-    intros IHnp IHnpH.
-    apply IHnp.
-  Defined.
-
-  Definition f_inf_dec_chain : forall n, lt (f (S n)) (f n).
-  Proof.
-   intros n.
-   cbn.
-   case (ex_latter (f n)).
-   intros x xH.
-   apply xH.
-  Qed.
-
-  Definition not_exists_latter : Empty.
-  Proof.
-   apply not_lt_inf_dec_chain with f.
-   apply f_inf_dec_chain.
-  Qed.
- End Not_exists_latter.
-
- Print f.
 End Induction_Defs.
 
 Module Type Extensionality (Export Model : Ord).
