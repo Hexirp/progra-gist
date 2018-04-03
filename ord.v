@@ -490,9 +490,7 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
   -
    revert H.
    case R.
-   intros H.
-   apply not_lt_refl with b.
-   apply H.
+   apply not_lt_refl.
  Qed.
 
  Definition not_and_lt_le : forall a b, ~ (lt a b /\ le b a).
