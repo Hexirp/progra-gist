@@ -405,8 +405,8 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
  Definition not_lt_refl : forall a, ~ lt a a.
  Proof.
   apply (ind (fun a => ~ lt a a)).
-  intros a IH H.
-  apply IH with a.
+  intros a IHa H.
+  apply IHa with a.
   -
    apply H.
   -
@@ -416,8 +416,8 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
  Definition not_lt_sym : forall a b, lt a b -> ~ lt b a.
  Proof.
   apply (ind (fun a => forall b, lt a b -> ~ lt b a)).
-  intros a IH b Ha Hb.
-  apply IH with b a.
+  intros a IHa b Ha Hb.
+  apply IHa with b a.
   -
    apply Hb.
   -
@@ -443,8 +443,8 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
    apply eq_refl.
   -
    apply (ind (fun a => forall x, f x <> a)).
-   intros a IH x H.
-   apply IH with (f (S x)) (S x).
+   intros a IHa x H.
+   apply IHa with (f (S x)) (S x).
    +
     case H.
     apply inf_dec_chain.
@@ -508,18 +508,17 @@ Module Nat_Induction <: Induction Nat_Ord.
    apply f.
    apply Lem.
   -
-   intros n.
-   induction n as [ | n Hp ].
+   apply (nat_rect (fun n => forall k, lt k n -> p k)).
    +
     intros k kH.
     apply Empty_rect.
     apply not_lt_n_0 with k.
     apply kH.
    +
-    intros k kH.
+    intros n IHn k kH.
     apply f.
     intros x xH.
-    apply Hp.
+    apply IHn.
     apply le_trans with k.
     *
      apply xH.
