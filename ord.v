@@ -176,14 +176,14 @@ Module Predicate.
   apply p.
  Qed.
 
- Definition not_and_then : forall A B : Type, (A -> ~ B) -> ~ (A /\ B).
+ Definition not_and_then : forall A B, (A -> ~ B) -> ~ (A /\ B).
  Proof.
   intros A B H x.
   case x.
   apply H.
  Qed.
 
- Definition not_then_and : forall A B : Type, ~ (A /\ B) -> A -> ~ B.
+ Definition not_then_and : forall A B, ~ (A /\ B) -> A -> ~ B.
  Proof.
   intros A B H a b.
   apply H.
@@ -194,7 +194,7 @@ Module Predicate.
    apply b.
  Qed.
 
- Definition not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
+ Definition map_not : forall A B, (A -> B) -> ~ B -> ~ A.
  Proof.
   intros A B H nb a.
   apply nb.
@@ -202,7 +202,7 @@ Module Predicate.
   apply a.
  Qed.
 
- Definition not_then_then : forall A B : Type, (A -> ~ B) -> B -> ~ A.
+ Definition not_then_then : forall A B, (A -> ~ B) -> B -> ~ A.
  Proof.
   intros A B H b a.
   apply H.
@@ -210,6 +210,32 @@ Module Predicate.
    apply a.
   -
    apply b.
+ Qed.
+
+ Definition intro_double_not : forall A, A -> ~ ~ A.
+ Proof.
+  intros A a na.
+  apply na.
+  apply a.
+ Qed.
+
+ Definition map_double_not : forall A B, (A -> B) -> ~ ~ A -> ~ ~ B.
+ Proof.
+  intros A B H.
+  apply map_not.
+  apply map_not.
+  apply H.
+ Qed.
+
+ Definition apply_double_not : forall A B, ~ ~ (A -> B) -> ~ ~ A -> ~ ~ B.
+ Proof.
+  intros A B nnH nna nb.
+  apply nnH.
+  intros H.
+  revert nb.
+  revert nna.
+  apply map_double_not.
+  apply H.
  Qed.
 End Predicate.
 
