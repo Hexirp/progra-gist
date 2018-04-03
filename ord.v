@@ -507,7 +507,7 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
   apply not_le_lt.
  Qed.
 
- Section Not_not_least_element.
+ Section Not_exists_latter.
   Variable base : ord.
   Variable ex_latter : forall x, exists y, lt y x.
 
@@ -532,12 +532,14 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
    apply xH.
   Qed.
 
-  Definition not_not_least_element : Empty.
+  Definition not_exists_latter : Empty.
   Proof.
    apply not_lt_inf_dec_chain with f.
    apply f_inf_dec_chain.
   Qed.
- End Not_not_least_element.
+ End Not_exists_latter.
+
+ Print f.
 End Induction_Defs.
 
 Module Type Extensionality (Export Model : Ord).
