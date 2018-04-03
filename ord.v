@@ -508,8 +508,6 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
  Qed.
 End Induction_Defs.
 
-Definition pointwise_iff (A : Type) (P Q : A -> Prop) := forall x, P x <-> Q x.
-
 Module Type Extensionality (Export Model : Ord).
  Axiom extension : forall a b, (forall x, lt x a <-> lt x b) -> a = b.
 End Extensionality.
