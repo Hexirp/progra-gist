@@ -507,7 +507,19 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
   apply not_le_lt.
  Qed.
 
- Definition least_element : exists x, ~ exists y, lt y x.
+ Definition not_not_least_element : ~ forall x, exists y, lt y x.
+ Proof.
+  intros H.
+  cut (exists f, forall n: nat, lt (f (S n)) (f n)).
+  -
+   intros inf_dec_chain.
+   case inf_dec_chain.
+   apply not_lt_inf_dec_chain.
+  -
+   cut ord.
+   +
+    intros x. Print nat_rect.
+    apply ex_pair with (nat_rect (fun _ => ord) x (fun n IHn => H.
 End Induction_Defs.
 
 Module Type Extensionality (Export Model : Ord).
