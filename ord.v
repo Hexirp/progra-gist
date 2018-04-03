@@ -374,13 +374,22 @@ Module Ord_Defs (Export Model : Ord).
  Definition le_lt : forall a b, lt a b -> le a b.
  Proof.
   intros a b H.
-  apply left, H.
+  apply left.
+  apply H.
  Qed.
 
  Definition le_eq : forall a b, a = b -> le a b.
  Proof.
   intros a b H.
-  apply right, H.
+  apply right.
+  apply H.
+ Qed.
+
+ Definition le_refl : forall a, le a a.
+ Proof.
+  intros a.
+  apply le_eq.
+  apply eq_refl.
  Qed.
 End Ord_Defs.
 
