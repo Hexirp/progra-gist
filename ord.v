@@ -537,57 +537,21 @@ Module IndExTrans_Defs
  Module TransDefs := Transitivity_Defs Model TransModel.
  Export TransDefs.
 
- Definition excluded_middle : ~ ~ forall A, A \/ ~ A.
+ (*
+  double-negation translated [forall x y, x = y \/ lt x y \/ lt y x] (Gödel–Gentzen translation)
+ *)
+ Definition trichotomy : forall x y, ~ (~ ~ ~ x = y /\ ~ ~ (~ ~ ~ lt x y /\ ~ ~ ~ lt y x)).
  Proof.
-  intros H.
-  cut (exists A, ~ (A \/ ~ A)).
-  -
-   intros H'.
-   case H'.
-   intros A AH.
-   cut (~ A /\ ~ ~ A).
-   +
-    intros AH'.
-    case AH'.
-    intros na nna.
-    apply nna.
-    apply na.
-   +
-    apply pair.
-    *
-     intros a.
-     apply AH.
-     apply left.
-     apply a.
-    *
-     intros na.
-     apply AH.
-     apply right.
-     apply na.
-  -
-   
-
- Definition trichotomy : ~ ~ forall x y, lt x y \/ x = y \/ lt y x.
- Proof.
-  intros H.
-  cut (exists x y, ~ (lt x y \/ x = y \/ lt y x)).
-  -
-   clear H.
-   intros H.
-   case H.
-   clear H.
-   intros x H.
-   case H.
-   clear H.
-   intros y H.
-   cut (~ x = y /\ ~ (lt x y \/ lt y x)).
-   +
-    clear H.
-    intros H.
-    case H.
-    clear H.
-    intros L R.
-    
+  intros x y H.
+  case H.
+  intros HL HR.
+  apply HL.
+  intros HL'.
+  apply HR.
+  intros HR'.
+  case HR'.
+  intros HR'L HR'R.
+  apply HR'L.
 
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
