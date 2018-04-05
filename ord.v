@@ -512,8 +512,82 @@ Module Type Extensionality (Export Model : Ord).
  Axiom extension : forall a b, (forall x, lt x a <-> lt x b) -> a = b.
 End Extensionality.
 
-Module Extensionality_Defs (Model : Ord) (ExModel : Extensionality Model).
+Module Extensionality_Defs (Model : Ord) (Export ExModel : Extensionality Model).
 End Extensionality_Defs.
+
+Module Type Transitivity (Export Model : Ord).
+ Axiom transition : forall a b c, lt a b -> lt b c -> lt a c.
+End Transitivity.
+
+Module Transitivity_Defs (Model : Ord) (Export TransModel : Transitivity Model).
+End Transitivity_Defs.
+
+Module IndExTrans_Defs
+  (Model : Ord)
+  (Export IndModel : Induction Model)
+  (Export ExModel : Extensionality Model)
+  (Export TransModel : Transitivity Model).
+
+ Module IndDefs := Induction_Defs Model IndModel.
+ Export IndDefs.
+
+ Module ExDefs := Extensionality_Defs Model ExModel.
+ Export ExDefs.
+
+ Module TransDefs := Transitivity_Defs Model TransModel.
+ Export TransDefs.
+
+ Definition excluded_middle : ~ ~ forall A, A \/ ~ A.
+ Proof.
+  intros H.
+  cut (exists A, ~ (A \/ ~ A)).
+  -
+   intros H'.
+   case H'.
+   intros A AH.
+   cut (~ A /\ ~ ~ A).
+   +
+    intros AH'.
+    case AH'.
+    intros na nna.
+    apply nna.
+    apply na.
+   +
+    apply pair.
+    *
+     intros a.
+     apply AH.
+     apply left.
+     apply a.
+    *
+     intros na.
+     apply AH.
+     apply right.
+     apply na.
+  -
+   
+
+ Definition trichotomy : ~ ~ forall x y, lt x y \/ x = y \/ lt y x.
+ Proof.
+  intros H.
+  cut (exists x y, ~ (lt x y \/ x = y \/ lt y x)).
+  -
+   clear H.
+   intros H.
+   case H.
+   clear H.
+   intros x H.
+   case H.
+   clear H.
+   intros y H.
+   cut (~ x = y /\ ~ (lt x y \/ lt y x)).
+   +
+    clear H.
+    intros H.
+    case H.
+    clear H.
+    intros L R.
+    
 
 Module Nat_Ord <: Ord.
  Definition ord : Type := nat.
