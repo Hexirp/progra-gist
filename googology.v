@@ -94,31 +94,27 @@ Definition compD
 
 Definition to0 : nat -> Type := ind Type to ts.
 
-Definition ts0 : nat -> Type := fun (x : nat) => to0 x -> to0 x.
-
 Definition t01 : Type := forall (x : nat), to0 x.
 
-Definition s01D : forall (x : nat), ts0 x :=
+Definition s01 : forall (x : nat), to0 x -> to0 x :=
  indD
-  ts0
+  (fun x => to0 x -> to0 x)
   s
   (fun (xp : nat) => comp nat (to0 xp) (to0 xp))
 .
-
-Definition s01 : t01 -> t01 := compD nat to0 to0 s01D.
 
 Definition o01 : t01 :=
  indD
   to0
   o
-  (fun (xp : nat) (go : to0 xp) => ind (to0 xp) go (s01D xp))
+  (fun (xp : nat) (go : to0 xp) => ind (to0 xp) go (s01 xp))
 .
 
 Definition f011 : t01 := o01.
 
-Definition f0110 : t01 := s01 f011.
+Definition f0110 : t01 := compD _ _ _ s01 f011.
 
-Definition f01100 : t01 := s01 f0110.
+Definition f01100 : t01 := compD _ _ _ s01 f0110.
 
 Definition t010 : Type := ts t01.
 
