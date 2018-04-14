@@ -80,7 +80,7 @@ Definition indD
 Definition compD
  :
   forall (A : Type) (B : A -> Type) (C : A -> Type),
-   (forall (x : A), B x -> C x) -> (forall (x : A), B x) -> forall x, C x
+   (forall (x : A), B x -> C x) -> (forall (x : A), B x) -> forall (x : A), C x
  :=
   fun
    (A : Type)
@@ -94,7 +94,9 @@ Definition compD
 
 Definition to0 : nat -> Type := ind Type to ts.
 
-Definition t01 : Type := forall (x : nat), to0 x.
+Definition ts0 : (nat -> Type) -> nat -> Type := comp nat Type Type ts.
+
+Definition t01 : nat -> Type := to0.
 
 Definition s01 : forall (x : nat), to0 x -> to0 x :=
  indD
@@ -103,34 +105,38 @@ Definition s01 : forall (x : nat), to0 x -> to0 x :=
   (fun (xp : nat) => comp nat (to0 xp) (to0 xp))
 .
 
-Definition o01 : t01 :=
+Definition o01 : forall (x : nat), to0 x :=
  indD
-  to0
+  (fun x => to0 x)
   o
   (fun (xp : nat) (go : to0 xp) => ind (to0 xp) go (s01 xp))
 .
 
-Definition f011 : t01 := o01.
+Definition f011 : forall (x : nat), t01 x := o01.
 
-Definition f0110 : t01 := compD _ _ _ s01 f011.
+Definition f0110 : forall (x : nat), t01 x := compD nat t01 t01 s01 f011.
 
-Definition f01100 : t01 := compD _ _ _ s01 f0110.
+Definition f01100 : forall (x : nat), t01 x := compD nat t01 t01 s01 f0110.
 
-Definition t010 : Type := ts t01.
+Definition t010 : nat -> Type := ts0 t01.
 
-Definition o010 : t010 := ind t01 o01 s01.
+Definition s010 : forall (x : nat), t010 x -> t010 x :=
+ fun (x : nat) => comp nat (t01 x) (t01 x) (s01 x).
 
-Definition s010 : t010 -> t010 := comp nat t01 t01 s01.
+Definition o010 : forall (x : nat), t010 x :=
+ indD t010 s (fun (xp : nat) (go : t010 xp) => ind (t010 xp) go (s010 xp)).
 
-Definition f01101 : t010 := o010.
+Definition f01101 : forall (x : nat), t010 x := o010.
 
-Definition f011010 : t010 := s010 f01101.
+Definition f011010 : forall (x : nat), t010 x := compD nat t010 t010 s010 f01101.
 
-Definition t0100 : Type := ts t010.
+Definition f0110100 : forall (x : nat), t010 x := compD nat t010 t010 s010 f011010.
 
-Definition o0100 : t0100 := ind t010 o010 s010.
+Definition t0100 : nat -> Type := ts0 t010.
 
 Definition s0100 : t0100 -> t0100 := comp nat t010 t010 s010.
+
+Definition o0100 : forall (x : nat), t0100 x := ind t010 o010 s010.
 
 Definition to00 : nat -> Type := ind Type t01 ts.
 
