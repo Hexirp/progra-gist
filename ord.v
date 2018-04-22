@@ -1,10 +1,17 @@
 (* -*- mode: coq; coq-prog-args: ("-nois") -*- *)
 
+(** タクティックを使うための設定 *)
+
 Declare ML Module "ltac_plugin".
 
 Global Set Default Proof Mode "Classic".
 
 Module Pre.
+
+ (** 事前に定義して統一すべきもの *)
+
+ (** 述語論理の記号 *)
+
  Reserved Notation "'exists' x .. y , p" (
    at level 200,
    x binder,
@@ -17,6 +24,8 @@ Module Pre.
  Reserved Notation "x \/ y" (at level 85, right associativity).
  Reserved Notation "~ x" (at level 75, right associativity).
 
+ (* 等号及び不等号、大小関係 *)
+
  Reserved Notation "x = y :> T" (at level 70, y at next level, no associativity).
  Reserved Notation "x = y" (at level 70, no associativity).
 
@@ -28,6 +37,8 @@ Module Pre.
  Reserved Notation "x >= y" (at level 70, no associativity).
  Reserved Notation "x > y" (at level 70, no associativity).
 
+ (** 算術演算子 *)
+
  Reserved Notation "x + y" (at level 50, left associativity).
  Reserved Notation "x - y" (at level 50, left associativity).
  Reserved Notation "x * y" (at level 40, left associativity).
@@ -36,6 +47,8 @@ Module Pre.
 
  Reserved Notation "- x" (at level 35, right associativity).
  Reserved Notation "/ x" (at level 35, right associativity).
+
+ (** スコープ *)
 
  Delimit Scope type_scope with type.
  Delimit Scope function_scope with function.
