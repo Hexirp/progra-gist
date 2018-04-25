@@ -55,7 +55,7 @@ Module Pre.
  Open Scope function_scope.
  Open Scope type_scope.
 
- (** タクティックを使うための設定 *)
+ (** タクティックの設定 *)
 
  Declare ML Module "ltac_plugin".
 
@@ -75,7 +75,17 @@ Module Predicate.
 
  (** 汎用関数 *)
 
- Definition idfunc : forall A, A -> A := fun _ x => x.
+ Definition id : forall A, A -> A := fun _ x => x.
+
+ Definition const : forall A B, A -> B -> A := fun _ _ x _ => x.
+
+ Definition compose
+     : forall A B C, (A -> B) -> (C -> A) -> C -> B
+     := fun _ _ _ f g x => f (g x).
+
+ Definition flip : forall A B C, (A -> B -> C) -> B -> A -> C := fun _ _ _ f x y => f y x.
+
+ Definition apply : forall A B, (A -> B) -> A -> B := fun _ _ f x => f x.
 
  Inductive Empty : Type :=
  .
