@@ -75,6 +75,8 @@ Module Predicate.
 
  Export Unset Universe Minimization ToSet.
 
+ Set Implicit Arguments.
+
  Export Pre.
 
  (** 関数型 *)
@@ -115,11 +117,11 @@ Module Predicate.
  .
 
  Definition first : forall A B, A /\ B -> A :=
-  fun _ _ x => match x with pair _ _ xL _ => xL end
+  fun _ _ x => match x with pair xL _ => xL end
  .
 
  Definition second : forall A B, A /\ B -> B :=
-  fun _ _ x => match x with pair _ _ _ xR => xR end
+  fun _ _ x => match x with pair _ xR => xR end
  .
 
  Inductive or (A B : Type) : Type :=
@@ -133,54 +135,26 @@ Module Predicate.
 
  Notation "A <-> B" := (iff A B) : type_scope.
 
- Definition iff_apply_l : forall A B, A <-> B -> A -> B.
- Proof.
-  intros A B x.
-  apply first with (B -> A).
-  apply x.
- Qed.
-
- Definition iff_apply_r : forall A B, A <-> B -> B -> A.
- Proof.
-  intros A B x.
-  apply second with (A -> B).
-  apply x.
- Qed.
-
  Definition iff_refl : forall A, A <-> A.
  Proof.
   intros A.
-  apply pair.
-  -
-   apply idfunc.
-  -
-   apply idfunc.
+  apply (pair (@id A) (@id A)).
  Qed.
 
- Definition iff_sym : forall A B, (A <-> B) -> (B <-> A).
+ Definition iff_sym : forall A B, A <-> B -> B <-> A.
  Proof.
   intros A B x.
-  apply pair.
-  -
-   apply (iff_apply_r _ _ x).
-  -
-   apply (iff_apply_l _ _ x).
+  apply (pair (second x) (first x)).
  Qed.
 
- Definition iff_trans : forall A B C, (A <-> B) -> (B <-> C) -> (A <-> C).
+ Definition iff_trans : forall A B C, A <-> B -> C <-> A -> C <-> B.
  Proof.
   intros A B C x y.
   apply pair.
   -
-   intros a.
-   apply (iff_apply_l _ _ y).
-   apply (iff_apply_l _ _ x).
-   apply a.
+   apply (compose (first x) (first y)).
   -
-   intros c.
-   apply (iff_apply_r _ _ x).
-   apply (iff_apply_r _ _ y).
-   apply c.
+   apply (compose (second y) (second x)).
  Qed.
 
  Inductive ex (A : Type) (P : A -> Type) : Type :=
