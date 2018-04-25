@@ -135,19 +135,19 @@ Module Predicate.
 
  Notation "A <-> B" := (iff A B) : type_scope.
 
- Definition iff_refl : forall A, A <-> A.
+ Theorem iff_refl : forall A, A <-> A.
  Proof.
   intros A.
   apply (pair (@id A) (@id A)).
  Qed.
 
- Definition iff_sym : forall A B, A <-> B -> B <-> A.
+ Theorem iff_sym : forall A B, (A <-> B) -> (B <-> A).
  Proof.
   intros A B x.
   apply (pair (second x) (first x)).
  Qed.
 
- Definition iff_trans : forall A B C, A <-> B -> C <-> A -> C <-> B.
+ Theorem iff_trans : forall A B C, (A <-> B) -> (C <-> A) -> (C <-> B).
  Proof.
   intros A B C x y.
   apply pair.
@@ -156,6 +156,119 @@ Module Predicate.
   -
    apply (compose (second y) (second x)).
  Qed.
+
+ Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
+ Proof.
+  intros A B C f [xl xr]; apply (pair (f xl) xr).
+ Qed.
+
+ Theorem and_map_r : forall A B C : Type, (A -> B) -> C /\ A -> C /\ B.
+ Proof.
+  intros A B C f [xl xr]; apply (pair xl (f xr)).
+ Qed.
+
+ Theorem or_map_l : forall A B C : Type, (A -> B) -> A \/ C -> B \/ C.
+ Proof.
+  intros A B C f [xl | xr]; [> apply (left _ (f xl)) | apply (right _ xr) ].
+ Qed.
+
+ Theorem or_map_r : forall A B C : Type, (A -> B) -> C \/ A -> C \/ B.
+ Proof.
+  intros A B C f [xl | xr]; [> apply (left _ xl) | apply (right _ (f xr)) ].
+ Qed.
+
+ Theorem imp_map_l : forall A B C : Type, (A -> B) -> (B -> C) -> (A -> C).
+ Proof.
+  intros A B C f g; apply (compose g f).
+ Qed.
+
+ Theorem imp_map_r : forall A B C : Type, (A -> B) -> (C -> A) -> (C -> B).
+ Proof.
+  intros A B C f g; apply (compose f g).
+ Qed.
+
+ Theorem not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
+ Proof.
+  intros A B f x; unfold not; unfold not in x; apply (compose x f).
+ Qed.
+
+ Theorem and_iff_map_l
+     : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
+ Proof.
+  intros A B C [xl xr]; apply (pair (and_map_l xl) (and_map_l xr)).
+ Qed.
+
+ Theorem and_iff_map_r
+     : forall A B C : Type, (A <-> B) -> (C /\ A <-> C /\ B).
+ Proof.
+  intros A B C [xl xr]; apply (pair (and_map_r xl) (and_map_r xr)).
+ Qed.
+
+ Theorem or_iff_map_l
+     : forall A B C : Type, (A <-> B) -> (A \/ C <-> B \/ C).
+ Proof.
+  intros A B C [xl xr]; apply (pair (or_map_l xl) (or_map_l xr)).
+ Qed.
+
+ Theorem or_iff_map_r : forall A B C : Type, (A <-> B) -> (C \/ A <-> C \/ B).
+ Proof.
+  intros A B C [xl xr]; apply (pair (or_map_r xl) (or_map_r xr)).
+ Qed.
+
+ Theorem imp_iff_map_l : forall A B C : Type, (A <-> B) -> ((A -> C) <-> (B -> C)).
+ Proof.
+  intros A B C [xl xr]; apply (pair (imp_map_l xr) (imp_map_l xl)).
+ Qed.
+
+ Theorem imp_iff_map_r : forall A B C : Type, (A <-> B) -> ((C -> A) <-> (C -> B)).
+ Proof.
+  intros A B C [xl xr]; apply (pair (imp_map_r xl) (imp_map_r xr)).
+ Qed.
+
+ Theorem not_iff_map : forall A B : Type, (A <-> B) -> (~ A <-> ~B).
+ Proof.
+  intros A B [xl xr]; apply (pair (not_map xr) (not_map xl)).
+ Qed.
+
+ Theorem neg_false : forall A : Type, ~ A <-> (A <-> Empty).
+ Proof.
+ Admitted.
+
+ Theorem and_cancel_l : forall A B C : Prop,
+   (B -> A) -> (C -> A) -> ((A /\ B <-> A /\ C) <-> (B <-> C)).
+ Proof.
+ Admitted.
+
+ Theorem and_cancel_r : forall A B C : Prop,
+   (B -> A) -> (C -> A) -> ((B /\ A <-> C /\ A) <-> (B <-> C)).
+ Proof.
+ Admitted.
+
+ Theorem and_comm : forall A B : Prop, A /\ B <-> B /\ A.
+ Proof.
+ Admitted.
+
+ Theorem and_assoc : forall A B C : Prop, (A /\ B) /\ C <-> A /\ B /\ C.
+ Proof.
+ Admitted.
+
+ Theorem or_cancel_l : forall A B C : Prop,
+   (B -> ~ A) -> (C -> ~ A) -> ((A \/ B <-> A \/ C) <-> (B <-> C)).
+ Proof.
+ Admitted.
+
+ Theorem or_cancel_r : forall A B C : Prop,
+   (B -> ~ A) -> (C -> ~ A) -> ((B \/ A <-> C \/ A) <-> (B <-> C)).
+ Proof.
+ Admitted.
+
+ Theorem or_comm : forall A B : Prop, (A \/ B) <-> (B \/ A).
+ Proof.
+ Admitted.
+
+ Theorem or_assoc : forall A B C : Prop, (A \/ B) \/ C <-> A \/ B \/ C.
+ Proof.
+ Admitted.
 
  Inductive ex (A : Type) (P : A -> Type) : Type :=
  | ex_pair : forall x, P x -> ex A P
