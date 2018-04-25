@@ -2,15 +2,9 @@
 
 Module Pre.
 
- (** 事前に定義すべきもの *)
+ (** 事前に定義すべきもの。演算子の優先順位などを一貫させたり、スコープを定義する。 *)
 
  (** 述語論理の記号 *)
-
- Reserved Notation "'exists' x .. y , p" (
-   at level 200,
-   x binder,
-   right associativity,
-   format "'[' 'exists'  '/  ' x  ..  y ,  '/  ' p ']'").
 
  Reserved Notation "x -> y" (at level 99, right associativity, y at level 200).
  Reserved Notation "x <-> y" (at level 95, no associativity).
@@ -177,7 +171,16 @@ Module Predicate.
  | ex_pair : forall x, P x -> ex A P
  .
 
- Notation "'exists' x .. y , p" := (ex _ (fun x => .. (ex _ (fun y => p)) ..)) : type_scope.
+ Notation "'exists' x .. y , p"
+   :=
+     (ex _ (fun x => .. (ex _ (fun y => p)) ..))
+   (
+     at level 200,
+     x binder,
+     right associativity,
+     format "'[' 'exists' '/ ' x .. y , '/ ' p ']'")
+   :
+     type_scope.
 
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
