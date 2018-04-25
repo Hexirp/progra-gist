@@ -1,5 +1,7 @@
 (* -*- mode: coq; coq-prog-args: ("-nois") -*- *)
 
+(* in Coq 8.8.0 *)
+
 Module Pre.
 
  (** 事前に定義すべきもの。演算子の優先順位などを一貫させたり、スコープを定義する。 *)
@@ -53,25 +55,25 @@ Module Pre.
 
  Declare ML Module "ltac_plugin".
 
- Global Set Default Proof Mode "Classic".
+ Export Set Default Proof Mode "Classic".
 
 End Pre.
 
 Module Predicate.
 
- Global Unset Bracketing Last Introduction Pattern.
+ Export Unset Bracketing Last Introduction Pattern.
 
- Global Set Typeclasses Strict Resolution.
+ Export Set Typeclasses Strict Resolution.
 
- Global Unset Elimination Schemes.
+ Export Unset Elimination Schemes.
 
- Global Set Keyed Unification.
+ Export Set Keyed Unification.
 
- Global Unset Refine Instance Mode.
+ Export Unset Refine Instance Mode.
 
- Global Unset Strict Universe Declaration.
+ Export Unset Strict Universe Declaration.
 
- Global Unset Universe Minimization ToSet.
+ Export Unset Universe Minimization ToSet.
 
  Export Pre.
 
