@@ -64,11 +64,16 @@ Module Pre.
 End Pre.
 
 Module Predicate.
+
  Export Pre.
+
+ (** 関数型 *)
+
+ Definition arrow (A B : Type) : Type := forall (_ : A), B.
 
  Notation "A -> B" := (forall (_ : A), B) : type_scope.
 
- Definition arrow (A B : Type) : Type := A -> B.
+ (** 汎用関数 *)
 
  Definition idfunc : forall A, A -> A := fun _ x => x.
 
