@@ -59,6 +59,20 @@ End Pre.
 
 Module Predicate.
 
+ Global Unset Bracketing Last Introduction Pattern.
+
+ Global Set Typeclasses Strict Resolution.
+
+ Global Unset Elimination Schemes.
+
+ Global Set Keyed Unification.
+
+ Global Unset Refine Instance Mode.
+
+ Global Unset Strict Universe Declaration.
+
+ Global Unset Universe Minimization ToSet.
+
  Export Pre.
 
  (** 関数型 *)
