@@ -1,14 +1,8 @@
 (* -*- mode: coq; coq-prog-args: ("-nois") -*- *)
 
-(** タクティックを使うための設定 *)
-
-Declare ML Module "ltac_plugin".
-
-Global Set Default Proof Mode "Classic".
-
 Module Pre.
 
- (** 事前に定義して統一すべきもの *)
+ (** 事前に定義すべきもの *)
 
  (** 述語論理の記号 *)
 
@@ -60,6 +54,13 @@ Module Pre.
  Open Scope core_scope.
  Open Scope function_scope.
  Open Scope type_scope.
+
+ (** タクティックを使うための設定 *)
+
+ Declare ML Module "ltac_plugin".
+
+ Global Set Default Proof Mode "Classic".
+
 End Pre.
 
 Module Predicate.
