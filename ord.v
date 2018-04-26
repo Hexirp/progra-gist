@@ -131,32 +131,6 @@ Module Predicate.
    "A \/ B" := (or A B) : type_scope
  .
 
- Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
-
- Notation "A <-> B" := (iff A B) : type_scope.
-
- Theorem iff_refl : forall A, A <-> A.
- Proof.
-  intros A.
-  apply (pair (@id A) (@id A)).
- Qed.
-
- Theorem iff_sym : forall A B, (A <-> B) -> (B <-> A).
- Proof.
-  intros A B x.
-  apply (pair (second x) (first x)).
- Qed.
-
- Theorem iff_trans : forall A B C, (A <-> B) -> (C <-> A) -> (C <-> B).
- Proof.
-  intros A B C x y.
-  apply pair.
-  -
-   apply (compose (first x) (first y)).
-  -
-   apply (compose (second y) (second x)).
- Qed.
-
  Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
  Proof.
   intros A B C f [xl xr]; apply (pair (f xl) xr).
@@ -190,6 +164,32 @@ Module Predicate.
  Theorem not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
  Proof.
   intros A B f x; unfold not; unfold not in x; apply (compose x f).
+ Qed.
+
+ Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
+
+ Notation "A <-> B" := (iff A B) : type_scope.
+
+ Theorem iff_refl : forall A, A <-> A.
+ Proof.
+  intros A.
+  apply (pair (@id A) (@id A)).
+ Qed.
+
+ Theorem iff_sym : forall A B, (A <-> B) -> (B <-> A).
+ Proof.
+  intros A B x.
+  apply (pair (second x) (first x)).
+ Qed.
+
+ Theorem iff_trans : forall A B C, (A <-> B) -> (C <-> A) -> (C <-> B).
+ Proof.
+  intros A B C x y.
+  apply pair.
+  -
+   apply (compose (first x) (first y)).
+  -
+   apply (compose (second y) (second x)).
  Qed.
 
  Theorem and_iff_map_l
