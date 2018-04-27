@@ -102,6 +102,10 @@ Module Predicate.
  Inductive Empty : Type :=
  .
 
+ Scheme Empty_ind := Induction for Empty Sort Type.
+ Scheme Empty_rec := Minimality for Empty Sort Type.
+ Definition Empty_rect := Empty_ind.
+
  Definition not (A : Type) : Type := A -> Empty.
 
  Notation "~ x" := (not x) : type_scope.
@@ -110,11 +114,19 @@ Module Predicate.
  | tt : Unit
  .
 
+ Scheme Unit_ind := Induction for Unit Sort Type.
+ Scheme Unit_rec := Minimality for Unit Sort Type.
+ Definition Unit_rect := Unit_ind.
+
  Inductive and (A B : Type) : Type :=
  | pair : A -> B -> A /\ B
  where
    "A /\ B" := (and A B) : type_scope
  .
+
+ Scheme and_ind := Induction for and Sort Type.
+ Scheme and_rec := Minimality for and Sort Type.
+ Definition and_rect := and_ind.
 
  Definition first : forall A B, A /\ B -> A :=
   fun _ _ x => match x with pair xL _ => xL end
@@ -130,6 +142,10 @@ Module Predicate.
  where
    "A \/ B" := (or A B) : type_scope
  .
+
+ Scheme or_ind := Induction for or Sort Type.
+ Scheme or_rec := Minimality for or Sort Type.
+ Definition or_rect := or_ind.
 
  Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
  Proof.
@@ -271,12 +287,12 @@ Module Predicate.
  Admitted.
 
  Inductive ex (A : Type) (P : A -> Type) : Type :=
- | ex_pair : forall x, P x -> ex A P
+ | ex_pair : forall x, P x -> ex P
  .
 
  Notation "'exists' x .. y , p"
    :=
-     (ex _ (fun x => .. (ex _ (fun y => p)) ..))
+     (ex (fun x => .. (ex (fun y => p)) ..))
    (
      at level 200,
      x binder,
@@ -285,13 +301,21 @@ Module Predicate.
    :
      type_scope.
 
+ Scheme ex_ind := Induction for ex Sort Type.
+ Scheme ex_rec := Minimality for ex Sort Type.
+ Definition ex_rect := ex_ind.
+
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
  Inductive eq (A : Type) (x : A) : A -> Type :=
  | eq_refl : x = x :> A
  where
-   "x = y :> A" := (eq A x y) : type_scope
+   "x = y :> A" := (@eq A x y) : type_scope
  .
+
+ Scheme eq_ind := Induction for eq Sort Type.
+ Scheme eq_rec := Minimality for eq Sort Type.
+ Definition eq_rect := eq_ind.
 
  Notation "x = y" := (x = y :> _) : type_scope.
  Notation "x <> y :> T" := (~ x = y :> T) : type_scope.
