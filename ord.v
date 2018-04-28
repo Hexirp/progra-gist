@@ -147,6 +147,10 @@ Module Predicate.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
 
+ Definition exfalso : forall A : Type, Empty -> A := Empty_rec.
+
+ Definition unit_const : forall A : Type, A -> Unit := fun A => const tt.
+
  Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
  Proof.
   intros A B C f [xl xr]; apply (pair (f xl) xr).
@@ -174,13 +178,17 @@ Module Predicate.
 
  Theorem imp_map_r : forall A B C : Type, (A -> B) -> (C -> A) -> (C -> B).
  Proof.
-  intros A B C f g; apply (compose f g).
+  intros A B C f; apply (compose f).
  Qed.
 
  Theorem not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
  Proof.
-  intros A B f x; unfold not; unfold not in x; apply (compose x f).
+  intros A B f; apply (imp_map_l f).
  Qed.
+
+ Theorem and_comm : forall A B : Type, A /\ B -> B /\ A.
+ Proof.
+  intros A B [xl xr]; apply
 
  Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
 
@@ -248,7 +256,14 @@ Module Predicate.
 
  Theorem neg_false : forall A : Type, ~ A <-> (A <-> Empty).
  Proof.
- Admitted.
+  intros A.
+  apply pair.
+  -
+   intros x.
+   apply (pair x (exfalso A)).
+  -
+   apply first.
+ Qed.
 
  Theorem and_comm : forall A B : Prop, A /\ B <-> B /\ A.
  Proof.
