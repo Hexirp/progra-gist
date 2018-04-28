@@ -110,6 +110,8 @@ Module Predicate.
 
  Notation "~ x" := (not x) : type_scope.
 
+ Hint Unfold not: core.
+
  Inductive Unit : Type :=
  | tt : Unit
  .
@@ -183,12 +185,8 @@ Module Predicate.
 
  Theorem not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
  Proof.
-  intros A B f; apply (imp_map_l f).
+  intros A B f; unfold not; apply (imp_map_l f).
  Qed.
-
- Theorem and_comm : forall A B : Type, A /\ B -> B /\ A.
- Proof.
-  intros A B [xl xr]; apply
 
  Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
 
@@ -265,17 +263,40 @@ Module Predicate.
    apply first.
  Qed.
 
- Theorem and_comm : forall A B : Prop, A /\ B <-> B /\ A.
+ Theorem and_comm : forall A B : Type, A /\ B <-> B /\ A.
  Proof.
- Admitted.
+  assert (comm : forall A B, A /\ B -> B /\ A).
+  -
+   intros A B [xl xr]; apply (pair xr xl).
+  -
+   intros A B.
+   apply pair.
+   +
+    apply comm.
+   +
+    apply comm.
+ Qed.
 
- Theorem and_assoc : forall A B C : Prop, (A /\ B) /\ C <-> A /\ B /\ C.
+ Theorem and_assoc : forall A B C : Type, (A /\ B) /\ C <-> A /\ B /\ C.
  Proof.
- Admitted.
+  intros A B C.
+  apply pair.
+  -
+   intros [[xll xlr] xr]; apply (pair xll (pair xlr xr)).
+  -
+   intros [xl [xrl xrr]]; apply (pair (pair xl xrl) xrr).
+ Qed.
 
  Theorem or_comm : forall A B : Prop, (A \/ B) <-> (B \/ A).
  Proof.
- Admitted.
+  assert (comm : forall A B, A \/ B -> B \/ A).
+  -
+   intros A B [xl | xr]; [> apply (right _ xl) | apply (left _ xr) ].
+  -
+   intros A B.
+   apply pair.
+   
+ Qed.
 
  Theorem or_assoc : forall A B C : Prop, (A \/ B) \/ C <-> A \/ B \/ C.
  Proof.
