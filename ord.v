@@ -250,31 +250,11 @@ Module Predicate.
  Proof.
  Admitted.
 
- Theorem and_cancel_l : forall A B C : Prop,
-   (B -> A) -> (C -> A) -> ((A /\ B <-> A /\ C) <-> (B <-> C)).
- Proof.
- Admitted.
-
- Theorem and_cancel_r : forall A B C : Prop,
-   (B -> A) -> (C -> A) -> ((B /\ A <-> C /\ A) <-> (B <-> C)).
- Proof.
- Admitted.
-
  Theorem and_comm : forall A B : Prop, A /\ B <-> B /\ A.
  Proof.
  Admitted.
 
  Theorem and_assoc : forall A B C : Prop, (A /\ B) /\ C <-> A /\ B /\ C.
- Proof.
- Admitted.
-
- Theorem or_cancel_l : forall A B C : Prop,
-   (B -> ~ A) -> (C -> ~ A) -> ((A \/ B <-> A \/ C) <-> (B <-> C)).
- Proof.
- Admitted.
-
- Theorem or_cancel_r : forall A B C : Prop,
-   (B -> ~ A) -> (C -> ~ A) -> ((B \/ A <-> C \/ A) <-> (B <-> C)).
  Proof.
  Admitted.
 
