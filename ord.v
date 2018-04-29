@@ -271,7 +271,7 @@ Module Predicate.
  Proof.
   assert (comm : forall A B, A /\ B -> B /\ A).
   -
-   intros A B [xl xr]; apply (pair xr xl).
+   intros A B [xl xr]; refine (pair xr xl).
   -
    intros A B.
    apply pair.
@@ -286,16 +286,49 @@ Module Predicate.
   intros A B C.
   apply pair.
   -
-   intros [[xll xlr] xr]; apply (pair xll (pair xlr xr)).
+   intros [[xll xlr] xr]; refine (pair xll (pair xlr xr)).
   -
-   intros [xl [xrl xrr]]; apply (pair (pair xl xrl) xrr).
+   intros [xl [xrl xrr]]; refine (pair (pair xl xrl) xrr).
+ Qed.
+
+ Theorem and_fanout : forall A B C, (A -> B) -> (A -> C) -> A -> B /\ C.
+ Proof.
+  intros A B C f g x; refine (pair (f x) (g x)).
+ Qed.
+
+ Theorem and_unit_l : forall A : Type, A /\ Unit <-> A.
+ Proof.
+  intros A.
+  apply pair.
+  -
+   apply first.
+  -
+   apply and_fanout.
+   +
+    apply id.
+   +
+    apply unit_const.
+ Qed.
+
+ Theorem and_unit_r : forall A : Type, Unit /\ A <-> A.
+ Proof.
+  intros A.
+  apply pair.
+  -
+   apply second.
+  -
+   apply and_fanout.
+   +
+    apply unit_const.
+   +
+    apply id.
  Qed.
 
  Theorem or_comm : forall A B : Type, (A \/ B) <-> (B \/ A).
  Proof.
   assert (comm : forall A B, A \/ B -> B \/ A).
   -
-   intros A B [xl | xr]; [> apply (right xl) | apply (left xr) ].
+   intros A B [xl | xr]; [> refine (right xl) | refine (left xr) ].
   -
    intros A B.
    apply pair.
@@ -311,14 +344,47 @@ Module Predicate.
   apply pair.
   -
    intros [[xll | xlr] | xr]; [>
-    apply (left xll) |
-    apply (right (left xlr)) |
-    apply (right (right xr)) ].
+    refine (left xll) |
+    refine (right (left xlr)) |
+    refine (right (right xr)) ].
   -
    intros [xl | [xrl | xrr]]; [>
-    apply (left (left xl)) |
-    apply (left (right xrl)) |
-    apply (right xrr) ].
+    refine (left (left xl)) |
+    refine (left (right xrl)) |
+    refine (right xrr) ].
+ Qed.
+
+ Theorem or_fanin : forall A B C, (A -> B) -> (C -> B) -> A \/ C -> B.
+ Proof.
+  intros A B C f g [xl | xr]; [> refine (f xl) | refine (g xr) ].
+ Qed.
+
+ Theorem or_empty_l : forall A : Type, A \/ Empty <-> A.
+ Proof.
+  intros A.
+  apply pair.
+  -
+   apply or_fanin.
+   +
+    apply id.
+   +
+    apply exfalso.
+  -
+   apply left.
+ Qed.
+
+ Theorem or_empty_r : forall A : Type, Empty \/ A <-> A.
+ Proof.
+  intros A.
+  apply pair.
+  -
+   apply or_fanin.
+   +
+    apply exfalso.
+   +
+    apply id.
+  -
+   apply right.
  Qed.
 
  Inductive ex (A : Type) (P : A -> Type) : Type :=
@@ -368,68 +434,6 @@ Module Predicate.
   intros A x y z p q.
   case q.
   apply p.
- Qed.
-
- Definition not_and_then : forall A B, (A -> ~ B) -> ~ (A /\ B).
- Proof.
-  intros A B H x.
-  case x.
-  apply H.
- Qed.
-
- Definition not_then_and : forall A B, ~ (A /\ B) -> A -> ~ B.
- Proof.
-  intros A B H a b.
-  apply H.
-  apply pair.
-  -
-   apply a.
-  -
-   apply b.
- Qed.
-
- Definition map_not : forall A B, (A -> B) -> ~ B -> ~ A.
- Proof.
-  intros A B H nb a.
-  apply nb.
-  apply H.
-  apply a.
- Qed.
-
- Definition not_then_then : forall A B, (A -> ~ B) -> B -> ~ A.
- Proof.
-  intros A B H b a.
-  apply H.
-  -
-   apply a.
-  -
-   apply b.
- Qed.
-
- Definition intro_double_not : forall A, A -> ~ ~ A.
- Proof.
-  intros A a na.
-  apply na.
-  apply a.
- Qed.
-
- Definition map_double_not : forall A B, (A -> B) -> ~ ~ A -> ~ ~ B.
- Proof.
-  intros A B H.
-  apply map_not.
-  apply map_not.
-  apply H.
- Qed.
-
- Definition apply_double_not : forall A B, ~ ~ (A -> B) -> ~ ~ A -> ~ ~ B.
- Proof.
-  intros A B nnH nna nb.
-  apply nnH.
-  intros H.
-  revert nb.
-  revert nna.
-  apply map_double_not.
-  apply H.
  Qed.
 End Predicate.
 
