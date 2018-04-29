@@ -387,6 +387,45 @@ Module Predicate.
    apply right.
  Qed.
 
+ Theorem double_not : forall A : Type, A -> ~ ~ A.
+ Proof.
+  intros A a na.
+  apply na.
+  apply a.
+ Qed.
+
+ Theorem iff_double_not : forall A : Type, ~ ~ ~ A <-> ~ A.
+ Proof.
+  intros A.
+  apply pair.
+  -
+   apply not_map.
+   apply double_not.
+  -
+   apply double_not.
+ Qed.
+
+ Theorem de_morgan : forall A B, ~ (A \/ B) <-> ~ A /\ ~ B.
+ Proof.
+  intros A B.
+  apply pair.
+  -
+   apply and_fanout.
+   +
+    apply not_map.
+    apply left.
+   +
+    apply not_map.
+    apply right.
+  -
+   intros [xl xr].
+   refine (or_rec _ _).
+   +
+    apply xl.
+   +
+    apply xr.
+ Qed.
+
  Inductive ex (A : Type) (P : A -> Type) : Type :=
  | ex_pair : forall x, P x -> ex P
  .
@@ -398,7 +437,7 @@ Module Predicate.
      at level 200,
      x binder,
      right associativity,
-     format "'[' 'exists' '/ ' x .. y , '/ ' p ']'")
+     format "'[' 'exists'  '/  ' x  ..  y ,  '/  ' p ']'")
    :
      type_scope.
 
@@ -407,6 +446,21 @@ Module Predicate.
  Definition ex_rect := ex_ind.
 
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
+
+ Theorem quant_de_morgan
+     : forall (A : Type) (P : A -> Type), ~ (exists x, P x) <-> forall x, ~ P x.
+ Proof.
+  intros A P.
+  apply pair.
+  -
+   intros H x xH.
+   apply H.
+   apply (ex_pair xH).
+  -
+   intros H [x xH].
+   apply (H x).
+   apply xH.
+ Qed.
 
  Inductive eq (A : Type) (x : A) : A -> Type :=
  | eq_refl : x = x :> A
