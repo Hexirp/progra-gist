@@ -75,7 +75,13 @@ Module Predicate.
 
  Export Unset Universe Minimization ToSet.
 
- Set Implicit Arguments.
+ Export Set Implicit Arguments.
+
+ Export Unset Strict Implicit.
+
+ Export Set Contextual Implicit.
+
+ Export Set Reversible Pattern Implicit.
 
  Export Pre.
 
@@ -104,13 +110,11 @@ Module Predicate.
 
  Scheme Empty_ind := Induction for Empty Sort Type.
  Scheme Empty_rec := Minimality for Empty Sort Type.
- Definition Empty_rect := Empty_ind.
+ Definition Empty_rect := @Empty_ind.
 
  Definition not (A : Type) : Type := A -> Empty.
 
  Notation "~ x" := (not x) : type_scope.
-
- Hint Unfold not: core.
 
  Inductive Unit : Type :=
  | tt : Unit
@@ -155,37 +159,37 @@ Module Predicate.
 
  Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
  Proof.
-  intros A B C f [xl xr]; apply (pair (f xl) xr).
+  intros A B C f [xl xr]; refine (pair (f xl) xr).
  Qed.
 
  Theorem and_map_r : forall A B C : Type, (A -> B) -> C /\ A -> C /\ B.
  Proof.
-  intros A B C f [xl xr]; apply (pair xl (f xr)).
+  intros A B C f [xl xr]; refine (pair xl (f xr)).
  Qed.
 
  Theorem or_map_l : forall A B C : Type, (A -> B) -> A \/ C -> B \/ C.
  Proof.
-  intros A B C f [xl | xr]; [> apply (left _ (f xl)) | apply (right _ xr) ].
+  intros A B C f [xl | xr]; [> refine (left (f xl)) | refine (right xr) ].
  Qed.
 
  Theorem or_map_r : forall A B C : Type, (A -> B) -> C \/ A -> C \/ B.
  Proof.
-  intros A B C f [xl | xr]; [> apply (left _ xl) | apply (right _ (f xr)) ].
+  intros A B C f [xl | xr]; [> refine (left xl) | refine (right (f xr)) ].
  Qed.
 
  Theorem imp_map_l : forall A B C : Type, (A -> B) -> (B -> C) -> (A -> C).
  Proof.
-  intros A B C f g; apply (compose g f).
+  intros A B C f g; refine (compose g f).
  Qed.
 
  Theorem imp_map_r : forall A B C : Type, (A -> B) -> (C -> A) -> (C -> B).
  Proof.
-  intros A B C f; apply (compose f).
+  intros A B C f g; refine (compose f g).
  Qed.
 
  Theorem not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
  Proof.
-  intros A B f; unfold not; apply (imp_map_l f).
+  intros A B f x; refine (compose x f).
  Qed.
 
  Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
@@ -195,13 +199,13 @@ Module Predicate.
  Theorem iff_refl : forall A, A <-> A.
  Proof.
   intros A.
-  apply (pair (@id A) (@id A)).
+  refine (pair (@id _) (@id _)).
  Qed.
 
  Theorem iff_sym : forall A B, (A <-> B) -> (B <-> A).
  Proof.
   intros A B x.
-  apply (pair (second x) (first x)).
+  refine (pair (second x) (first x)).
  Qed.
 
  Theorem iff_trans : forall A B C, (A <-> B) -> (C <-> A) -> (C <-> B).
@@ -209,47 +213,47 @@ Module Predicate.
   intros A B C x y.
   apply pair.
   -
-   apply (compose (first x) (first y)).
+   refine (compose (first x) (first y)).
   -
-   apply (compose (second y) (second x)).
+   refine (compose (second y) (second x)).
  Qed.
 
  Theorem and_iff_map_l
      : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
  Proof.
-  intros A B C [xl xr]; apply (pair (and_map_l xl) (and_map_l xr)).
+  intros A B C [xl xr]; refine (pair (and_map_l xl) (and_map_l xr)).
  Qed.
 
  Theorem and_iff_map_r
      : forall A B C : Type, (A <-> B) -> (C /\ A <-> C /\ B).
  Proof.
-  intros A B C [xl xr]; apply (pair (and_map_r xl) (and_map_r xr)).
+  intros A B C [xl xr]; refine (pair (and_map_r xl) (and_map_r xr)).
  Qed.
 
  Theorem or_iff_map_l
      : forall A B C : Type, (A <-> B) -> (A \/ C <-> B \/ C).
  Proof.
-  intros A B C [xl xr]; apply (pair (or_map_l xl) (or_map_l xr)).
+  intros A B C [xl xr]; refine (pair (or_map_l xl) (or_map_l xr)).
  Qed.
 
  Theorem or_iff_map_r : forall A B C : Type, (A <-> B) -> (C \/ A <-> C \/ B).
  Proof.
-  intros A B C [xl xr]; apply (pair (or_map_r xl) (or_map_r xr)).
+  intros A B C [xl xr]; refine (pair (or_map_r xl) (or_map_r xr)).
  Qed.
 
  Theorem imp_iff_map_l : forall A B C : Type, (A <-> B) -> ((A -> C) <-> (B -> C)).
  Proof.
-  intros A B C [xl xr]; apply (pair (imp_map_l xr) (imp_map_l xl)).
+  intros A B C [xl xr]; refine (pair (imp_map_l xr) (imp_map_l xl)).
  Qed.
 
  Theorem imp_iff_map_r : forall A B C : Type, (A <-> B) -> ((C -> A) <-> (C -> B)).
  Proof.
-  intros A B C [xl xr]; apply (pair (imp_map_r xl) (imp_map_r xr)).
+  intros A B C [xl xr]; refine (pair (imp_map_r xl) (imp_map_r xr)).
  Qed.
 
  Theorem not_iff_map : forall A B : Type, (A <-> B) -> (~ A <-> ~B).
  Proof.
-  intros A B [xl xr]; apply (pair (not_map xr) (not_map xl)).
+  intros A B [xl xr]; refine (pair (not_map xr) (not_map xl)).
  Qed.
 
  Theorem neg_false : forall A : Type, ~ A <-> (A <-> Empty).
@@ -258,7 +262,7 @@ Module Predicate.
   apply pair.
   -
    intros x.
-   apply (pair x (exfalso A)).
+   refine (pair x (@exfalso _)).
   -
    apply first.
  Qed.
@@ -287,20 +291,35 @@ Module Predicate.
    intros [xl [xrl xrr]]; apply (pair (pair xl xrl) xrr).
  Qed.
 
- Theorem or_comm : forall A B : Prop, (A \/ B) <-> (B \/ A).
+ Theorem or_comm : forall A B : Type, (A \/ B) <-> (B \/ A).
  Proof.
   assert (comm : forall A B, A \/ B -> B \/ A).
   -
-   intros A B [xl | xr]; [> apply (right _ xl) | apply (left _ xr) ].
+   intros A B [xl | xr]; [> apply (right xl) | apply (left xr) ].
   -
    intros A B.
    apply pair.
-   
+   +
+    apply comm.
+   +
+    apply comm.
  Qed.
 
- Theorem or_assoc : forall A B C : Prop, (A \/ B) \/ C <-> A \/ B \/ C.
+ Theorem or_assoc : forall A B C : Type, (A \/ B) \/ C <-> A \/ B \/ C.
  Proof.
- Admitted.
+  intros A B C.
+  apply pair.
+  -
+   intros [[xll | xlr] | xr]; [>
+    apply (left xll) |
+    apply (right (left xlr)) |
+    apply (right (right xr)) ].
+  -
+   intros [xl | [xrl | xrr]]; [>
+    apply (left (left xl)) |
+    apply (left (right xrl)) |
+    apply (right xrr) ].
+ Qed.
 
  Inductive ex (A : Type) (P : A -> Type) : Type :=
  | ex_pair : forall x, P x -> ex P
