@@ -499,6 +499,10 @@ Module Peano.
  | S : nat -> nat
  .
 
+ Scheme nat_ind := Induction for nat Sort Type.
+ Scheme nat_rec := Minimality for nat Sort Type.
+ Definition nat_rect := nat_ind.
+
  Definition not_eq_O_S : forall n, O <> S n.
  Proof.
   intros n p.
