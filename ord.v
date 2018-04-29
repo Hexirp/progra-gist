@@ -645,6 +645,135 @@ End Peano.
 
 Export Peano. *)
 
+Module Relation.
+ Export Predicate.
+
+ Definition relation (A : Type) := A -> A -> Type.
+
+ Definition mere (A : Type) (R : relation A) := forall x y : A, forall p q : R x y, p = q.
+
+ Section Classes.
+  Variable A : Type.
+  Variable R : relation A.
+
+  Class Reflexive : Type :=
+    reflexivity : forall x, R x x.
+
+  Class Irreflexive :=
+    irreflexivity : forall x, ~ R x x.
+
+  Class Symmetric :=
+    symmetry : forall x y, R x y -> R y x.
+
+  Class Asymmetric :=
+    asymmetry : forall x y, R x y -> ~ R y x.
+
+  Class Antisymmetric :=
+    antisymmetry : forall x y, R x y -> R y x -> x = y.
+
+  Class Transitive :=
+    transitivity : forall x y z, R x y -> R y z -> R x z.
+
+  Class Well_Founded :=
+    well_foundness : forall P, (forall x, (forall y, R y x -> P y) -> P x) -> (forall x, P x).
+
+  Class Trichotomous :=
+    trichotomy : forall x y, x = y \/ R x y \/ R y x.
+
+  Class Extensional :=
+    extensionality : forall x y, (forall a, R a x <-> R a y) -> x = y.
+
+  Theorem th_0 `{WF : Well_Founded} : Irreflexive.
+  Proof.
+   unfold Irreflexive.
+   apply well_foundness.
+   intros x IH H.
+   apply IH with x.
+   -
+    apply H.
+   -
+    apply H.
+  Qed.
+
+  Theorem th_1 `{WF : Well_Founded} : Asymmetric.
+  Proof.
+   unfold Asymmetric.
+   apply (@well_foundness _ (fun x => forall y, R x y -> ~ R y x)).
+   intros x IH y Hl Hr.
+   apply IH with y x.
+   -
+    apply Hr.
+   -
+    apply Hr.
+   -
+    apply Hl.
+  Qed.
+
+  Theorem th_2 `{IR : Irreflexive} `{T : Trichotomous} : Extensional.
+  Proof.
+   unfold Extensional.
+   intros x y H.
+   destruct (@trichotomy _ x y) as [both | [left | right]].
+   -
+    apply both.
+   -
+    apply exfalso.
+    apply irreflexivity with x.
+    apply (second (H _)).
+    apply left.
+   -
+    apply exfalso.
+    apply irreflexivity with y.
+    apply (first (H _)).
+    apply right.
+  Qed.
+
+  Theorem th_3 `{WF : Well_Founded} `{T : Trichotomous} : Transitive.
+  Proof.
+   unfold Transitive.
+   intros x y z Hl Hr.
+   destruct (@trichotomy _ x z) as [both | [left | right]].
+   -
+    apply exfalso.
+    assert (AS : Asymmetric).
+    +
+     apply th_1.
+    +
+     apply asymmetry with y z.
+     *
+      apply Hr.
+     *
+      case both.
+      apply Hl.
+  -
+   apply left.
+  -
+   assert (tri_loop : forall x y z, R x y -> R y z -> R z x -> Empty).
+   +
+    clear x y z Hl Hr right.
+    apply (@well_foundness _ (fun x => forall y z, R x y -> R y z -> R z x -> Empty)).
+    intros x IH y z Hx Hy Hz.
+    apply IH with z x y.
+    *
+     apply Hz.
+    *
+     apply Hz.
+    *
+     apply Hx.
+    *
+     apply Hy.
+   +
+    apply exfalso.
+    apply tri_loop with x y z.
+    *
+     apply Hl.
+    *
+     apply Hr.
+    *
+     apply right.
+  Qed.
+ End Classes.
+
 Module Type Ord.
  Parameter ord : Type.
  Parameter lt : ord -> ord -> Type.
