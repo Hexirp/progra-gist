@@ -491,7 +491,7 @@ Module Predicate.
  Qed.
 End Predicate.
 
-Module Peano.
+(* Module Peano.
  Export Predicate.
 
  Inductive nat : Type :=
@@ -643,7 +643,7 @@ Module Peano.
  Qed.
 End Peano.
 
-Export Peano.
+Export Peano. *)
 
 Module Type Ord.
  Parameter ord : Type.
