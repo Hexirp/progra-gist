@@ -491,6 +491,16 @@ Module Predicate.
    apply xH.
  Qed.
 
+End Predicate.
+
+(** * Equality *)
+
+(** 等号について。 *)
+
+Module Equality.
+
+ Export Predicate.
+
  (** ** eq *)
 
  Inductive eq (A : Type) (x : A) : A -> Type :=
@@ -509,20 +519,65 @@ Module Predicate.
 
  (** eqの基本性質 *)
 
- Definition eq_sym : forall A (x y : A), x = y -> y = x.
+ Definition eq_sym : forall (A : Type) (x y : A), x = y -> y = x.
  Proof.
   intros A x y p.
   case p.
   apply eq_refl.
  Qed.
 
- Definition eq_trans : forall A (x y z : A), x = y -> y = z -> x = z.
+ Definition eq_trans : forall (A : Type) (x y z : A), x = y -> z = x -> y = z.
  Proof.
   intros A x y z p q.
+  case p.
   case q.
-  apply p.
+  apply eq_refl.
  Qed.
-End Predicate.
+
+ Definition eq_ind'
+     : forall (A : Type) (P : forall a b : A, a = b -> Type),
+         (forall a : A, P a a eq_refl) -> forall (a b : A) (p : a = b), P a b p.
+ Proof.
+  intros A P H a b p.
+  case p.
+  apply H.
+ Qed.
+
+ Definition eq_rec'
+     : forall (A : Type) (P : A -> A -> Type),
+         (forall a : A, P a a) -> forall a b : A, a = b -> P a b.
+ Proof.
+  intros A P H a b p.
+  case p.
+  apply H.
+ Qed.
+
+ Definition eq_rect' := eq_ind'.
+
+ Definition eq_rec_r
+     : forall (A : Type) (x : A) (P : A -> Type), P x -> forall (y : A), y = x -> P y.
+ Proof.
+  intros A x P H y p.
+  revert H.
+  case p.
+  apply id.
+ Qed.
+
+ Definition f_equal : forall (A B : Type) (f : A -> B) (x y : A), x = y -> f x = f y.
+ Proof.
+  intros A B f x y p.
+  case p.
+  apply eq_refl.
+ Qed.
+
+ Definition rew : forall (A : Type) (P : A -> Type) (x y : A), x = y -> P x -> P y.
+ Proof.
+  intros A P x y p.
+  case p.
+  apply id.
+ Qed.
+
+End Equality.
 
 (* Module Peano.
  Export Predicate.
