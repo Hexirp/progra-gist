@@ -2,9 +2,11 @@
 
 (* in Coq 8.8.0 *)
 
-Module Pre.
+(** * Pre *)
 
- (** 事前に定義すべきもの。演算子の優先順位などを一貫させたり、スコープを定義する。 *)
+(** 事前に定義すべきもの。演算子の優先順位などを一貫させたり、スコープを定義する。 *)
+
+Module Pre.
 
  (** 述語論理の記号 *)
 
@@ -57,9 +59,7 @@ Module Pre.
 
  Export Set Default Proof Mode "Classic".
 
-End Pre.
-
-Module Predicate.
+ (** フラグ *)
 
  Export Unset Bracketing Last Introduction Pattern.
 
@@ -83,9 +83,17 @@ Module Predicate.
 
  Export Set Reversible Pattern Implicit.
 
+End Pre.
+
+(** * Predicate *)
+
+(** 命題論理、述語論理について。 *)
+
+Module Predicate.
+
  Export Pre.
 
- (** 関数型 *)
+ (** ** 関数 *)
 
  Definition arrow (A B : Type) : Type := forall (_ : A), B.
 
@@ -105,6 +113,8 @@ Module Predicate.
 
  Definition apply : forall A B, (A -> B) -> A -> B := fun _ _ f x => f x.
 
+ (** ** Empty *)
+
  Inductive Empty : Type :=
  .
 
@@ -116,6 +126,8 @@ Module Predicate.
 
  Notation "~ x" := (not x) : type_scope.
 
+ (** ** Unit *)
+
  Inductive Unit : Type :=
  | tt : Unit
  .
@@ -123,6 +135,8 @@ Module Predicate.
  Scheme Unit_ind := Induction for Unit Sort Type.
  Scheme Unit_rec := Minimality for Unit Sort Type.
  Definition Unit_rect := Unit_ind.
+
+ (** ** and *)
 
  Inductive and (A B : Type) : Type :=
  | pair : A -> B -> A /\ B
@@ -142,6 +156,8 @@ Module Predicate.
   fun _ _ x => match x with pair _ xR => xR end
  .
 
+ (** ** or *)
+
  Inductive or (A B : Type) : Type :=
  | left : A -> A \/ B
  | right : B -> A \/ B
@@ -152,6 +168,8 @@ Module Predicate.
  Scheme or_ind := Induction for or Sort Type.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
+
+ (** ** 命題論理の定理 *)
 
  Definition exfalso : forall A : Type, Empty -> A := Empty_rec.
 
@@ -192,9 +210,13 @@ Module Predicate.
   intros A B f x; refine (compose x f).
  Qed.
 
+ (** ** iff *)
+
  Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
 
  Notation "A <-> B" := (iff A B) : type_scope.
+
+ (** iffの基本性質 *)
 
  Theorem iff_refl : forall A, A <-> A.
  Proof.
@@ -217,6 +239,8 @@ Module Predicate.
   -
    refine (compose (second y) (second x)).
  Qed.
+
+ (** 双方向のmap *)
 
  Theorem and_iff_map_l
      : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
@@ -255,6 +279,8 @@ Module Predicate.
  Proof.
   intros A B [xl xr]; refine (pair (not_map xr) (not_map xl)).
  Qed.
+
+ (** ** 重要なiff *)
 
  Theorem neg_false : forall A : Type, ~ A <-> (A <-> Empty).
  Proof.
@@ -426,6 +452,8 @@ Module Predicate.
     apply xr.
  Qed.
 
+ (** ** 量化子 *)
+
  Inductive ex (A : Type) (P : A -> Type) : Type :=
  | ex_pair : forall x, P x -> ex P
  .
@@ -447,6 +475,8 @@ Module Predicate.
 
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
+ (** 量化子の重要なiff *)
+
  Theorem quant_de_morgan
      : forall (A : Type) (P : A -> Type), ~ (exists x, P x) <-> forall x, ~ P x.
  Proof.
@@ -462,6 +492,8 @@ Module Predicate.
    apply xH.
  Qed.
 
+ (** ** eq *)
+
  Inductive eq (A : Type) (x : A) : A -> Type :=
  | eq_refl : x = x :> A
  where
@@ -475,6 +507,8 @@ Module Predicate.
  Notation "x = y" := (x = y :> _) : type_scope.
  Notation "x <> y :> T" := (~ x = y :> T) : type_scope.
  Notation "x <> y" := (x <> y :> _) : type_scope.
+
+ (** eqの基本性質 *)
 
  Definition eq_sym : forall A (x y : A), x = y -> y = x.
  Proof.
