@@ -169,11 +169,7 @@ Module Predicate.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
 
- (** ** 命題論理の定理 *)
-
- Definition exfalso : forall A : Type, Empty -> A := Empty_rec.
-
- Definition unit_const : forall A : Type, A -> Unit := fun A => const tt.
+ (** mappings *)
 
  Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
  Proof.
@@ -210,6 +206,29 @@ Module Predicate.
   intros A B f x; refine (compose x f).
  Qed.
 
+ (** ** 命題論理の定理 *)
+
+ Definition exfalso : forall A : Type, Empty -> A := Empty_rec.
+
+ Definition unit_const : forall A : Type, A -> Unit := fun A => const tt.
+
+ Theorem and_fanout : forall A B C, (A -> B) -> (A -> C) -> A -> B /\ C.
+ Proof.
+  intros A B C f g x; refine (pair (f x) (g x)).
+ Qed.
+
+ Theorem or_fanin : forall A B C, (A -> B) -> (C -> B) -> A \/ C -> B.
+ Proof.
+  intros A B C f g [xl | xr]; [> refine (f xl) | refine (g xr) ].
+ Qed.
+
+ Theorem double_not : forall A : Type, A -> ~ ~ A.
+ Proof.
+  intros A a na.
+  apply na.
+  apply a.
+ Qed.
+
  (** ** iff *)
 
  Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
@@ -240,22 +259,19 @@ Module Predicate.
    refine (compose (second y) (second x)).
  Qed.
 
- (** 双方向のmap *)
+ (** 双方向のmappings *)
 
- Theorem and_iff_map_l
-     : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
+ Theorem and_iff_map_l : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
  Proof.
   intros A B C [xl xr]; refine (pair (and_map_l xl) (and_map_l xr)).
  Qed.
 
- Theorem and_iff_map_r
-     : forall A B C : Type, (A <-> B) -> (C /\ A <-> C /\ B).
+ Theorem and_iff_map_r : forall A B C : Type, (A <-> B) -> (C /\ A <-> C /\ B).
  Proof.
   intros A B C [xl xr]; refine (pair (and_map_r xl) (and_map_r xr)).
  Qed.
 
- Theorem or_iff_map_l
-     : forall A B C : Type, (A <-> B) -> (A \/ C <-> B \/ C).
+ Theorem or_iff_map_l : forall A B C : Type, (A <-> B) -> (A \/ C <-> B \/ C).
  Proof.
   intros A B C [xl xr]; refine (pair (or_map_l xl) (or_map_l xr)).
  Qed.
@@ -317,11 +333,6 @@ Module Predicate.
    intros [xl [xrl xrr]]; refine (pair (pair xl xrl) xrr).
  Qed.
 
- Theorem and_fanout : forall A B C, (A -> B) -> (A -> C) -> A -> B /\ C.
- Proof.
-  intros A B C f g x; refine (pair (f x) (g x)).
- Qed.
-
  Theorem and_unit_l : forall A : Type, A /\ Unit <-> A.
  Proof.
   intros A.
@@ -380,11 +391,6 @@ Module Predicate.
     refine (right xrr) ].
  Qed.
 
- Theorem or_fanin : forall A B C, (A -> B) -> (C -> B) -> A \/ C -> B.
- Proof.
-  intros A B C f g [xl | xr]; [> refine (f xl) | refine (g xr) ].
- Qed.
-
  Theorem or_empty_l : forall A : Type, A \/ Empty <-> A.
  Proof.
   intros A.
@@ -411,13 +417,6 @@ Module Predicate.
     apply id.
   -
    apply right.
- Qed.
-
- Theorem double_not : forall A : Type, A -> ~ ~ A.
- Proof.
-  intros A a na.
-  apply na.
-  apply a.
  Qed.
 
  Theorem iff_double_not : forall A : Type, ~ ~ ~ A <-> ~ A.
