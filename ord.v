@@ -2,13 +2,32 @@
 
 (* in Coq 8.8.0 *)
 
-(** * Pre *)
+(** * Pre
 
-(** 事前に定義すべきもの。演算子の優先順位などを一貫させたり、スコープを定義する。 *)
+事前に定義すべきもの。
+
+第一に、表記法（演算子などの書き方）を事前に定義する。これらは実際に何を意味するか定義されてはいないが、
+優先順位や結合性は定義されている。たとえば、どの小単位 (Module) に書かれているかによって
+[2 + 3 + 4 * 0] が [(2 + 3) + (4 * 0)] となったり、 [((2 + 3) + 4) * 0] となったりすると読みづらい。
+また、最初から [_ + _] を自然数同士の足し算と決めたりすると、整数同士の足し算と解釈したいときなどに困る。
+書かれている場所によってどの解釈を選ぶかは視野 (scope) の仕組みによる。
+
+第二に、視野 (scope) を定義する。例えば、 [(Empty + Unit)%type] という式があったとする。このとき、
+百分率記号は、右側の式が解釈されるとき、その内の表記法が type という視野の中から探されることを示す。
+どの表記法がどの視野に入るかは、表記法の意味を定義するときに定義できる。同じ表記法でも、視野によって意味が
+異なることがある。式を読み取る何某の「視野」をイメージしてほしい。百分率記号で直接的に指定しなくとも型に
+よって視野が選ばれることもある。
+
+第三に、戦略 (tactic) を使用するための設定をする。戦略 (tactic) は一気に定義を書き上げることが出来ない
+場合に有用な道具である。この部分の記述は Stack Overflow で Tej Chajed に教えていただいた。感謝する。
+さらに、 Coq の標準文庫 (library) の内部にある Coq.Init.Notations の記述も参考にした。
+
+第四に、設定旗 (flag) を操作する。これら大部分は HoTT の内部にある HoTT.Basics.Overture の記述に
+依ったが、暗黙引数に関する設定は独自である。 *)
 
 Module Pre.
 
- (** 述語論理の記号 *)
+ (** 述語論理の記号。 *)
 
  Reserved Notation "x -> y" (at level 99, right associativity, y at level 200).
  Reserved Notation "x <-> y" (at level 95, no associativity).
@@ -16,7 +35,7 @@ Module Pre.
  Reserved Notation "x \/ y" (at level 85, right associativity).
  Reserved Notation "~ x" (at level 75, right associativity).
 
- (* 等号及び不等号、大小関係 *)
+ (* 等号及び不等号、大小関係。 *)
 
  Reserved Notation "x = y :> T" (at level 70, y at next level, no associativity).
  Reserved Notation "x = y" (at level 70, no associativity).
@@ -29,7 +48,7 @@ Module Pre.
  Reserved Notation "x >= y" (at level 70, no associativity).
  Reserved Notation "x > y" (at level 70, no associativity).
 
- (** 算術演算子 *)
+ (** 算術演算子。 *)
 
  Reserved Notation "x + y" (at level 50, left associativity).
  Reserved Notation "x - y" (at level 50, left associativity).
@@ -40,7 +59,7 @@ Module Pre.
  Reserved Notation "- x" (at level 35, right associativity).
  Reserved Notation "/ x" (at level 35, right associativity).
 
- (** スコープ *)
+ (** 視野 (scope) 。 *)
 
  Delimit Scope type_scope with type.
  Delimit Scope function_scope with function.
@@ -53,13 +72,13 @@ Module Pre.
  Open Scope function_scope.
  Open Scope type_scope.
 
- (** タクティックの設定 *)
+ (** 戦略 (tactic) の設定。 *)
 
  Declare ML Module "ltac_plugin".
 
  Export Set Default Proof Mode "Classic".
 
- (** フラグ *)
+ (** 設定旗 (flag) の操作。 *)
 
  Export Unset Bracketing Last Introduction Pattern.
 
