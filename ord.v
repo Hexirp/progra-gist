@@ -104,9 +104,10 @@ Module Pre.
 
 End Pre.
 
-(** * Predicate *)
+(** * Predicate
 
-(** 命題論理、述語論理について。 *)
+命題論理、述語論理についての定義。論理式はカリー・ハワード対応に従って型へ翻訳される。この小単位はそれらを
+定義するものである。ただ、これらは命題 (Prop) ではなく 型 (Type) であることに注意すること。 *)
 
 Module Predicate.
 
@@ -134,6 +135,8 @@ Module Predicate.
 
  (** ** Empty *)
 
+ (** 偽、矛盾、空の型、空の空間。 *)
+
  Inductive Empty : Type :=
  .
 
@@ -147,6 +150,8 @@ Module Predicate.
 
  (** ** Unit *)
 
+ (** 真、点の空間、ユニット。 *)
+
  Inductive Unit : Type :=
  | tt : Unit
  .
@@ -156,6 +161,8 @@ Module Predicate.
  Definition Unit_rect := Unit_ind.
 
  (** ** and *)
+
+ (** 論理積、二つ組、対、ダブル、2-タプル、ペア。 *)
 
  Inductive and (A B : Type) : Type :=
  | pair : A -> B -> A /\ B
@@ -177,6 +184,8 @@ Module Predicate.
 
  (** ** or *)
 
+ (** 論理和。 *)
+
  Inductive or (A B : Type) : Type :=
  | left : A -> A \/ B
  | right : B -> A \/ B
@@ -188,7 +197,7 @@ Module Predicate.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
 
- (** mappings *)
+ (** 写像。 *)
 
  Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
  Proof.
@@ -250,6 +259,8 @@ Module Predicate.
 
  (** ** iff *)
 
+ (** 同値。 *)
+
  Definition iff (A B : Type) : Type := (A -> B) /\ (B -> A).
 
  Notation "A <-> B" := (iff A B) : type_scope.
@@ -278,7 +289,7 @@ Module Predicate.
    refine (compose (second y) (second x)).
  Qed.
 
- (** 双方向のmappings *)
+ (** 双方向の写像 *)
 
  Theorem and_iff_map_l : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
  Proof.
@@ -315,7 +326,7 @@ Module Predicate.
   intros A B [xl xr]; refine (pair (not_map xr) (not_map xl)).
  Qed.
 
- (** ** 重要なiff *)
+ (** ** 重要な同値関係 *)
 
  Theorem neg_false : forall A : Type, ~ A <-> (A <-> Empty).
  Proof.
@@ -493,7 +504,7 @@ Module Predicate.
 
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
- (** 量化子の重要なiff *)
+ (** 量化子に関する重要な同値関係 *)
 
  Theorem quant_de_morgan
      : forall (A : Type) (P : A -> Type), ~ (exists x, P x) <-> forall x, ~ P x.
