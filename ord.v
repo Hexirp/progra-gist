@@ -564,6 +564,8 @@ Module Equality.
   apply eq_refl.
  Qed.
 
+ (** eqの汎用関数 *)
+
  Definition eq_ind'
      : forall (A : Type) (P : forall a b : A, a = b -> Type),
          (forall a : A, P a a eq_refl) -> forall (a b : A) (p : a = b), P a b p.
@@ -608,6 +610,54 @@ Module Equality.
  Qed.
 
 End Equality.
+
+Module Path.
+ Export Equality.
+
+ Definition idpath := @eq_refl.
+
+ Definition inverse := eq_sym.
+
+ Definition concat := fun (A : Type) (x y z : A) => flip (@eq_trans A y z x).
+
+ Definition transport := rew.
+
+ Definition ap := f_equal.
+
+ (** apKN
+
+<<
+ap00 := fun (f   : A -> B)                       (x   : A)                => (_ : B)
+ap01 := fun (f   : A -> B)                       (x y : A) (p : eq A x y) => (_ : eq B (f x) (f y))
+ap10 := fun (f g : A -> B) (p : eq (A -> B) f g) (x   : A)                => (eq B (f x) (g x))
+ap11 := fun (f g : A -> B) (p : eq (A -> B) f g) (x y : A) (q : eq A x y) => (eq B (f x) (g y))
+>>
+
+ *)
+
+ Definition ap00 := apply.
+
+ Definition ap01 := ap.
+
+ Definition ap10 : forall (A B : Type) (f g : A -> B), f = g -> forall (x : A), f x = g x.
+ Proof.
+  intros A B f g p x.
+  case p.
+  apply idpath.
+ Qed.
+
+ Definition ap11
+     : forall (A B : Type) (f g : A -> B), f = g -> forall (x y : A), x = y -> f x = g y.
+ Proof.
+  intros A B f g p x y q.
+  case p.
+  case q.
+  apply idpath.
+ Qed.
+
+ Definition pointwise (A : Type) (P : A -> Type) (f g : forall x, P x) := forall x, f x = g x.
+
+ 
 
 (* Module Peano.
  Export Predicate.
