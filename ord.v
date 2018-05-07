@@ -614,6 +614,8 @@ End Equality.
 Module Path.
  Export Equality.
 
+ Definition paths := eq.
+
  Definition idpath := @eq_refl.
 
  Definition inverse := eq_sym.
@@ -627,10 +629,14 @@ Module Path.
  (** apKN
 
 <<
-ap00 := fun (f   : A -> B)                       (x   : A)                => (_ : B)
-ap01 := fun (f   : A -> B)                       (x y : A) (p : eq A x y) => (_ : eq B (f x) (f y))
-ap10 := fun (f g : A -> B) (p : eq (A -> B) f g) (x   : A)                => (eq B (f x) (g x))
-ap11 := fun (f g : A -> B) (p : eq (A -> B) f g) (x y : A) (q : eq A x y) => (eq B (f x) (g y))
+ap00 :=
+  fun (f   : A -> B)                       (x   : A)                => (_ : B)
+ap01 :=
+  fun (f   : A -> B)                       (x y : A) (p : eq A x y) => (_ : eq B (f x) (f y))
+ap10 :=
+  fun (f g : A -> B) (p : eq (A -> B) f g) (x   : A)                => (_ : eq B (f x) (g x))
+ap11 :=
+  fun (f g : A -> B) (p : eq (A -> B) f g) (x y : A) (q : eq A x y) => (_ : eq B (f x) (g y))
 >>
 
  *)
@@ -655,9 +661,40 @@ ap11 := fun (f g : A -> B) (p : eq (A -> B) f g) (x y : A) (q : eq A x y) => (eq
   apply idpath.
  Qed.
 
- Definition pointwise (A : Type) (P : A -> Type) (f g : forall x, P x) := forall x, f x = g x.
+ Definition pw_paths (A : Type) (P : A -> Type) (f g : forall x, P x) := forall x, f x = g x.
 
- 
+ Definition pw_idpath : forall (A : Type) (P : A -> Type) (f : forall x, P x), pw_paths f f.
+ Proof.
+  intros A P f x.
+  apply idpath.
+ Qed.
+
+ Definition pw_whiskerL
+     : forall (A B C : Type) (f : A -> B) (g h : B -> C),
+         pw_paths g h -> pw_paths (compose g f) (compose h f).
+ Proof.
+  intros A B C f g h p x.
+  apply p.
+ Qed.
+
+ Definition pw_whiskerR
+     : forall (A B C : Type) (f g : A -> B) (h : B -> C),
+         pw_paths f g -> pw_paths (compose h f) (compose h g).
+ Proof.
+  intros A B C f g h p x.
+  apply (@ap _ _ h).
+  apply p.
+ Qed.
+
+ Definition pw_pw_paths
+     (A : Type) (P : A -> Type) (f g : forall x, P x) (pw_p pw_q : pw_paths f g)
+   := forall x, pw_p x = pw_q x.
+
+ Definition sect (A B : Type) (s : A -> B) (r : B -> A) := pw_paths (compose r s) (@id _).
+
+ Definition equiv (A B : Type)
+     := exists (f : A -> B) (g : B -> A) (es : sect g f) (er : sect f g),
+         pw_pw_paths (@pw_whiskerL _ _ _ f _ _ es) (@pw_whiskerR _ _ _ _ _ f er).
 
 (* Module Peano.
  Export Predicate.
