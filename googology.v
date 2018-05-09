@@ -1,5 +1,23 @@
 Set Printing Universes.
 
+(** * Coqで巨大数
+
+緩増加関数の変種を使用する。型が不定であるのに注意。
+
+<<
+\(
+\begin{align}
+g_0 &= 0
+\\
+g_{\alpha+1} &= g_\alpha+1
+\\
+g_\alpha ( n ) &= g_{\alpha[n]}
+\end{align}
+\)
+>>
+
+*)
+
 Inductive nat : Type :=
 | O : nat
 | S : nat -> nat
