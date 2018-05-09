@@ -58,36 +58,38 @@ Definition f01010 : t00 := s00 f0101.
 
 Definition f010100 : t00 := s00 f01010.
 
-Definition t01 : nat -> Type := ind Type to ts.
+Definition ts0 : nat -> Type := ind Type to ts.
 
-Definition o01 : forall m, t01 m.
+Definition t01 : Type := forall m, ts0 m.
+
+Definition o01 : t01.
 Proof.
  refine (fix o01 m := _).
- refine (match m as m' return t01 m' with O => _ | S mp => _ end).
+ refine (match m as m' return ts0 m' with O => _ | S mp => _ end).
  -
   refine o.
  -
-  refine (ind (t01 mp) (o01 mp) _).
-  refine ((_ : forall m, t01 m -> t01 m) mp).
+  refine (ind (ts0 mp) (o01 mp) _).
+  refine ((_ : forall m, ts0 m -> ts0 m) mp).
   refine (fix scheme n := _).
-  refine (match n as n' return t01 n' -> t01 n' with O => _ | S np => _ end).
+  refine (match n as n' return ts0 n' -> ts0 n' with O => _ | S np => _ end).
   +
    refine s.
   +
-   refine (comp (t01 np) (scheme np)).
+   refine (comp (ts0 np) (scheme np)).
 Defined.
 
-Definition s01 : (forall m, t01 m) -> (forall m, t01 m).
+Definition s01 : t01 -> t01.
 Proof.
  refine (fun f m => _).
  refine (_ (f m)).
- refine ((_ : forall n, t01 n -> t01 n) m).
+ refine ((_ : forall n, ts0 n -> ts0 n) m).
  refine (fix scheme n := _).
- refine (match n as n' return t01 n' -> t01 n' with O => _ | S np => _ end).
+ refine (match n as n' return ts0 n' -> ts0 n' with O => _ | S np => _ end).
  -
   refine s.
  -
-  refine (comp (t01 np) (scheme np)).
+  refine (comp (ts0 np) (scheme np)).
 Defined.
 
 Definition f011 : forall (x : nat), t01 x := o01.
