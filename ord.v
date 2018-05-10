@@ -502,6 +502,22 @@ Module Predicate.
  Scheme ex_rec := Minimality for ex Sort Type.
  Definition ex_rect := ex_ind.
 
+ Definition ex_proj1 : forall (A : Type) (P : A -> Type), ex P -> A.
+ Proof.
+  intros A P x.
+  case x.
+  intros x1 x2.
+  apply x1.
+ Defined.
+
+ Definition ex_proj2 : forall (A : Type) (P : A -> Type) (x : ex P), P (ex_proj1 x).
+ Proof.
+  intros A P x.
+  case x.
+  intros x1 x2.
+  apply x2.
+ Qed.
+
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
  (** 量化子に関する重要な同値関係 *)
