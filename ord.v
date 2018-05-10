@@ -202,37 +202,37 @@ Module Predicate.
  Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
  Proof.
   intros A B C f [xl xr]; refine (pair (f xl) xr).
- Qed.
+ Defined.
 
  Theorem and_map_r : forall A B C : Type, (A -> B) -> C /\ A -> C /\ B.
  Proof.
   intros A B C f [xl xr]; refine (pair xl (f xr)).
- Qed.
+ Defined.
 
  Theorem or_map_l : forall A B C : Type, (A -> B) -> A \/ C -> B \/ C.
  Proof.
   intros A B C f [xl | xr]; [> refine (left (f xl)) | refine (right xr) ].
- Qed.
+ Defined.
 
  Theorem or_map_r : forall A B C : Type, (A -> B) -> C \/ A -> C \/ B.
  Proof.
   intros A B C f [xl | xr]; [> refine (left xl) | refine (right (f xr)) ].
- Qed.
+ Defined.
 
  Theorem imp_map_l : forall A B C : Type, (A -> B) -> (B -> C) -> (A -> C).
  Proof.
   intros A B C f g; refine (compose g f).
- Qed.
+ Defined.
 
  Theorem imp_map_r : forall A B C : Type, (A -> B) -> (C -> A) -> (C -> B).
  Proof.
   intros A B C f g; refine (compose f g).
- Qed.
+ Defined.
 
  Theorem not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
  Proof.
   intros A B f x; refine (compose x f).
- Qed.
+ Defined.
 
  (** ** 命題論理の定理 *)
 
@@ -243,19 +243,19 @@ Module Predicate.
  Theorem and_fanout : forall A B C, (A -> B) -> (A -> C) -> A -> B /\ C.
  Proof.
   intros A B C f g x; refine (pair (f x) (g x)).
- Qed.
+ Defined.
 
  Theorem or_fanin : forall A B C, (A -> B) -> (C -> B) -> A \/ C -> B.
  Proof.
   intros A B C f g [xl | xr]; [> refine (f xl) | refine (g xr) ].
- Qed.
+ Defined.
 
  Theorem double_not : forall A : Type, A -> ~ ~ A.
  Proof.
   intros A a na.
   apply na.
   apply a.
- Qed.
+ Defined.
 
  (** ** iff *)
 
@@ -271,13 +271,13 @@ Module Predicate.
  Proof.
   intros A.
   refine (pair (@id _) (@id _)).
- Qed.
+ Defined.
 
  Theorem iff_sym : forall A B, (A <-> B) -> (B <-> A).
  Proof.
   intros A B x.
   refine (pair (second x) (first x)).
- Qed.
+ Defined.
 
  Theorem iff_trans : forall A B C, (A <-> B) -> (C <-> A) -> (C <-> B).
  Proof.
@@ -287,44 +287,44 @@ Module Predicate.
    refine (compose (first x) (first y)).
   -
    refine (compose (second y) (second x)).
- Qed.
+ Defined.
 
  (** 双方向の写像 *)
 
  Theorem and_iff_map_l : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
  Proof.
   intros A B C [xl xr]; refine (pair (and_map_l xl) (and_map_l xr)).
- Qed.
+ Defined.
 
  Theorem and_iff_map_r : forall A B C : Type, (A <-> B) -> (C /\ A <-> C /\ B).
  Proof.
   intros A B C [xl xr]; refine (pair (and_map_r xl) (and_map_r xr)).
- Qed.
+ Defined.
 
  Theorem or_iff_map_l : forall A B C : Type, (A <-> B) -> (A \/ C <-> B \/ C).
  Proof.
   intros A B C [xl xr]; refine (pair (or_map_l xl) (or_map_l xr)).
- Qed.
+ Defined.
 
  Theorem or_iff_map_r : forall A B C : Type, (A <-> B) -> (C \/ A <-> C \/ B).
  Proof.
   intros A B C [xl xr]; refine (pair (or_map_r xl) (or_map_r xr)).
- Qed.
+ Defined.
 
  Theorem imp_iff_map_l : forall A B C : Type, (A <-> B) -> ((A -> C) <-> (B -> C)).
  Proof.
   intros A B C [xl xr]; refine (pair (imp_map_l xr) (imp_map_l xl)).
- Qed.
+ Defined.
 
  Theorem imp_iff_map_r : forall A B C : Type, (A <-> B) -> ((C -> A) <-> (C -> B)).
  Proof.
   intros A B C [xl xr]; refine (pair (imp_map_r xl) (imp_map_r xr)).
- Qed.
+ Defined.
 
  Theorem not_iff_map : forall A B : Type, (A <-> B) -> (~ A <-> ~B).
  Proof.
   intros A B [xl xr]; refine (pair (not_map xr) (not_map xl)).
- Qed.
+ Defined.
 
  (** ** 重要な同値関係 *)
 
@@ -337,7 +337,7 @@ Module Predicate.
    refine (pair x (@exfalso _)).
   -
    apply first.
- Qed.
+ Defined.
 
  Theorem and_comm : forall A B : Type, A /\ B <-> B /\ A.
  Proof.
@@ -351,7 +351,7 @@ Module Predicate.
     apply comm.
    +
     apply comm.
- Qed.
+ Defined.
 
  Theorem and_assoc : forall A B C : Type, (A /\ B) /\ C <-> A /\ B /\ C.
  Proof.
@@ -361,7 +361,7 @@ Module Predicate.
    intros [[xll xlr] xr]; refine (pair xll (pair xlr xr)).
   -
    intros [xl [xrl xrr]]; refine (pair (pair xl xrl) xrr).
- Qed.
+ Defined.
 
  Theorem and_unit_l : forall A : Type, A /\ Unit <-> A.
  Proof.
@@ -375,7 +375,7 @@ Module Predicate.
     apply id.
    +
     apply unit_const.
- Qed.
+ Defined.
 
  Theorem and_unit_r : forall A : Type, Unit /\ A <-> A.
  Proof.
@@ -389,7 +389,7 @@ Module Predicate.
     apply unit_const.
    +
     apply id.
- Qed.
+ Defined.
 
  Theorem or_comm : forall A B : Type, (A \/ B) <-> (B \/ A).
  Proof.
@@ -403,7 +403,7 @@ Module Predicate.
     apply comm.
    +
     apply comm.
- Qed.
+ Defined.
 
  Theorem or_assoc : forall A B C : Type, (A \/ B) \/ C <-> A \/ B \/ C.
  Proof.
@@ -419,7 +419,7 @@ Module Predicate.
     refine (left (left xl)) |
     refine (left (right xrl)) |
     refine (right xrr) ].
- Qed.
+ Defined.
 
  Theorem or_empty_l : forall A : Type, A \/ Empty <-> A.
  Proof.
@@ -433,7 +433,7 @@ Module Predicate.
     apply exfalso.
   -
    apply left.
- Qed.
+ Defined.
 
  Theorem or_empty_r : forall A : Type, Empty \/ A <-> A.
  Proof.
@@ -447,7 +447,7 @@ Module Predicate.
     apply id.
   -
    apply right.
- Qed.
+ Defined.
 
  Theorem iff_double_not : forall A : Type, ~ ~ ~ A <-> ~ A.
  Proof.
@@ -458,7 +458,7 @@ Module Predicate.
    apply double_not.
   -
    apply double_not.
- Qed.
+ Defined.
 
  Theorem de_morgan : forall A B, ~ (A \/ B) <-> ~ A /\ ~ B.
  Proof.
@@ -479,7 +479,7 @@ Module Predicate.
     apply xl.
    +
     apply xr.
- Qed.
+ Defined.
 
  (** ** 量化子 *)
 
@@ -516,7 +516,7 @@ Module Predicate.
   case x.
   intros x1 x2.
   apply x2.
- Qed.
+ Defined.
 
  Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
 
@@ -535,7 +535,7 @@ Module Predicate.
    intros H [x xH].
    apply (H x).
    apply xH.
- Qed.
+ Defined.
 
 End Predicate.
 
@@ -570,7 +570,7 @@ Module Equality.
   intros A x y p.
   case p.
   apply eq_refl.
- Qed.
+ Defined.
 
  Definition eq_trans : forall (A : Type) (x y z : A), x = y -> z = x -> y = z.
  Proof.
@@ -578,7 +578,7 @@ Module Equality.
   case p.
   case q.
   apply eq_refl.
- Qed.
+ Defined.
 
  (** eqの汎用関数 *)
 
@@ -589,7 +589,7 @@ Module Equality.
   intros A P H a b p.
   case p.
   apply H.
- Qed.
+ Defined.
 
  Definition eq_rec'
      : forall (A : Type) (P : A -> A -> Type),
@@ -598,7 +598,7 @@ Module Equality.
   intros A P H a b p.
   case p.
   apply H.
- Qed.
+ Defined.
 
  Definition eq_rect' := eq_ind'.
 
@@ -609,21 +609,21 @@ Module Equality.
   revert H.
   case p.
   apply id.
- Qed.
+ Defined.
 
  Definition f_equal : forall (A B : Type) (f : A -> B) (x y : A), x = y -> f x = f y.
  Proof.
   intros A B f x y p.
   case p.
   apply eq_refl.
- Qed.
+ Defined.
 
  Definition rew : forall (A : Type) (P : A -> Type) (x y : A), x = y -> P x -> P y.
  Proof.
   intros A P x y p.
   case p.
   apply id.
- Qed.
+ Defined.
 
 End Equality.
 
@@ -666,7 +666,7 @@ ap11 :=
   intros A B f g p x.
   case p.
   apply idpath.
- Qed.
+ Defined.
 
  Definition ap11
      : forall (A B : Type) (f g : A -> B), f = g -> forall (x y : A), x = y -> f x = g y.
@@ -675,7 +675,7 @@ ap11 :=
   case p.
   case q.
   apply idpath.
- Qed.
+ Defined.
 
  Definition pw_paths (A : Type) (P : A -> Type) (f g : forall x, P x) := forall x, f x = g x.
 
@@ -683,7 +683,7 @@ ap11 :=
  Proof.
   intros A P f x.
   apply idpath.
- Qed.
+ Defined.
 
  Definition pw_whiskerL
      : forall (A B C : Type) (f : A -> B) (g h : B -> C),
@@ -691,7 +691,7 @@ ap11 :=
  Proof.
   intros A B C f g h p x.
   apply p.
- Qed.
+ Defined.
 
  Definition pw_whiskerR
      : forall (A B C : Type) (f g : A -> B) (h : B -> C),
@@ -700,7 +700,7 @@ ap11 :=
   intros A B C f g h p x.
   apply (@ap _ _ h).
   apply p.
- Qed.
+ Defined.
 
  Definition pw_pw_paths
      (A : Type) (P : A -> Type) (f g : forall x, P x) (pw_p pw_q : pw_paths f g)
@@ -733,7 +733,7 @@ ap11 :=
    end
   ).
   apply tt.
- Qed.
+ Defined.
 
  Definition pred : nat -> nat :=
   fun x =>
@@ -757,7 +757,7 @@ ap11 :=
    apply cN.
   -
    apply cS.
- Qed.
+ Defined.
 
  Definition le_ind_simple : forall (m : nat) (P : nat -> Prop),
    P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
@@ -768,14 +768,14 @@ ap11 :=
    apply cN.
   -
    apply cS.
- Qed.
+ Defined.
 
  Definition le_rec_simple : forall (m : nat) (P : nat -> Set),
    P m -> (forall n, le m n -> P n -> P (S n)) -> forall n, le m n -> P n.
  Proof.
   intros m P.
   apply le_rect_simple.
- Qed.
+ Defined.
 
  Definition le_0_n : forall n : nat, le O n.
  Proof.
@@ -786,7 +786,7 @@ ap11 :=
   -
    apply le_S.
    apply IHn.
- Qed.
+ Defined.
 
  Definition le_n_S : forall m n : nat, le m n -> le (S m) (S n).
  Proof.
@@ -798,7 +798,7 @@ ap11 :=
    intros n nH H.
    apply le_S.
    apply H.
- Qed.
+ Defined.
 
  Definition le_pred : forall m n : nat, le m n -> le (pred m) (pred n).
  Proof.
@@ -820,14 +820,14 @@ ap11 :=
     *
      intros k.
      apply eq_refl.
- Qed.
+ Defined.
 
  Definition le_S_n : forall m n : nat, le (S m) (S n) -> le m n.
  Proof.
   intros m n H.
   apply (le_pred (S m) (S n)).
   apply H.
- Qed.
+ Defined.
 
  Definition le_trans : forall m n o, le m n -> le n o -> le m o.
  Proof.
@@ -840,7 +840,7 @@ ap11 :=
    intros o oH IH.
    apply le_S.
    apply IH.
- Qed.
+ Defined.
 
  Definition lt m n := le (S m) n.
 
@@ -861,7 +861,7 @@ ap11 :=
     apply not_eq_O_S.
   -
    apply eq_refl.
- Qed.
+ Defined.
 End Peano.
 
 Export Peano. *)
@@ -914,7 +914,7 @@ Module Relation.
     apply H.
    -
     apply H.
-  Qed.
+  Defined.
 
   Theorem th_1 `{WF : Well_Founded} : Asymmetric.
   Proof.
@@ -928,7 +928,7 @@ Module Relation.
     apply Hr.
    -
     apply Hl.
-  Qed.
+  Defined.
 
   Theorem th_2 `{IR : Irreflexive} `{T : Trichotomous} : Extensional.
   Proof.
@@ -947,7 +947,7 @@ Module Relation.
     apply irreflexivity with y.
     apply (first (H _)).
     apply right.
-  Qed.
+  Defined.
 
   Theorem th_3 `{WF : Well_Founded} `{T : Trichotomous} : Transitive.
   Proof.
@@ -992,7 +992,7 @@ Module Relation.
      apply Hr.
     *
      apply right.
-  Qed.
+  Defined.
  End Classes.
 
 Module Type Ord.
@@ -1008,21 +1008,21 @@ Module Ord_Defs (Export Model : Ord).
   intros a b H.
   apply left.
   apply H.
- Qed.
+ Defined.
 
  Definition le_eq : forall a b, a = b -> le a b.
  Proof.
   intros a b H.
   apply right.
   apply H.
- Qed.
+ Defined.
 
  Definition le_refl : forall a, le a a.
  Proof.
   intros a.
   apply le_eq.
   apply eq_refl.
- Qed.
+ Defined.
 End Ord_Defs.
 
 Module Type Induction (Export Model : Ord).
@@ -1043,7 +1043,7 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
    apply H.
   -
    apply H.
- Qed.
+ Defined.
 
  Definition not_lt_sym : forall a b, lt a b -> ~ lt b a.
  Proof.
@@ -1056,14 +1056,14 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
    apply Hb.
   -
    apply Ha.
- Qed.
+ Defined.
 
  Definition not_lt_sym_and : forall a b, ~ (lt a b /\ lt b a).
  Proof.
   intros a b.
   apply not_and_then.
   apply not_lt_sym.
- Qed.
+ Defined.
 
  Definition not_lt_inf_dec_chain : forall f, ~ (forall n, lt (f (S n)) (f n)).
  Proof.
@@ -1082,7 +1082,7 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
     apply inf_dec_chain.
    +
     apply eq_refl.
- Qed.
+ Defined.
 
  Definition not_le_lt : forall a b, lt a b -> ~ le b a.
  Proof.
@@ -1097,21 +1097,21 @@ Module Induction_Defs (Model : Ord) (Export IndModel : Induction Model).
    revert H.
    case R.
    apply not_lt_refl.
- Qed.
+ Defined.
 
  Definition not_and_lt_le : forall a b, ~ (lt a b /\ le b a).
  Proof.
   intros a b.
   apply not_and_then.
   apply not_le_lt.
- Qed.
+ Defined.
 
  Definition not_lt_le : forall a b, le a b -> ~ lt b a.
  Proof.
   intros a b.
   apply not_then_then.
   apply not_le_lt.
- Qed.
+ Defined.
 End Induction_Defs.
 
 Module Type Extensionality (Export Model : Ord).
@@ -1194,5 +1194,5 @@ Module Nat_Induction <: Induction Nat_Ord.
     *
      apply le_S_n.
      apply kH.
- Qed.
+ Defined.
 End Nat_Induction.
