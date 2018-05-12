@@ -570,12 +570,8 @@ Module Equality.
  Inductive eq (A : Type) (x : A) : A -> Type :=
  | eq_refl : x = x :> A
  where
-   "x = y :> A" := (@eq A x y) : type_scope
+   "x = y :> A" := (eq A x y) : type_scope
  .
-
- Scheme eq_ind := Induction for eq Sort Type.
- Scheme eq_rec := Minimality for eq Sort Type.
- Definition eq_rect := eq_ind.
 
  Notation "x = y" := (x = y :> _) : type_scope.
  Notation "x <> y :> T" := (~ x = y :> T) : type_scope.
@@ -584,20 +580,25 @@ Module Equality.
  Arguments eq {A} _ _.
  Arguments eq_refl {A x}, [A] x.
 
+ Scheme eq_ind := Induction for eq Sort Type.
+ Scheme eq_rec := Minimality for eq Sort Type.
+ Definition eq_rect := eq_ind.
+
+ Arguments eq_ind [A] _ _ _ _ _.
+ Arguments eq_rec [A] _ _ _ _ _.
+ Arguments eq_rect [A] _ _ _ _ _.
+
  (** eqの基本性質 *)
 
- Definition eq_sym : forall (A : Type) (x y : A), x = y -> y = x.
+ Definition eq_sym {A : Type} {x y : A} : x = y -> y = x.
  Proof.
-  intros A x y p.
-  case p.
+  intros [].
   apply eq_refl.
  Defined.
 
- Definition eq_trans : forall (A : Type) (x y z : A), x = y -> z = x -> y = z.
+ Definition eq_trans {A : Type} {x y z : A} : x = y -> z = x -> y = z.
  Proof.
-  intros A x y z p q.
-  case p.
-  case q.
+  intros [] [].
   apply eq_refl.
  Defined.
 
@@ -607,8 +608,7 @@ Module Equality.
      : forall (A : Type) (P : forall a b : A, a = b -> Type),
          (forall a : A, P a a eq_refl) -> forall (a b : A) (p : a = b), P a b p.
  Proof.
-  intros A P H a b p.
-  case p.
+  intros A P H a b [].
   apply H.
  Defined.
 
@@ -616,8 +616,7 @@ Module Equality.
      : forall (A : Type) (P : A -> A -> Type),
          (forall a : A, P a a) -> forall a b : A, a = b -> P a b.
  Proof.
-  intros A P H a b p.
-  case p.
+  intros A P H a b [].
   apply H.
  Defined.
 
@@ -627,22 +626,25 @@ Module Equality.
      : forall (A : Type) (x : A) (P : A -> Type), P x -> forall (y : A), y = x -> P y.
  Proof.
   intros A x P H y p.
-  revert H.
-  case p.
-  apply id.
+  apply (eq_rec x P H y).
+  apply eq_sym.
+  apply p.
  Defined.
 
- Definition f_equal : forall (A B : Type) (f : A -> B) (x y : A), x = y -> f x = f y.
+ Arguments eq_ind' [A] _ _ _ _ _.
+ Arguments eq_rec' [A] _ _ _ _ _.
+ Arguments eq_rect' [A] _ _ _ _ _.
+ Arguments eq_rec_r [A] _ _ _ _ _.
+
+ Definition f_equal {A B : Type} (f : A -> B) {x y : A} : x = y -> f x = f y.
  Proof.
-  intros A B f x y p.
-  case p.
+  intros [].
   apply eq_refl.
  Defined.
 
- Definition rew : forall (A : Type) (P : A -> Type) (x y : A), x = y -> P x -> P y.
+ Definition rew {A : Type} (P : A -> Type) {x y : A} : x = y -> P x -> P y.
  Proof.
-  intros A P x y p.
-  case p.
+  intros [].
   apply id.
  Defined.
 
