@@ -19,7 +19,7 @@
 よって視野が選ばれることもある。
 
 第三に、戦略 (tactic) を使用するための設定をする。戦略 (tactic) は一気に定義を書き上げることが出来ない
-場合に有用な道具である。この部分の記述は Stack Overflow で Tej Chajed に教えていただいた。感謝する。
+場合に有用な道具である。この部分の記述は Stack Overflow で Tej Chajed 氏に教えていただいた。感謝する。
 さらに、 Coq の標準文庫 (library) の内部にある Coq.Init.Notations の記述も参考にした。
 
 第四に、設定旗 (flag) を操作する。これら大部分は HoTT の内部にある HoTT.Basics.Overture の記述に
@@ -35,7 +35,7 @@ Module Pre.
  Reserved Notation "x \/ y" (at level 85, right associativity).
  Reserved Notation "~ x" (at level 75, right associativity).
 
- (* 等号及び不等号、大小関係。 *)
+ (** 等号及び不等号、大小関係。 *)
 
  Reserved Notation "x = y :> T" (at level 70, y at next level, no associativity).
  Reserved Notation "x = y" (at level 70, no associativity).
@@ -96,11 +96,7 @@ Module Pre.
 
  Export Set Implicit Arguments.
 
- Export Unset Strict Implicit.
-
- Export Set Contextual Implicit.
-
- Export Set Reversible Pattern Implicit.
+ Export Set Strongly Strict Implicit.
 
 End Pre.
 
