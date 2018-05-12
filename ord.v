@@ -627,99 +627,11 @@ Module Equality.
   case p.
   apply id.
  Defined.
-
+ 
 End Equality.
 
-Module Path.
- Export Equality.
-
- Definition paths := @eq.
-
- Definition idpath := @eq_refl.
-
- Definition inverse := eq_sym.
-
- Definition concat := fun (A : Type) (x y z : A) => flip (@eq_trans A y z x).
-
- Definition transport := rew.
-
- Definition ap := f_equal.
-
- (** apKN
-
-<<
-ap00 :=
-  fun (f   : A -> B)                       (x   : A)                => (_ : B)
-ap01 :=
-  fun (f   : A -> B)                       (x y : A) (p : eq A x y) => (_ : eq B (f x) (f y))
-ap10 :=
-  fun (f g : A -> B) (p : eq (A -> B) f g) (x   : A)                => (_ : eq B (f x) (g x))
-ap11 :=
-  fun (f g : A -> B) (p : eq (A -> B) f g) (x y : A) (q : eq A x y) => (_ : eq B (f x) (g y))
->>
-
- *)
-
- Definition ap00 := apply.
-
- Definition ap01 := ap.
-
- Definition ap10 : forall (A B : Type) (f g : A -> B), f = g -> forall (x : A), f x = g x.
- Proof.
-  intros A B f g p x.
-  case p.
-  apply idpath.
- Defined.
-
- Definition ap11
-     : forall (A B : Type) (f g : A -> B), f = g -> forall (x y : A), x = y -> f x = g y.
- Proof.
-  intros A B f g p x y q.
-  case p.
-  case q.
-  apply idpath.
- Defined.
-
- Definition pw_paths (A : Type) (P : A -> Type) (f g : forall x, P x) := forall x, f x = g x.
-
- Definition pw_idpath : forall (A : Type) (P : A -> Type) (f : forall x, P x), pw_paths P f f.
- Proof.
-  intros A P f x.
-  apply idpath.
- Defined.
-
- Definition pw_whiskerL (A B C : Type) (f : A -> B) (g h : B -> C)
-     : pw_paths (fun _ => C) g h -> pw_paths (fun _ => C) (compose g f) (compose h f).
- Proof.
-  intros p x.
-  apply p.
- Defined.
-
- Definition pw_whiskerR (A B C : Type) (f g : A -> B) (h : B -> C)
-     : pw_paths (fun _ => B) f g -> pw_paths (fun _ => C) (compose h f) (compose h g).
- Proof.
-  intros p x.
-  apply ap with (f := h).
-  apply p.
- Defined.
-
- Definition pw_pw_paths
-     (A : Type) (P : A -> Type) (f g : forall x, P x) (pw_p pw_q : pw_paths P f g)
-   := forall x, pw_p x = pw_q x.
-
- Definition sect (A B : Type) (s : A -> B) (r : B -> A)
-     := pw_paths (fun _ => A) (compose r s) id.
-
- Definition equiv (A B : Type)
-     := exists (f : A -> B) (g : B -> A) (es : sect g f) (er : sect f g),
-         pw_pw_paths (fun _ => B) (compose f (compose g f)) f
-             (pw_whiskerL f (compose f g) id es)
-             (pw_whiskerR (compose g f) id f er).
-
-End Path.
-
-(* Module Peano.
- Export Predicate.
+Module Peano.
+ Export Predicate Equality.
 
  Inductive nat : Type :=
  | O : nat
@@ -871,6 +783,94 @@ End Path.
 End Peano.
 
 Export Peano. *)
+
+Module Path.
+ Export Equality.
+
+ Definition paths := @eq.
+
+ Definition idpath := @eq_refl.
+
+ Definition inverse := eq_sym.
+
+ Definition concat := fun (A : Type) (x y z : A) => flip (@eq_trans A y z x).
+
+ Definition transport := rew.
+
+ Definition ap := f_equal.
+
+ (** apKN
+
+<<
+ap00 :=
+  fun (f   : A -> B)                       (x   : A)                => (_ : B)
+ap01 :=
+  fun (f   : A -> B)                       (x y : A) (p : eq A x y) => (_ : eq B (f x) (f y))
+ap10 :=
+  fun (f g : A -> B) (p : eq (A -> B) f g) (x   : A)                => (_ : eq B (f x) (g x))
+ap11 :=
+  fun (f g : A -> B) (p : eq (A -> B) f g) (x y : A) (q : eq A x y) => (_ : eq B (f x) (g y))
+>>
+
+ *)
+
+ Definition ap00 := apply.
+
+ Definition ap01 := ap.
+
+ Definition ap10 : forall (A B : Type) (f g : A -> B), f = g -> forall (x : A), f x = g x.
+ Proof.
+  intros A B f g p x.
+  case p.
+  apply idpath.
+ Defined.
+
+ Definition ap11
+     : forall (A B : Type) (f g : A -> B), f = g -> forall (x y : A), x = y -> f x = g y.
+ Proof.
+  intros A B f g p x y q.
+  case p.
+  case q.
+  apply idpath.
+ Defined.
+
+ Definition pw_paths (A : Type) (P : A -> Type) (f g : forall x, P x) := forall x, f x = g x.
+
+ Definition pw_idpath : forall (A : Type) (P : A -> Type) (f : forall x, P x), pw_paths P f f.
+ Proof.
+  intros A P f x.
+  apply idpath.
+ Defined.
+
+ Definition pw_whiskerL (A B C : Type) (f : A -> B) (g h : B -> C)
+     : pw_paths (fun _ => C) g h -> pw_paths (fun _ => C) (compose g f) (compose h f).
+ Proof.
+  intros p x.
+  apply p.
+ Defined.
+
+ Definition pw_whiskerR (A B C : Type) (f g : A -> B) (h : B -> C)
+     : pw_paths (fun _ => B) f g -> pw_paths (fun _ => C) (compose h f) (compose h g).
+ Proof.
+  intros p x.
+  apply ap with (f := h).
+  apply p.
+ Defined.
+
+ Definition pw_pw_paths
+     (A : Type) (P : A -> Type) (f g : forall x, P x) (pw_p pw_q : pw_paths P f g)
+   := forall x, pw_p x = pw_q x.
+
+ Definition sect (A B : Type) (s : A -> B) (r : B -> A)
+     := pw_paths (fun _ => A) (compose r s) id.
+
+ Definition equiv (A B : Type)
+     := exists (f : A -> B) (g : B -> A) (es : sect g f) (er : sect f g),
+         pw_pw_paths (fun _ => B) (compose f (compose g f)) f
+             (pw_whiskerL f (compose f g) id es)
+             (pw_whiskerR (compose g f) id f er).
+
+End Path.
 
 Module Relation.
  Export Predicate.
