@@ -633,7 +633,7 @@ End Equality.
 Module Path.
  Export Equality.
 
- Definition paths := eq.
+ Definition paths := @eq.
 
  Definition idpath := @eq_refl.
 
@@ -682,38 +682,41 @@ ap11 :=
 
  Definition pw_paths (A : Type) (P : A -> Type) (f g : forall x, P x) := forall x, f x = g x.
 
- Definition pw_idpath : forall (A : Type) (P : A -> Type) (f : forall x, P x), pw_paths f f.
+ Definition pw_idpath : forall (A : Type) (P : A -> Type) (f : forall x, P x), pw_paths P f f.
  Proof.
   intros A P f x.
   apply idpath.
  Defined.
 
- Definition pw_whiskerL
-     : forall (A B C : Type) (f : A -> B) (g h : B -> C),
-         pw_paths g h -> pw_paths (compose g f) (compose h f).
+ Definition pw_whiskerL (A B C : Type) (f : A -> B) (g h : B -> C)
+     : pw_paths (fun _ => C) g h -> pw_paths (fun _ => C) (compose g f) (compose h f).
  Proof.
-  intros A B C f g h p x.
+  intros p x.
   apply p.
  Defined.
 
- Definition pw_whiskerR
-     : forall (A B C : Type) (f g : A -> B) (h : B -> C),
-         pw_paths f g -> pw_paths (compose h f) (compose h g).
+ Definition pw_whiskerR (A B C : Type) (f g : A -> B) (h : B -> C)
+     : pw_paths (fun _ => B) f g -> pw_paths (fun _ => C) (compose h f) (compose h g).
  Proof.
-  intros A B C f g h p x.
-  apply (@ap _ _ h).
+  intros p x.
+  apply ap with (f := h).
   apply p.
  Defined.
 
  Definition pw_pw_paths
-     (A : Type) (P : A -> Type) (f g : forall x, P x) (pw_p pw_q : pw_paths f g)
+     (A : Type) (P : A -> Type) (f g : forall x, P x) (pw_p pw_q : pw_paths P f g)
    := forall x, pw_p x = pw_q x.
 
- Definition sect (A B : Type) (s : A -> B) (r : B -> A) := pw_paths (compose r s) (@id _).
+ Definition sect (A B : Type) (s : A -> B) (r : B -> A)
+     := pw_paths (fun _ => A) (compose r s) id.
 
  Definition equiv (A B : Type)
      := exists (f : A -> B) (g : B -> A) (es : sect g f) (er : sect f g),
-         pw_pw_paths (@pw_whiskerL _ _ _ f _ _ es) (@pw_whiskerR _ _ _ _ _ f er).
+         pw_pw_paths (fun _ => B) (compose f (compose g f)) f
+             (pw_whiskerL f (compose f g) id es)
+             (pw_whiskerR (compose g f) id f er).
+
+End Path.
 
 (* Module Peano.
  Export Predicate.
