@@ -180,6 +180,14 @@ Module Predicate.
   fun _ _ x => match x with pair _ xR => xR end
  .
 
+ Definition and_proj1 := first.
+ Definition and_proj2 := second.
+
+ Arguments first {A B} _.
+ Arguments second {A B} _.
+ Arguments and_proj1 {A B} _.
+ Arguments and_proj2 {A B} _.
+
  (** ** or *)
 
  (** 論理和。 *)
@@ -191,8 +199,8 @@ Module Predicate.
    "A \/ B" := (or A B) : type_scope
  .
 
- Arguments left [A B] _, [A] B _.
- Arguments right [A B] _, A [B] _.
+ Arguments left {A B}.
+ Arguments right {A B}.
 
  Scheme or_ind := Induction for or Sort Type.
  Scheme or_rec := Minimality for or Sort Type.
@@ -239,9 +247,10 @@ Module Predicate.
 
  Definition exfalso : forall A : Type, Empty -> A := Empty_rec.
 
- Arguments exfalso {A} _.
-
  Definition unit_const : forall A : Type, A -> Unit := fun A => const tt.
+
+ Arguments exfalso {A} _.
+ Arguments unit_const {A} _.
 
  Theorem and_fanout : forall A B C, (A -> B) -> (A -> C) -> A -> B /\ C.
  Proof.
@@ -361,9 +370,25 @@ Module Predicate.
   intros A B C.
   apply pair.
   -
-   intros [[xll xlr] xr]; refine (pair xll (pair xlr xr)).
+   refine (and_fanout _ _).
+   +
+    refine (compose first first).
+   +
+    refine (and_fanout _ _).
+    *
+     refine (compose second first).
+    *
+     refine second.
   -
-   intros [xl [xrl xrr]]; refine (pair (pair xl xrl) xrr).
+   refine (and_fanout _ _).
+   +
+    refine (and_fanout _ _).
+    *
+     refine first.
+    *
+     refine (compose first second).
+   +
+    refine (compose second second).
  Defined.
 
  Theorem and_unit_l : forall A : Type, A /\ Unit <-> A.
@@ -373,11 +398,7 @@ Module Predicate.
   -
    apply first.
   -
-   apply and_fanout.
-   +
-    apply id.
-   +
-    apply unit_const.
+   refine (and_fanout id unit_const).
  Defined.
 
  Theorem and_unit_r : forall A : Type, Unit /\ A <-> A.
@@ -387,11 +408,7 @@ Module Predicate.
   -
    apply second.
   -
-   apply and_fanout.
-   +
-    apply unit_const.
-   +
-    apply id.
+   refine (and_fanout unit_const id).
  Defined.
 
  Theorem or_comm : forall A B : Type, (A \/ B) <-> (B \/ A).
@@ -413,15 +430,25 @@ Module Predicate.
   intros A B C.
   apply pair.
   -
-   intros [[xll | xlr] | xr]; [>
-    refine (left xll) |
-    refine (right (left xlr)) |
-    refine (right (right xr)) ].
+   refine (or_fanin _ _).
+   +
+    refine (or_fanin _ _).
+    *
+     refine left.
+    *
+     refine (compose right left).
+   +
+    refine (compose right right).
   -
-   intros [xl | [xrl | xrr]]; [>
-    refine (left (left xl)) |
-    refine (left (right xrl)) |
-    refine (right xrr) ].
+   refine (or_fanin _ _).
+   +
+    refine (compose left left).
+   +
+    refine (or_fanin _ _).
+    *
+     refine (compose left right).
+    *
+     refine right.
  Defined.
 
  Theorem or_empty_l : forall A : Type, A \/ Empty <-> A.
@@ -627,7 +654,7 @@ Module Equality.
   case p.
   apply id.
  Defined.
- 
+
 End Equality.
 
 Module Peano.
