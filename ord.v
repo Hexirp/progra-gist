@@ -94,10 +94,6 @@ Module Pre.
 
  Export Unset Universe Minimization ToSet.
 
- Export Set Implicit Arguments.
-
- Export Set Strongly Strict Implicit.
-
 End Pre.
 
 (** * Predicate
@@ -165,7 +161,7 @@ Module Predicate.
  Inductive and (A B : Type) : Type :=
  | pair : A -> B -> A /\ B
  where
-   "A /\ B" := (@and A B) : type_scope
+   "A /\ B" := (and A B) : type_scope
  .
 
  Arguments pair {A B} _ _.
@@ -175,7 +171,7 @@ Module Predicate.
  Definition and_rect := and_ind.
 
  Arguments and_ind {A B} _ _ _.
- Arguments and_rec {A B} _ _ _.
+ Arguments and_rec {A B P} _ _.
  Arguments and_rect {A B} _ _ _.
 
  Definition first {A B : Type} : A /\ B -> A :=
@@ -500,12 +496,12 @@ Module Predicate.
  (** ** 量化子 *)
 
  Inductive ex (A : Type) (P : A -> Type) : Type :=
- | ex_pair : forall x, P x -> ex P
+ | ex_pair : forall x : A, P x -> ex A P
  .
 
  Notation "'exists' x .. y , p"
    :=
-     (ex (fun x => .. (ex (fun y => p)) ..))
+     (ex _ (fun x => .. (ex _ (fun y => p)) ..))
    (
      at level 200,
      x binder,
@@ -514,12 +510,16 @@ Module Predicate.
    :
      type_scope.
 
+ Arguments ex {A} _.
+ Arguments ex_pair {A} _ _ _.
+
  Scheme ex_ind := Induction for ex Sort Type.
  Scheme ex_rec := Minimality for ex Sort Type.
  Definition ex_rect := ex_ind.
 
- Arguments ex {A} _.
- Arguments ex_pair {A} _ _ _.
+ Arguments ex_ind {A P} _ _ _.
+ Arguments ex_rec {A P P0} _ _.
+ Arguments ex_rect {A P} _ _ _.
 
  Definition ex_proj1 {A : Type} {P : A -> Type} : ex P -> A.
  Proof.
