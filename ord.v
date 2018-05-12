@@ -117,19 +117,15 @@ Module Predicate.
 
  (** 汎用関数 *)
 
- Definition id : forall A, A -> A := fun _ x => x.
+ Definition id {A : Type} : A -> A := fun x => x.
 
- Arguments id {A} _.
+ Definition const {A B : Type} : A -> B -> A := fun x _ => x.
 
- Definition const : forall A B, A -> B -> A := fun _ _ x _ => x.
+ Definition compose {A B C : Type} : (A -> B) -> (C -> A) -> C -> B := fun f g x => f (g x).
 
- Definition compose
-     : forall A B C, (A -> B) -> (C -> A) -> C -> B
-     := fun _ _ _ f g x => f (g x).
+ Definition flip {A B C : Type} : (A -> B -> C) -> B -> A -> C := fun f x y => f y x.
 
- Definition flip : forall A B C, (A -> B -> C) -> B -> A -> C := fun _ _ _ f x y => f y x.
-
- Definition apply : forall A B, (A -> B) -> A -> B := fun _ _ f x => f x.
+ Definition apply {A B : Type} : (A -> B) -> A -> B := id.
 
  (** ** Empty *)
 
@@ -140,7 +136,9 @@ Module Predicate.
 
  Scheme Empty_ind := Induction for Empty Sort Type.
  Scheme Empty_rec := Minimality for Empty Sort Type.
- Definition Empty_rect := @Empty_ind.
+ Definition Empty_rect := Empty_ind.
+
+ Arguments Empty_rec {P} _.
 
  Definition not (A : Type) : Type := A -> Empty.
 
@@ -158,6 +156,8 @@ Module Predicate.
  Scheme Unit_rec := Minimality for Unit Sort Type.
  Definition Unit_rect := Unit_ind.
 
+ Arguments Unit_rec {P} _ _.
+
  (** ** and *)
 
  (** 論理積、二つ組、対、ダブル、2-タプル、ペア。 *)
@@ -165,12 +165,18 @@ Module Predicate.
  Inductive and (A B : Type) : Type :=
  | pair : A -> B -> A /\ B
  where
-   "A /\ B" := (and A B) : type_scope
+   "A /\ B" := (@and A B) : type_scope
  .
+
+ Arguments pair {A B} _ _.
 
  Scheme and_ind := Induction for and Sort Type.
  Scheme and_rec := Minimality for and Sort Type.
  Definition and_rect := and_ind.
+
+ Arguments and_ind {A B} _ _ _.
+ Arguments and_rec {A B} _ _ _.
+ Arguments and_rect {A B} _ _ _.
 
  Definition first : forall A B, A /\ B -> A :=
   fun _ _ x => match x with pair xL _ => xL end
@@ -205,6 +211,10 @@ Module Predicate.
  Scheme or_ind := Induction for or Sort Type.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
+
+ Arguments or_ind {A B} _ _ _ _.
+ Arguments or_rec {A B} _ _ _ _.
+ Arguments or_rect {A B} _ _ _ _.
 
  (** 写像。 *)
 
