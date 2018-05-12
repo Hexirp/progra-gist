@@ -178,21 +178,16 @@ Module Predicate.
  Arguments and_rec {A B} _ _ _.
  Arguments and_rect {A B} _ _ _.
 
- Definition first : forall A B, A /\ B -> A :=
-  fun _ _ x => match x with pair xL _ => xL end
+ Definition first {A B : Type} : A /\ B -> A :=
+  fun x => match x with pair xL _ => xL end
  .
 
- Definition second : forall A B, A /\ B -> B :=
-  fun _ _ x => match x with pair _ xR => xR end
+ Definition second {A B : Type} : A /\ B -> B :=
+  fun x => match x with pair _ xR => xR end
  .
 
- Definition and_proj1 := first.
- Definition and_proj2 := second.
-
- Arguments first {A B} _.
- Arguments second {A B} _.
- Arguments and_proj1 {A B} _.
- Arguments and_proj2 {A B} _.
+ Definition and_proj1 {A B : Type} := @first A B.
+ Definition and_proj2 {A B : Type} := @second A B.
 
  (** ** or *)
 
@@ -205,76 +200,73 @@ Module Predicate.
    "A \/ B" := (or A B) : type_scope
  .
 
- Arguments left {A B}.
- Arguments right {A B}.
+ Arguments left {A B} _.
+ Arguments right {A B} _.
 
  Scheme or_ind := Induction for or Sort Type.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
 
  Arguments or_ind {A B} _ _ _ _.
- Arguments or_rec {A B} _ _ _ _.
+ Arguments or_rec {A B P} _ _ _.
  Arguments or_rect {A B} _ _ _ _.
 
  (** 写像。 *)
 
- Theorem and_map_l : forall A B C : Type, (A -> B) -> A /\ C -> B /\ C.
+ Theorem and_map_l {A B C : Type} : (A -> B) -> A /\ C -> B /\ C.
  Proof.
-  intros A B C f [xl xr]; refine (pair (f xl) xr).
+  intros f [xl xr]; refine (pair (f xl) xr).
  Defined.
 
- Theorem and_map_r : forall A B C : Type, (A -> B) -> C /\ A -> C /\ B.
+ Theorem and_map_r {A B C : Type} : (A -> B) -> C /\ A -> C /\ B.
  Proof.
-  intros A B C f [xl xr]; refine (pair xl (f xr)).
+  intros f [xl xr]; refine (pair xl (f xr)).
  Defined.
 
- Theorem or_map_l : forall A B C : Type, (A -> B) -> A \/ C -> B \/ C.
+ Theorem or_map_l {A B C : Type} : (A -> B) -> A \/ C -> B \/ C.
  Proof.
-  intros A B C f [xl | xr]; [> refine (left (f xl)) | refine (right xr) ].
+  intros f [xl | xr]; [> refine (left (f xl)) | refine (right xr) ].
  Defined.
 
- Theorem or_map_r : forall A B C : Type, (A -> B) -> C \/ A -> C \/ B.
+ Theorem or_map_r {A B C : Type} : (A -> B) -> C \/ A -> C \/ B.
  Proof.
-  intros A B C f [xl | xr]; [> refine (left xl) | refine (right (f xr)) ].
+  intros f [xl | xr]; [> refine (left xl) | refine (right (f xr)) ].
  Defined.
 
- Theorem imp_map_l : forall A B C : Type, (A -> B) -> (B -> C) -> (A -> C).
+ Theorem imp_map_l {A B C : Type} : (A -> B) -> (B -> C) -> (A -> C).
  Proof.
-  intros A B C f g; refine (compose g f).
+  intros f g; refine (compose g f).
  Defined.
 
- Theorem imp_map_r : forall A B C : Type, (A -> B) -> (C -> A) -> (C -> B).
+ Theorem imp_map_r {A B C : Type} : (A -> B) -> (C -> A) -> (C -> B).
  Proof.
-  intros A B C f g; refine (compose f g).
+  intros f g; refine (compose f g).
  Defined.
 
- Theorem not_map : forall A B : Type, (A -> B) -> ~ B -> ~ A.
+ Theorem not_map {A B : Type} : (A -> B) -> ~ B -> ~ A.
  Proof.
-  intros A B f x; refine (compose x f).
+  intros f x; refine (compose x f).
  Defined.
 
  (** ** 命題論理の定理 *)
 
- Definition exfalso : forall A : Type, Empty -> A := Empty_rec.
+ Definition exfalso {A : Type} : Empty -> A := Empty_rec.
 
- Definition unit_const : forall A : Type, A -> Unit := fun A => const tt.
+ Definition unit_const {A : Type} : A -> Unit := const tt.
 
- Arguments exfalso {A} _.
- Arguments unit_const {A} _.
-
- Theorem and_fanout : forall A B C, (A -> B) -> (A -> C) -> A -> B /\ C.
+ Theorem and_fanout {A B C : Type} : (A -> B) -> (A -> C) -> A -> B /\ C.
  Proof.
-  intros A B C f g x; refine (pair (f x) (g x)).
+  intros f g x; refine (pair (f x) (g x)).
  Defined.
 
- Theorem or_fanin : forall A B C, (A -> B) -> (C -> B) -> A \/ C -> B.
+ Theorem or_fanin {A B C : Type} : (A -> B) -> (C -> B) -> A \/ C -> B.
  Proof.
-  intros A B C f g [xl | xr]; [> refine (f xl) | refine (g xr) ].
+  intros f g [xl | xr]; [> refine (f xl) | refine (g xr) ].
  Defined.
 
- Theorem double_not : forall A : Type, A -> ~ ~ A.
+ Theorem double_not {A : Type} : A -> ~ ~ A.
  Proof.
-  intros A a na.
+  intros a na.
   apply na.
   apply a.
  Defined.
@@ -289,21 +281,20 @@ Module Predicate.
 
  (** iffの基本性質 *)
 
- Theorem iff_refl : forall A, A <-> A.
+ Theorem iff_refl {A : Type} : A <-> A.
  Proof.
-  intros A.
   refine (pair id id).
  Defined.
 
- Theorem iff_sym : forall A B, (A <-> B) -> (B <-> A).
+ Theorem iff_sym {A B : Type} : (A <-> B) -> (B <-> A).
  Proof.
-  intros A B x.
+  intros x.
   refine (pair (second x) (first x)).
  Defined.
 
- Theorem iff_trans : forall A B C, (A <-> B) -> (C <-> A) -> (C <-> B).
+ Theorem iff_trans {A B C : Type} :  (A <-> B) -> (C <-> A) -> (C <-> B).
  Proof.
-  intros A B C x y.
+  intros x y.
   apply pair.
   -
    refine (compose (first x) (first y)).
@@ -313,46 +304,45 @@ Module Predicate.
 
  (** 双方向の写像 *)
 
- Theorem and_iff_map_l : forall A B C : Type, (A <-> B) -> (A /\ C <-> B /\ C).
+ Theorem and_iff_map_l {A B C : Type} : (A <-> B) -> (A /\ C <-> B /\ C).
  Proof.
-  intros A B C [xl xr]; refine (pair (and_map_l xl) (and_map_l xr)).
+  intros [xl xr]; refine (pair (and_map_l xl) (and_map_l xr)).
  Defined.
 
- Theorem and_iff_map_r : forall A B C : Type, (A <-> B) -> (C /\ A <-> C /\ B).
+ Theorem and_iff_map_r {A B C : Type} : (A <-> B) -> (C /\ A <-> C /\ B).
  Proof.
-  intros A B C [xl xr]; refine (pair (and_map_r xl) (and_map_r xr)).
+  intros [xl xr]; refine (pair (and_map_r xl) (and_map_r xr)).
  Defined.
 
- Theorem or_iff_map_l : forall A B C : Type, (A <-> B) -> (A \/ C <-> B \/ C).
+ Theorem or_iff_map_l {A B C : Type} : (A <-> B) -> (A \/ C <-> B \/ C).
  Proof.
-  intros A B C [xl xr]; refine (pair (or_map_l xl) (or_map_l xr)).
+  intros [xl xr]; refine (pair (or_map_l xl) (or_map_l xr)).
  Defined.
 
- Theorem or_iff_map_r : forall A B C : Type, (A <-> B) -> (C \/ A <-> C \/ B).
+ Theorem or_iff_map_r {A B C : Type} : (A <-> B) -> (C \/ A <-> C \/ B).
  Proof.
-  intros A B C [xl xr]; refine (pair (or_map_r xl) (or_map_r xr)).
+  intros [xl xr]; refine (pair (or_map_r xl) (or_map_r xr)).
  Defined.
 
- Theorem imp_iff_map_l : forall A B C : Type, (A <-> B) -> ((A -> C) <-> (B -> C)).
+ Theorem imp_iff_map_l {A B C : Type} : (A <-> B) -> ((A -> C) <-> (B -> C)).
  Proof.
-  intros A B C [xl xr]; refine (pair (imp_map_l xr) (imp_map_l xl)).
+  intros [xl xr]; refine (pair (imp_map_l xr) (imp_map_l xl)).
  Defined.
 
- Theorem imp_iff_map_r : forall A B C : Type, (A <-> B) -> ((C -> A) <-> (C -> B)).
+ Theorem imp_iff_map_r {A B C : Type} : (A <-> B) -> ((C -> A) <-> (C -> B)).
  Proof.
-  intros A B C [xl xr]; refine (pair (imp_map_r xl) (imp_map_r xr)).
+  intros [xl xr]; refine (pair (imp_map_r xl) (imp_map_r xr)).
  Defined.
 
- Theorem not_iff_map : forall A B : Type, (A <-> B) -> (~ A <-> ~B).
+ Theorem not_iff_map {A B C : Type} : (A <-> B) -> (~ A <-> ~B).
  Proof.
-  intros A B [xl xr]; refine (pair (not_map xr) (not_map xl)).
+  intros [xl xr]; refine (pair (not_map xr) (not_map xl)).
  Defined.
 
  (** ** 重要な同値関係 *)
 
- Theorem neg_false : forall A : Type, ~ A <-> (A <-> Empty).
+ Theorem neg_false {A : Type} : ~ A <-> (A <-> Empty).
  Proof.
-  intros A.
   apply pair.
   -
    intros nx.
@@ -361,13 +351,12 @@ Module Predicate.
    apply first.
  Defined.
 
- Theorem and_comm : forall A B : Type, A /\ B <-> B /\ A.
+ Theorem and_comm {A B : Type} : A /\ B <-> B /\ A.
  Proof.
   assert (comm : forall A B, A /\ B -> B /\ A).
   -
-   intros A B [xl xr]; refine (pair xr xl).
+   intros gA gB [xl xr]; refine (pair xr xl).
   -
-   intros A B.
    apply pair.
    +
     apply comm.
@@ -375,9 +364,8 @@ Module Predicate.
     apply comm.
  Defined.
 
- Theorem and_assoc : forall A B C : Type, (A /\ B) /\ C <-> A /\ B /\ C.
+ Theorem and_assoc {A B C : Type} : (A /\ B) /\ C <-> A /\ B /\ C.
  Proof.
-  intros A B C.
   apply pair.
   -
    refine (and_fanout _ _).
@@ -401,9 +389,8 @@ Module Predicate.
     refine (compose second second).
  Defined.
 
- Theorem and_unit_l : forall A : Type, A /\ Unit <-> A.
+ Theorem and_unit_l {A : Type} : A /\ Unit <-> A.
  Proof.
-  intros A.
   apply pair.
   -
    apply first.
@@ -411,9 +398,8 @@ Module Predicate.
    refine (and_fanout id unit_const).
  Defined.
 
- Theorem and_unit_r : forall A : Type, Unit /\ A <-> A.
+ Theorem and_unit_r {A : Type} : Unit /\ A <-> A.
  Proof.
-  intros A.
   apply pair.
   -
    apply second.
@@ -421,13 +407,12 @@ Module Predicate.
    refine (and_fanout unit_const id).
  Defined.
 
- Theorem or_comm : forall A B : Type, (A \/ B) <-> (B \/ A).
+ Theorem or_comm {A B : Type} : (A \/ B) <-> (B \/ A).
  Proof.
   assert (comm : forall A B, A \/ B -> B \/ A).
   -
-   intros A B [xl | xr]; [> refine (right xl) | refine (left xr) ].
+   intros gA gB [xl | xr]; [> refine (right xl) | refine (left xr) ].
   -
-   intros A B.
    apply pair.
    +
     apply comm.
@@ -435,9 +420,8 @@ Module Predicate.
     apply comm.
  Defined.
 
- Theorem or_assoc : forall A B C : Type, (A \/ B) \/ C <-> A \/ B \/ C.
+ Theorem or_assoc {A B C : Type} : (A \/ B) \/ C <-> A \/ B \/ C.
  Proof.
-  intros A B C.
   apply pair.
   -
    refine (or_fanin _ _).
@@ -461,9 +445,8 @@ Module Predicate.
      refine right.
  Defined.
 
- Theorem or_empty_l : forall A : Type, A \/ Empty <-> A.
+ Theorem or_empty_l {A : Type} : A \/ Empty <-> A.
  Proof.
-  intros A.
   apply pair.
   -
    apply or_fanin.
@@ -475,9 +458,8 @@ Module Predicate.
    apply left.
  Defined.
 
- Theorem or_empty_r : forall A : Type, Empty \/ A <-> A.
+ Theorem or_empty_r {A : Type} : Empty \/ A <-> A.
  Proof.
-  intros A.
   apply pair.
   -
    apply or_fanin.
@@ -489,9 +471,8 @@ Module Predicate.
    apply right.
  Defined.
 
- Theorem iff_double_not : forall A : Type, ~ ~ ~ A <-> ~ A.
+ Theorem iff_double_not {A : Type} : ~ ~ ~ A <-> ~ A.
  Proof.
-  intros A.
   apply pair.
   -
    apply not_map.
@@ -500,9 +481,8 @@ Module Predicate.
    apply double_not.
  Defined.
 
- Theorem de_morgan : forall A B, ~ (A \/ B) <-> ~ A /\ ~ B.
+ Theorem de_morgan {A B : Type} : ~ (A \/ B) <-> ~ A /\ ~ B.
  Proof.
-  intros A B.
   apply pair.
   -
    apply and_fanout.
@@ -538,30 +518,31 @@ Module Predicate.
  Scheme ex_rec := Minimality for ex Sort Type.
  Definition ex_rect := ex_ind.
 
- Definition ex_proj1 : forall (A : Type) (P : A -> Type), ex P -> A.
+ Arguments ex {A} _.
+ Arguments ex_pair {A} _ _ _.
+
+ Definition ex_proj1 {A : Type} {P : A -> Type} : ex P -> A.
  Proof.
-  intros A P x.
+  intros x.
   case x.
   intros x1 x2.
   apply x1.
  Defined.
 
- Definition ex_proj2 : forall (A : Type) (P : A -> Type) (x : ex P), P (ex_proj1 x).
+ Definition ex_proj2 {A : Type} {P : A -> Type} : forall (x : ex P), P (ex_proj1 x).
  Proof.
-  intros A P x.
+  intros x.
   case x.
   intros x1 x2.
   apply x2.
  Defined.
 
- Definition all (A : Type) (P : A -> Type) : Type := forall x, P x.
+ Definition all {A : Type} (P : A -> Type) : Type := forall x, P x.
 
  (** 量化子に関する重要な同値関係 *)
 
- Theorem quant_de_morgan
-     : forall (A : Type) (P : A -> Type), ~ (exists x, P x) <-> forall x, ~ P x.
+ Theorem quant_de_morgan {A : Type} {P : A -> Type} : ~ (exists x, P x) <-> forall x, ~ P x.
  Proof.
-  intros A P.
   apply pair.
   -
    intros H x xH.
@@ -570,7 +551,7 @@ Module Predicate.
    apply xH.
   -
    intros H [x xH].
-   apply (H x).
+   apply H with x.
    apply xH.
  Defined.
 
