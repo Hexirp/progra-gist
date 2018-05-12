@@ -191,8 +191,8 @@ Module Predicate.
    "A \/ B" := (or A B) : type_scope
  .
 
- Arguments left {A B} _.
- Arguments right {A B} _.
+ Arguments left [A B] _, [A] B _.
+ Arguments right [A B] _, A [B] _.
 
  Scheme or_ind := Induction for or Sort Type.
  Scheme or_rec := Minimality for or Sort Type.
@@ -336,8 +336,8 @@ Module Predicate.
   intros A.
   apply pair.
   -
-   intros x.
-   refine (pair x exfalso).
+   intros nx.
+   refine (pair nx exfalso).
   -
    apply first.
  Defined.
