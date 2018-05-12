@@ -119,6 +119,8 @@ Module Predicate.
 
  Definition id : forall A, A -> A := fun _ x => x.
 
+ Arguments id {A} _.
+
  Definition const : forall A B, A -> B -> A := fun _ _ x _ => x.
 
  Definition compose
@@ -189,6 +191,9 @@ Module Predicate.
    "A \/ B" := (or A B) : type_scope
  .
 
+ Arguments left {A B} _.
+ Arguments right {A B} _.
+
  Scheme or_ind := Induction for or Sort Type.
  Scheme or_rec := Minimality for or Sort Type.
  Definition or_rect := or_ind.
@@ -234,6 +239,8 @@ Module Predicate.
 
  Definition exfalso : forall A : Type, Empty -> A := Empty_rec.
 
+ Arguments exfalso {A} _.
+
  Definition unit_const : forall A : Type, A -> Unit := fun A => const tt.
 
  Theorem and_fanout : forall A B C, (A -> B) -> (A -> C) -> A -> B /\ C.
@@ -266,7 +273,7 @@ Module Predicate.
  Theorem iff_refl : forall A, A <-> A.
  Proof.
   intros A.
-  refine (pair (@id _) (@id _)).
+  refine (pair id id).
  Defined.
 
  Theorem iff_sym : forall A B, (A <-> B) -> (B <-> A).
@@ -330,7 +337,7 @@ Module Predicate.
   apply pair.
   -
    intros x.
-   refine (pair x (@exfalso _)).
+   refine (pair x exfalso).
   -
    apply first.
  Defined.
@@ -470,11 +477,7 @@ Module Predicate.
     apply right.
   -
    intros [xl xr].
-   refine (or_rec _ _).
-   +
-    apply xl.
-   +
-    apply xr.
+   refine (or_rec xl xr).
  Defined.
 
  (** ** 量化子 *)
@@ -526,7 +529,8 @@ Module Predicate.
   -
    intros H x xH.
    apply H.
-   apply (ex_pair xH).
+   apply ex_pair with x.
+   apply xH.
   -
    intros H [x xH].
    apply (H x).
@@ -558,6 +562,9 @@ Module Equality.
  Notation "x = y" := (x = y :> _) : type_scope.
  Notation "x <> y :> T" := (~ x = y :> T) : type_scope.
  Notation "x <> y" := (x <> y :> _) : type_scope.
+
+ Arguments eq {A} _ _.
+ Arguments eq_refl {A x}, [A] x.
 
  (** eqの基本性質 *)
 
