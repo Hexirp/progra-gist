@@ -1,15 +1,78 @@
 Axiom undefined : forall a : Type, a.
 
 Inductive fin : nat -> Type :=
-| fo : forall n, fin n
+| fo : forall n, fin (S n)
 | fs : forall n, fin n -> fin (S n)
 .
 
-Inductive ter : nat -> Type :=
-| var : forall n, fin n -> ter (S n)
-| abs : forall n, ter (S n) -> ter n
-| app : forall n, ter n -> ter n -> ter n
+Definition ind_fin :
+    forall P : forall n : nat, fin n -> Type,
+    (forall n : nat, P (S n) (fo n)) ->
+    (forall n : nat, forall xp : fin n, P n xp -> P (S n) (fs n xp)) ->
+    forall n : nat, forall x : fin n, P n x.
+Proof.
+ intros P cfo cfs.
+ fix go 2.
+ intros n x.
+ refine (
+  match x as x' in fin n' return P n' x' with
+  | fo n' => _
+  | fs n' xp => _
+  end
+ ).
+ -
+  apply cfo.
+ -
+  apply cfs.
+  apply go.
+Defined.
+
+Inductive lam : nat -> Type :=
+| var : forall n, fin n -> lam n
+| abs : forall n, lam (S n) -> lam n
+| app : forall n, lam n -> lam n -> lam n
 .
+
+Definition ind_lam :
+    forall P : forall n, lam n -> Type,
+    (forall n : nat, forall v : fin n, P n (var n v)) ->
+    (forall n : nat, forall x : lam (S n), P (S n) x -> P n (abs n x)) ->
+    (forall n : nat, forall a : lam n, forall b : lam n, P n a -> P n b -> P n (app n a b)) ->
+    forall n : nat, forall x : lam n, P n x.
+Proof.
+ intros P cvar cabs capp.
+ fix go 2.
+ intros n x.
+ refine (
+  match x as x' in lam n' return P n' x' with
+  | var n' v => _
+  | abs n' x => _
+  | app n' a b => _
+  end
+ ).
+ -
+  apply cvar.
+ -
+  apply cabs.
+  apply go.
+ -
+  apply capp.
+  +
+   apply go.
+  +
+   apply go.
+Defined.
+
+Definition beta : forall N, lam N -> forall m n, m + S n = N -> lam m -> lam m.
+Proof.
+ apply (ind_lam (fun (N : nat) (_ : lam N) => forall m n, m + S n = N -> lam m -> lam m)).
+ -
+  admit.
+ -
+  admit.
+ -
+  admit.
+Admitted.
 
 Definition betav0 : forall n, fin n -> ter n -> ter 0.
 Proof.
