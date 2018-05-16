@@ -110,6 +110,24 @@ Proof.
    destruct m as [ | mp ].
    *
     exfalso.
+    revert vp.
+    case (eq_add_S 0 N p).
+    apply not_fin_0.
+   *
+    apply var.
+    cbv.
+    fold plus.
+    case (eq_sym (plus_1_mn mp 0)).
+    case (eq_sym (eq_add_S (mp + 1) N p)).
+    apply vp.
+  +
+   case (plus_1_mn m np).
+   apply (H (S m) np).
+   *
+    cbv.
+    fold plus.
+    case (eq_sym (plus_1_mn m (S np))).
+    apply p.
 
 Definition loose_gen_beta_red_by_ind
     : forall N, lam N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
