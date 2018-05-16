@@ -63,6 +63,17 @@ Proof.
    apply go.
 Defined.
 
+Definition loose_gen_beta_red_var_by_ind
+    : forall N, fin N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
+Proof.
+ refine (ind_fin _ _ _).
+ -
+  intros N m [ | np ] H y.
+  +
+   apply y.
+  +
+   
+
 Definition loose_gen_beta_red_by_ind
     : forall N, lam N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
