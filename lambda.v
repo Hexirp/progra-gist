@@ -63,11 +63,12 @@ Proof.
    apply go.
 Defined.
 
-Definition beta : forall N, lam N -> forall m n, m + S n = N -> lam m -> lam m.
+Definition loose_gen_beta_red_by_ind
+    : forall N, lam N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
- apply (ind_lam (fun (N : nat) (_ : lam N) => forall m n, m + S n = N -> lam m -> lam m)).
+ refine (ind_lam _ _ _ _).
  -
-  admit.
+  intros N v m n H y.
  -
   admit.
  -
