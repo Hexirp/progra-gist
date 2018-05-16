@@ -90,6 +90,38 @@ Proof.
   apply eq_refl.
 Defined.
 
+Definition fin_compare
+    : forall m, fin m -> fin m -> comparison.
+Proof.
+ refine (ind_fin _ _ _).
+ -
+  intros m y.
+  refine (
+   match y in fin n' return n' = S m -> comparison with | fo n => _ | fs n yp => _ end
+   eq_refl
+  ).
+  +
+   intros p.
+   apply Eq.
+  +
+   intros p.
+   apply Lt.
+ -
+  intros m xp H y.
+  refine (
+   match y in fin n' return n' = S m -> comparison with | fo n => _ | fs n yp => _ end
+   eq_refl
+  ).
+  +
+   intros p.
+   apply Gt.
+  +
+   intros p.
+   apply H.
+   case (eq_add_S n m p).
+   apply yp.
+Defined.
+
 Definition loose_gen_beta_red_var_by_ind
     : forall N, fin N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
