@@ -77,6 +77,39 @@ Proof.
   apply eq_refl.
 Defined.
 
+Definition loose_gen_beta_red_var : forall m n, fin (m + S n) -> lam (m + n) -> lam (m + n).
+Proof.
+ fix go 3.
+ intros m n v y.
+ refine (
+  match v in fin n' return n' = m + S n -> lam (m + n) with | fo N => _ | fs N vp => _ end
+  eq_refl
+ ).
+ -
+  intros vH.
+  refine (
+   match n as n' return n' = n -> lam (m + n) with | O => _ | S np => _ end
+   eq_refl
+  ).
+  +
+   intros nH.
+   apply y.
+  +
+   intros nH.
+   case nH.
+   apply var.
+   case plus_1_mn with m np.
+   apply fo.
+ -
+  intros vH.
+  refine (
+   match n as n' return n' = n -> lam (m + n) with | O => _ | S np => _ end
+   eq_refl
+  ).
+  +
+   intros nH.
+   
+
 Definition loose_gen_beta_red_var_by_ind
     : forall N, fin N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
