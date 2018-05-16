@@ -73,7 +73,7 @@ Proof.
   intros mp IH n.
   cbv.
   fold plus.
-  case (IH n).
+  case IH with n.
   apply eq_refl.
 Defined.
 
@@ -82,9 +82,15 @@ Definition loose_gen_beta_red_var_by_ind
 Proof.
  refine (ind_fin _ _ _).
  -
-  intros N m [ | np ] H y.
+  intros N m [ | np ] p y.
   +
    apply y.
+  +
+   apply var.
+   case plus_1_mn with m np.
+   apply fo.
+ -
+  intros N vp H [ | mp ] n p y.
   +
    
 
