@@ -63,6 +63,20 @@ Proof.
    apply go.
 Defined.
 
+Definition plus_1_mn : forall m n, S (m + n) = m + (S n).
+Proof.
+ refine (nat_ind _ _ _).
+ -
+  intros n.
+  apply eq_refl.
+ -
+  intros mp IH n.
+  cbv.
+  fold plus.
+  case (IH n).
+  apply eq_refl.
+Defined.
+
 Definition loose_gen_beta_red_var_by_ind
     : forall N, fin N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
