@@ -27,6 +27,19 @@ Proof.
   apply go.
 Defined.
 
+Definition not_fin_0 : fin 0 -> False.
+Proof.
+ intros x.
+ refine (
+  match x in fin n' return 0 = n' -> False with | fo N => _ | fs N xp => _ end
+  eq_refl
+ ).
+ -
+  apply O_S.
+ -
+  apply O_S.
+Defined.
+
 Inductive lam : nat -> Type :=
 | var : forall n, fin n -> lam n
 | abs : forall n, lam (S n) -> lam n
