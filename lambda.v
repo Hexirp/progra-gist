@@ -122,12 +122,8 @@ Proof.
     apply vp.
   +
    case (plus_1_mn m np).
-   apply (H (S m) np).
-   *
-    cbv.
-    fold plus.
-    case (eq_sym (plus_1_mn m (S np))).
-    apply p.
+   case (H m np).
+   
 
 Definition loose_gen_beta_red_by_ind
     : forall N, lam N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
