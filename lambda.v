@@ -74,7 +74,16 @@ Proof.
   apply x.
 Defined.
 
-Def
+Definition full_fin : forall m, fin (S m).
+Proof.
+ intros m.
+ induction m as [ | mp IH ].
+ -
+  apply fo.
+ -
+  apply fs.
+  apply IH.
+Defined.
 
 Definition fin_succ_R : forall m, fin m -> fin m -> Prop
     := fun m x y => fs m x = fin_up m y.
