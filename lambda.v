@@ -63,6 +63,10 @@ Definition fin_succ_R : forall m, fin m -> fin m -> Prop
 Definition fin_succ_R_Wf : forall m, well_founded (fin_succ_R m).
 Proof.
  refine (ind_fin _ _ _).
+ -
+  intros M.
+  apply Acc_intro.
+  intros y H.
 
 Inductive lam : nat -> Type :=
 | var : forall n, fin n -> lam n
