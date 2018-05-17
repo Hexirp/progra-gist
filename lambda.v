@@ -59,6 +59,23 @@ Proof.
   apply IH.
 Defined.
 
+Definition fin_ups : forall m n, fin n -> fin (m + n).
+Proof.
+ intros m.
+ induction m as [ | mp IH ].
+ -
+  intros n x.
+  apply x.
+ -
+  intros n x.
+  apply fin_up.
+  fold plus.
+  apply IH.
+  apply x.
+Defined.
+
+Def
+
 Definition fin_succ_R : forall m, fin m -> fin m -> Prop
     := fun m x y => fs m x = fin_up m y.
 
