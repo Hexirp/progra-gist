@@ -124,7 +124,7 @@ Proof.
   apply eq_refl.
 Defined.
 
-Definition loose_gen_beta_red_var__comp
+Definition loose_gen_beta_var_comp_by_ind
     : forall n, fin n -> fin n -> forall np, S np = n -> option (fin np).
 Proof.
  refine (ind_fin _ _ _).
@@ -191,8 +191,16 @@ Proof.
       apply None.
 Defined.
 
-Definition loose_gen_beta_red_var_by_ind
-    : forall N, fin N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
+Definition loose_gen_beta_var_comp
+    : forall m n, fin (m + S n) -> option (fin (m + n)).
+Proof.
+ intros m n x.
+ apply loose_gen_beta_var_comp_by_ind with (m + S n).
+ -
+  apply fin_up.
+
+Definition loose_gen_beta_var
+    : forall m n, fin (m + S n) -> lam (m + n) -> lam (m + n).
 Proof.
  refine (ind_fin _ _ _).
  -
