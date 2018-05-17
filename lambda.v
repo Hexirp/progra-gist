@@ -40,6 +40,11 @@ Proof.
   apply O_S.
 Defined.
 
+Definition fin_S : forall P m, fin m -> (forall n, S n = m -> P) -> P.
+Proof.
+ intros P m [ m' | m' xp ] r; apply r with m'; apply eq_refl.
+Defined.
+
 Inductive lam : nat -> Type :=
 | var : forall n, fin n -> lam n
 | abs : forall n, lam (S n) -> lam n
@@ -109,16 +114,10 @@ Definition loose_gen_beta_red_var_by_comp
 Proof.
  refine (ind_fin _ _ _).
  -
-  intros M b n H y.
-  refine (
-   match b in fin N' return N' = S M -> lam n with | fo N => _ | fs N bp => _ end
-   eq_refl
-  ).
+  intros M [ N | N bp ] n H y.
   +
-   intros p.
    apply y.
   +
-   intros p.
    apply var.
    refine (
     match b in fin N' return N' = N -> fin n with | 
