@@ -152,37 +152,20 @@ Defined.
     f 4 3<4 3<4 y = f 4 2<4 2<4 y = f 4 1<4 1<4 y = f 4 0<4 0<4 y = y
 *)
 Definition loose_gen_beta_red_var_by_comp
-    : forall P, forall (m : nat) (x : fin m) (y : fin m),
-    (x = y -> P) ->
-    (forall (mp : nat) (p : S mp = m) (xp : fin mp), (rew p in fs mp xp) = x -> P) ->
-    (forall (mp : nat) (p : S mp = m) (yp : fin mp), (rew p in fs mp yp) = y -> P) ->
-    P.
+    : forall n, fin n -> fin n -> forall np, S np = n -> option (fin np).
 Proof.
- intros P.
  refine (ind_fin _ _ _).
  -
-  intros M y eqH ltH gtH.
+  intros ni y np p.
   refine (
-   match y
-     as y'
-     in fin N'
-     return forall p : N' = S M, (rew p in y') = y -> P
-   with
-   | fo N => _
-   | fs N yp => _
-   end
-   eq_refl
+   match y in fin n' return n' = S ni -> option (fin np) with | fo N => _ | fs N yp => _ end
    eq_refl
   ).
   +
    intros N'H y'H.
    apply eqH.
    case y'H.
-   refine (
-    match N'H
-      as N'H'
-      in @eq nat (S N) O'
-      return @eq (fin O') (fo N) (@eq_rect nat (.
+   case (eq_add_S N M N'H).
   +
    intros n'H.
    apply var.
