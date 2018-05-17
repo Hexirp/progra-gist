@@ -74,7 +74,7 @@ Proof.
   apply x.
 Defined.
 
-Definition full_fin : forall m, fin (S m).
+Definition fin_full : forall m, fin (S m).
 Proof.
  intros m.
  induction m as [ | mp IH ].
@@ -223,7 +223,13 @@ Proof.
  intros m n x.
  apply loose_gen_beta_var_comp_by_ind with (m + S n).
  -
-  apply fin_up.
+  apply fin_ups.
+  apply fin_full.
+ -
+  apply x.
+ -
+  apply plus_1_mn.
+Defined.
 
 Definition loose_gen_beta_var
     : forall m n, fin (m + S n) -> lam (m + n) -> lam (m + n).
