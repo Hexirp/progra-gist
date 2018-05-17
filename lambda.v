@@ -119,7 +119,7 @@ Defined.
     考えるのは [a] が [0] 、または [b] が [0] の時、どうするか。
 *)
 Definition loose_gen_beta_red_var_by_ind
-    : forall m, fin m -> fin m -> forall n, S n = m -> lam n -> lam n.
+    : forall m, fin m -> forall n, m = n -> fin n -> forall o, n = S o -> lam o -> lam o.
 Proof.
  refine (ind_fin _ _ _).
  -
@@ -129,16 +129,11 @@ Proof.
   +
    apply var.
    case (eq_sym (eq_add_S n N H)).
-   apply .
+   apply bp.
  -
-  intros m xp H y.
-  refine (
-   match y in fin n' return n' = S m -> comparison with | fo n => _ | fs n yp => _ end
-   eq_refl
-  ).
+  intros M ap IH [ N | N bp ] n H y.
   +
-   intros p.
-   apply Gt.
+   case
   +
    intros p.
    apply H.
