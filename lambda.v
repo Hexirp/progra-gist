@@ -96,20 +96,29 @@ Proof.
 Defined.
 
 (**
-    betav 0 3 3<4 y = y
-    betav 1 2 2<4 y = y
-    betav 2 1 1<4 y = y
-    betav 3 0 0<4 y = y
+    f 4 3<4 3<4 y = y
+    f 4 2<4 2<4 y = y
+    f 4 1<4 1<4 y = y
+    f 4 0<4 0<4 y = y
 
-    betav 0 3 2<4 y = var 3 2<3
-    betav 1 2 1<4 y = var 3 1<3
-    betav 2 1 0<4 y = var 3 0<3
+    f 4 3<4 2<4 y = var 3 2<3
+    f 4 3<4 1<4 y = var 3 1<3
+    f 4 3<4 0<4 y = var 3 0<3
+    f 4 2<4 1<4 y = var 3 1<3
+    f 4 2<4 0<4 y = var 3 0<3
+    f 4 1<4 0<4 y = var 3 0<3
 
-    betav 1 2 3<4 y = var 3 2<3
-    betav 2 1 2<4 y = var 3 1<3
-    betav 3 0 1<4 y = var 3 0<3
+    f 4 2<4 3<4 y = var 3 2<3
+    f 4 1<4 2<4 y = var 3 1<3
+    f 4 1<4 3<4 y = var 3 2<3
+    f 4 0<4 1<4 y = var 3 0<3
+    f 4 0<4 2<4 y = var 3 1<3
+    f 4 0<4 3<4 y = var 3 2<3
+
+    これらを、 [f m a<m b<m y] の [a] と [b] を同時に減らしていくことで定義する。
+    考えるのは [a] が [0] 、または [b] が [0] の時、どうするか。
 *)
-Definition loose_gen_beta_red_var_by_comp
+Definition loose_gen_beta_red_var_by_ind
     : forall m, fin m -> fin m -> forall n, S n = m -> lam n -> lam n.
 Proof.
  refine (ind_fin _ _ _).
@@ -119,8 +128,8 @@ Proof.
    apply y.
   +
    apply var.
-   refine (
-    match b in fin N' return N' = N -> fin n with | 
+   case (eq_sym (eq_add_S n N H)).
+   apply .
  -
   intros m xp H y.
   refine (
