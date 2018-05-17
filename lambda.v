@@ -117,6 +117,8 @@ Defined.
 
     これらを、 [f m a<m b<m y] の [a] と [b] を同時に減らしていくことで定義する。
     考えるのは [a] が [0] 、または [b] が [0] の時、どうするか。
+
+    f 4 3<4 3<4 y = f 4 2<4 2<4 y = f 4 1<4 1<4 y = f 4 0<4 0<4 y = y
 *)
 Definition loose_gen_beta_red_var_by_ind
     : forall m, fin m -> forall n, m = n -> fin n -> forall o, n = S o -> lam o -> lam o.
@@ -138,13 +140,30 @@ Proof.
    apply bp.
  -
   intros M ap IH n nH b o oH y.
+  refine (
+   match b in fin n' return n' = n -> lam o with | fo n' => _ | fs n' bp => _ end
+   eq_refl
+  ).
   +
-   
+   intros n'H.
+   apply var.
+   case (eq_add_S M o (eq_trans nH oH)).
+   apply fin_S with M.
+   *
+    apply ap.
+   *
+    intros M' M'H.
+    case M'H.
+    apply fo.
   +
    intros p.
-   apply H.
-   case (eq_add_S n m p).
-   apply yp.
+   apply IH with M.
+   *
+    apply eq_refl.
+   *
+    apply ap.
+   *
+    
 Defined.
 
 Definition loose_gen_beta_red_var_by_ind
