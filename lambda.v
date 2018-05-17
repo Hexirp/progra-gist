@@ -244,14 +244,36 @@ Proof.
   apply y.
 Defined.
 
-Definition loose_gen_beta_red_by_ind
+Definition loose_gen_beta_by_ind
     : forall N, lam N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
  refine (ind_lam _ _ _ _).
  -
-  intros N v m n H y.
+  intros Ni v m n p y.
+  apply loose_gen_beta_var.
+  +
+   revert v.
+   case p.
+   intros v.
+   apply v.
+  +
+   apply y.
  -
-  admit.
+  intros Ni xp IH m n p y.
+  apply abs.
+  assert (IH' : lam (m + S n)).
+  +
+   apply IH.
+   *
+    case plus_1_mn.
+    apply eq_S.
+    apply p.
+   *
+    revert xp.
+    case p.
+    case plus_1_mn.
+    intros xp.
+    apply
  -
   admit.
 Admitted.
