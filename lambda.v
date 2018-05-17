@@ -45,6 +45,25 @@ Proof.
  intros P m [ m' | m' xp ] r; apply r with m'; apply eq_refl.
 Defined.
 
+Definition fin_up : forall m, fin m -> fin (S m).
+Proof.
+ refine (ind_fin _ _ _).
+ -
+  intros M.
+  apply fo.
+ -
+  intros M xp IH.
+  apply fs.
+  apply IH.
+Defined.
+
+Definition fin_succ_R : forall m, fin m -> fin m -> Prop
+    := fun m x y => fs m x = fin_up m y.
+
+Definition fin_succ_R_Wf : forall m, well_founded (fin_succ_R m).
+Proof.
+ refine (ind_fin _ _ _).
+
 Inductive lam : nat -> Type :=
 | var : forall n, fin n -> lam n
 | abs : forall n, lam (S n) -> lam n
@@ -121,7 +140,7 @@ Defined.
     f 4 3<4 3<4 y = f 4 2<4 2<4 y = f 4 1<4 1<4 y = f 4 0<4 0<4 y = y
 *)
 Definition loose_gen_beta_red_var_by_ind
-    : forall m, fin m -> forall n, m = n -> fin n -> forall o, n = S o -> lam o -> lam o.
+    : forall m, fin (S m) -> fin (S m) -> forall o, n = S o -> lam o -> lam o.
 Proof.
  refine (ind_fin _ _ _).
  -
