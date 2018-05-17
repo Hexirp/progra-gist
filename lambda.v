@@ -123,17 +123,23 @@ Definition loose_gen_beta_red_var_by_ind
 Proof.
  refine (ind_fin _ _ _).
  -
-  intros M [ N | N bp ] n H y.
+  intros M n nH b o oH y.
+  refine (
+   match b in fin n' return n' = n -> lam o with | fo n' => _ | fs n' bp => _ end
+   eq_refl
+  ).
   +
+   intros n'H.
    apply y.
   +
+   intros n'H.
    apply var.
-   case (eq_sym (eq_add_S n N H)).
+   case (eq_add_S n' o (eq_trans n'H oH)).
    apply bp.
  -
-  intros M ap IH [ N | N bp ] n H y.
+  intros M ap IH n nH b o oH y.
   +
-   case
+   
   +
    intros p.
    apply H.
