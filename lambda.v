@@ -1,7 +1,5 @@
 Require Import Coq.Init.Prelude.
 
-Import EqNotations.
-
 Axiom undefined : forall a : Type, a.
 
 Inductive fin : nat -> Type :=
@@ -156,47 +154,66 @@ Definition loose_gen_beta_red_var_by_comp
 Proof.
  refine (ind_fin _ _ _).
  -
-  intros ni y np p.
+  intros ni y np pnp.
   refine (
-   match y in fin n' return n' = S ni -> option (fin np) with | fo N => _ | fs N yp => _ end
+   match y in fin n' return n' = S ni -> option (fin np) with | fo n' => _ | fs n' yp => _ end
    eq_refl
   ).
   +
-   intros N'H y'H.
-   apply eqH.
-   case y'H.
-   case (eq_add_S N M N'H).
+   intros pn'.
+   apply None.
   +
-   intros n'H.
-   apply var.
-   case (eq_add_S n' o (eq_trans n'H oH)).
-   apply bp.
+   intros pn'.
+   apply Some.
+   revert yp pn'.
+   case (eq_add_S np ni pnp).
+   intros yp pn'.
+   case (eq_add_S n' np pn').
+   apply yp.
  -
-  intros M ap IH n nH b o oH y.
+  intros ni xp IH y np pnp.
   refine (
-   match b in fin n' return n' = n -> lam o with | fo n' => _ | fs n' bp => _ end
+   match y in fin n' return n' = S ni -> option (fin np) with | fo n' => _ | fs n' yp => _ end
    eq_refl
   ).
   +
-   intros n'H.
-   apply var.
-   case (eq_add_S M o (eq_trans nH oH)).
-   apply fin_S with M.
+   intros pn'.
+   apply Some.
+   apply fin_S with np.
    *
-    apply ap.
+    revert xp.
+    case (eq_add_S np ni pnp).
+    intros xp.
+    apply xp.
    *
-    intros M' M'H.
-    case M'H.
+    intros npp pnpp.
+    case pnpp.
     apply fo.
   +
-   intros p.
-   apply IH with M.
+   intros pn'.
+   assert (yp' : fin ni).
    *
-    apply eq_refl.
+    case (eq_add_S n' ni pn').
+    apply yp.
    *
-    apply ap.
-   *
-    
+    apply fin_S with ni.
+    --
+     apply yp'.
+    --
+     intros nip pnip.
+     assert (IH' := IH yp' nip pnip).
+     case IH'.
+     ++
+      intros IH_S.
+      apply Some.
+      revert pnip.
+      case (eq_add_S np ni pnp).
+      intros pnip.
+      case pnip.
+      apply fs.
+      apply IH_S.
+     ++
+      apply None.
 Defined.
 
 Definition loose_gen_beta_red_var_by_ind
