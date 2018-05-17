@@ -124,32 +124,7 @@ Proof.
   apply eq_refl.
 Defined.
 
-(**
-    f 4 3<4 3<4 y = y
-    f 4 2<4 2<4 y = y
-    f 4 1<4 1<4 y = y
-    f 4 0<4 0<4 y = y
-
-    f 4 3<4 2<4 y = var 3 2<3
-    f 4 3<4 1<4 y = var 3 1<3
-    f 4 3<4 0<4 y = var 3 0<3
-    f 4 2<4 1<4 y = var 3 1<3
-    f 4 2<4 0<4 y = var 3 0<3
-    f 4 1<4 0<4 y = var 3 0<3
-
-    f 4 2<4 3<4 y = var 3 2<3
-    f 4 1<4 2<4 y = var 3 1<3
-    f 4 1<4 3<4 y = var 3 2<3
-    f 4 0<4 1<4 y = var 3 0<3
-    f 4 0<4 2<4 y = var 3 1<3
-    f 4 0<4 3<4 y = var 3 2<3
-
-    これらを、 [f m a<m b<m y] の [a] と [b] を同時に減らしていくことで定義する。
-    考えるのは [a] が [0] 、または [b] が [0] の時、どうするか。
-
-    f 4 3<4 3<4 y = f 4 2<4 2<4 y = f 4 1<4 1<4 y = f 4 0<4 0<4 y = y
-*)
-Definition loose_gen_beta_red_var_by_comp
+Definition loose_gen_beta_red_var__comp
     : forall n, fin n -> fin n -> forall np, S np = n -> option (fin np).
 Proof.
  refine (ind_fin _ _ _).
