@@ -67,6 +67,10 @@ Proof.
   intros M.
   apply Acc_intro.
   intros y H.
+  admit.
+ -
+  admit.
+Admitted.
 
 Inductive lam : nat -> Type :=
 | var : forall n, fin n -> lam n
@@ -143,8 +147,12 @@ Defined.
 
     f 4 3<4 3<4 y = f 4 2<4 2<4 y = f 4 1<4 1<4 y = f 4 0<4 0<4 y = y
 *)
-Definition loose_gen_beta_red_var_by_ind
-    : forall m, fin (S m) -> fin (S m) -> forall o, n = S o -> lam o -> lam o.
+Definition loose_gen_beta_red_var_by_comp
+    : forall P : Type, forall (m : nat) (x : fin m) (y : fin m),
+    (x = y -> P) ->
+    (forall mp, forall p : S mp = m, forall xp : fin mp, rew (fs mp xp) in p = x -> P) ->
+    (forall mp, forall p : S mp = m, forall yp : fin mp, rew (fs mp yp) in p = y -> P) ->
+    P.
 Proof.
  refine (ind_fin _ _ _).
  -
