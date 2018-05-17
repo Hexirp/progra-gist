@@ -1,3 +1,7 @@
+Require Import Coq.Init.Prelude.
+
+Import EqNotations.
+
 Axiom undefined : forall a : Type, a.
 
 Inductive fin : nat -> Type :=
@@ -148,22 +152,37 @@ Defined.
     f 4 3<4 3<4 y = f 4 2<4 2<4 y = f 4 1<4 1<4 y = f 4 0<4 0<4 y = y
 *)
 Definition loose_gen_beta_red_var_by_comp
-    : forall P : Type, forall (m : nat) (x : fin m) (y : fin m),
+    : forall P, forall (m : nat) (x : fin m) (y : fin m),
     (x = y -> P) ->
-    (forall mp, forall p : S mp = m, forall xp : fin mp, rew (fs mp xp) in p = x -> P) ->
-    (forall mp, forall p : S mp = m, forall yp : fin mp, rew (fs mp yp) in p = y -> P) ->
+    (forall (mp : nat) (p : S mp = m) (xp : fin mp), (rew p in fs mp xp) = x -> P) ->
+    (forall (mp : nat) (p : S mp = m) (yp : fin mp), (rew p in fs mp yp) = y -> P) ->
     P.
 Proof.
+ intros P.
  refine (ind_fin _ _ _).
  -
-  intros M n nH b o oH y.
+  intros M y eqH ltH gtH.
   refine (
-   match b in fin n' return n' = n -> lam o with | fo n' => _ | fs n' bp => _ end
+   match y
+     as y'
+     in fin N'
+     return forall p : N' = S M, (rew p in y') = y -> P
+   with
+   | fo N => _
+   | fs N yp => _
+   end
+   eq_refl
    eq_refl
   ).
   +
-   intros n'H.
-   apply y.
+   intros N'H y'H.
+   apply eqH.
+   case y'H.
+   refine (
+    match N'H
+      as N'H'
+      in @eq nat (S N) O'
+      return @eq (fin O') (fo N) (@eq_rect nat (.
   +
    intros n'H.
    apply var.
