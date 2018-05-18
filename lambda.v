@@ -157,6 +157,20 @@ Proof.
    apply IHb.
 Defined.
 
+Definition lam_succs : forall m n, lam n -> lam (m + n).
+Proof.
+ refine (nat_rect _ _ _).
+ -
+  intros n x.
+  apply x.
+ -
+  intros mi IH n x.
+  apply lam_succ.
+  fold plus.
+  apply IH.
+  apply x.
+Defined.
+
 Definition plus_1_mn : forall m n, S (m + n) = m + (S n).
 Proof.
  refine (nat_ind _ _ _).
@@ -318,6 +332,16 @@ Proof.
  -
   apply y.
 Defined.
+
+Definition strict_gen_beta
+    : forall m n, lam (m + S n) -> lam m -> lam (m + n).
+Proof.
+ intros m n x y.
+ apply loose_gen_beta.
+ -
+  apply x.
+ -
+  SearchAbout plus.
 
 Definition betav0 : forall n, fin n -> ter n -> ter 0.
 Proof.
