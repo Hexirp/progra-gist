@@ -361,3 +361,16 @@ Proof.
  -
   apply y.
 Defined.
+
+(** lam's reduction relation *)
+
+Inductive Head_Reduced {m : nat} : lam m -> lam m -> Prop :=
+| head_reduction : forall f x y, beta m f x = y -> Head_Reduced (apply m f x) y
+.
+
+Inductive Reduced {m : nat} : lam m -> lam m -> Prop :=
+| head_red : forall x y, Head_Reduced x y -> Reduced x y
+| abs_red : forall x y, @Reduced (S m) x y -> Reduced (abs m x) (abs m y)
+| app_red_l : forall xl xr yl yr, Reduced xl yl -> Reduced (app m xl xr) (app m yl yr)
+| app_red_r : forall xl xr yl yr, Reduced xr yr -> Reduced (app m xl xr) (app m yl yr)
+.
