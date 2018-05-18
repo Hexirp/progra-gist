@@ -306,6 +306,19 @@ Proof.
     apply y.
 Defined.
 
+Definition loose_gen_beta
+    : forall m n, lam (m + S n) -> lam (m + n) -> lam (m + n).
+Proof.
+ intros m n x y.
+ apply loose_gen_beta_by_ind with (m + S n).
+ -
+  apply x.
+ -
+  apply eq_refl.
+ -
+  apply y.
+Defined.
+
 Definition betav0 : forall n, fin n -> ter n -> ter 0.
 Proof.
  refine (
