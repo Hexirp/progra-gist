@@ -136,6 +136,27 @@ Proof.
    apply go.
 Defined.
 
+Definition lam_succ : forall n, lam n -> lam (S n).
+Proof.
+ refine (ind_lam _ _ _ _).
+ -
+  intros ni v.
+  apply var.
+  apply fs.
+  apply v.
+ -
+  intros ni x IH.
+  apply abs.
+  apply IH.
+ -
+  intros ni a b IHa IHb.
+  apply app.
+  +
+   apply IHa.
+  +
+   apply IHb.
+Defined.
+
 Definition plus_1_mn : forall m n, S (m + n) = m + (S n).
 Proof.
  refine (nat_ind _ _ _).
