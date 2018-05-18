@@ -347,3 +347,17 @@ Proof.
  case (eq_sym (plus_1_mn m 0)).
  apply (loose_gen_beta m 0).
 Defined.
+
+(** lam's functions *)
+
+Definition apply
+    : forall m, lam (S m) -> lam m -> lam m.
+Proof.
+ intros m x y.
+ apply app.
+ -
+  apply abs.
+  apply x.
+ -
+  apply y.
+Defined.
