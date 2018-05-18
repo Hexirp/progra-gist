@@ -356,7 +356,10 @@ Proof.
  -
   apply x.
  -
-  SearchAbout plus.
+  case plus_comm.
+  apply lam_succs.
+  apply y.
+Defined.
 
 Definition betav0 : forall n, fin n -> ter n -> ter 0.
 Proof.
