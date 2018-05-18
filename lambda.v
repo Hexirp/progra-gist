@@ -361,6 +361,15 @@ Proof.
   apply y.
 Defined.
 
+Definition beta
+    : forall m, lam (S m) -> lam m -> lam m.
+Proof.
+ intros m.
+ case (eq_sym (plus_n_O m)).
+ case (eq_sym (plus_1_mn m 0)).
+ apply (loose_gen_beta m 0).
+Defined.
+
 Definition betav0 : forall n, fin n -> ter n -> ter 0.
 Proof.
  refine (
