@@ -157,7 +157,10 @@ Proof.
  -
   intros ni y np pnp.
   refine (
-   match y in fin n' return n' = S ni -> option (fin np) with | fo n' => _ | fs n' yp => _ end
+   match y in fin n' return n' = S ni -> option (fin np) with
+   | fo n' => _
+   | fs n' yp => _
+   end
    eq_refl
   ).
   +
@@ -166,15 +169,16 @@ Proof.
   +
    intros pn'.
    apply Some.
-   revert yp pn'.
-   case (eq_add_S np ni pnp).
-   intros yp pn'.
-   case (eq_add_S n' np pn').
+   case (eq_sym (eq_add_S np ni pnp)).
+   case (eq_add_S n' ni pn').
    apply yp.
  -
   intros ni xp IH y np pnp.
   refine (
-   match y in fin n' return n' = S ni -> option (fin np) with | fo n' => _ | fs n' yp => _ end
+   match y in fin n' return n' = S ni -> option (fin np) with
+   | fo n' => _
+   | fs n' yp => _
+   end
    eq_refl
   ).
   +
@@ -182,9 +186,7 @@ Proof.
    apply Some.
    apply fin_S with np.
    *
-    revert xp.
-    case (eq_add_S np ni pnp).
-    intros xp.
+    case (eq_sym (eq_add_S np ni pnp)).
     apply xp.
    *
     intros npp pnpp.
@@ -192,29 +194,26 @@ Proof.
     apply fo.
   +
    intros pn'.
-   assert (yp' : fin ni).
+   refine (fin_S _ ni _ _).
    *
     case (eq_add_S n' ni pn').
     apply yp.
    *
-    apply fin_S with ni.
+    intros nip pnip.
+    apply option_map with (fin nip).
     --
-     apply yp'.
+     intros IH'.
+     case (eq_sym (eq_add_S np ni pnp)).
+     case pnip.
+     apply fs.
+     apply IH'.
     --
-     intros nip pnip.
-     assert (IH' := IH yp' nip pnip).
-     case IH'.
+     apply IH.
      ++
-      intros IH_S.
-      apply Some.
-      revert pnip.
-      case (eq_add_S np ni pnp).
-      intros pnip.
-      case pnip.
-      apply fs.
-      apply IH_S.
+      case (eq_add_S n' ni pn').
+      apply yp.
      ++
-      apply None.
+      apply pnip.
 Defined.
 
 Definition loose_gen_beta_var_comp
@@ -269,11 +268,7 @@ Proof.
     apply eq_S.
     apply p.
    *
-    revert xp.
-    case p.
-    case plus_1_mn.
-    intros xp.
-    apply
+    
  -
   admit.
 Admitted.
