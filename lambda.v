@@ -1,6 +1,37 @@
 Require Import Coq.Init.Prelude.
 
-Axiom undefined : forall a : Type, a.
+(** * Lemmas *)
+
+Lemma plus_1_mn : forall m n, S (m + n) = m + (S n).
+Proof.
+ refine (nat_ind _ _ _).
+ -
+  intros n.
+  apply eq_refl.
+ -
+  intros mp IH n.
+  cbv.
+  fold plus.
+  case IH with n.
+  apply eq_refl.
+Defined.
+
+Lemma plus_comm : forall m n, m + n = n + m.
+Proof.
+ refine (nat_ind _ _ _).
+ -
+  intros n.
+  apply plus_n_O.
+ -
+  intros mi IH n.
+  cbv.
+  fold plus.
+  case plus_1_mn.
+  case IH.
+  apply eq_refl.
+Defined.
+
+(** * fin *)
 
 Inductive fin : nat -> Type :=
 | fo : forall n, fin (S n)
@@ -71,6 +102,8 @@ Proof.
   apply fs.
   apply IH.
 Defined.
+
+(** * lam *)
 
 Inductive lam : nat -> Type :=
 | var : forall n, fin n -> lam n
@@ -143,34 +176,7 @@ Proof.
   apply x.
 Defined.
 
-Definition plus_1_mn : forall m n, S (m + n) = m + (S n).
-Proof.
- refine (nat_ind _ _ _).
- -
-  intros n.
-  apply eq_refl.
- -
-  intros mp IH n.
-  cbv.
-  fold plus.
-  case IH with n.
-  apply eq_refl.
-Defined.
-
-Definition plus_comm : forall m n, m + n = n + m.
-Proof.
- refine (nat_ind _ _ _).
- -
-  intros n.
-  apply plus_n_O.
- -
-  intros mi IH n.
-  cbv.
-  fold plus.
-  case plus_1_mn.
-  case IH.
-  apply eq_refl.
-Defined.
+(** * beta *)
 
 Definition loose_gen_beta_var_comp_by_ind
     : forall n, fin n -> fin n -> forall np, S np = n -> option (fin np).
