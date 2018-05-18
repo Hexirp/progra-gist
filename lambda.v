@@ -272,27 +272,39 @@ Proof.
   intros Ni v m n p y.
   apply loose_gen_beta_var.
   +
-   revert v.
-   case p.
-   intros v.
+   case (eq_sym p).
    apply v.
   +
    apply y.
  -
-  intros Ni xp IH m n p y.
+  intros Ni x IH m n p y.
   apply abs.
-  assert (IH' : lam (m + S n)).
+  case (eq_sym (plus_1_mn m n)).
+  apply IH.
   +
-   apply IH.
+   case p.
+   case plus_1_mn with m (S n).
+   apply eq_refl.
+  +
+   case plus_1_mn with m n.
+   apply lam_succ.
+   apply y.
+ -
+  intros Ni a b IHa IHb m n p y.
+  apply app.
+  +
+   apply IHa.
    *
-    case plus_1_mn.
-    apply eq_S.
     apply p.
    *
-    
- -
-  admit.
-Admitted.
+    apply y.
+  +
+   apply IHb.
+   *
+    apply p.
+   *
+    apply y.
+Defined.
 
 Definition betav0 : forall n, fin n -> ter n -> ter 0.
 Proof.
