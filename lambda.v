@@ -185,6 +185,21 @@ Proof.
   apply eq_refl.
 Defined.
 
+Definition plus_comm : forall m n, m + n = n + m.
+Proof.
+ refine (nat_ind _ _ _).
+ -
+  intros n.
+  apply plus_n_O.
+ -
+  intros mi IH n.
+  cbv.
+  fold plus.
+  case plus_1_mn.
+  case IH.
+  apply eq_refl.
+Defined.
+
 Definition loose_gen_beta_var_comp_by_ind
     : forall n, fin n -> fin n -> forall np, S np = n -> option (fin np).
 Proof.
