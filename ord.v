@@ -37,7 +37,13 @@
 
 Module Pre.
 
- (** 述語論理の記号。 *)
+ (** ** 述語論理の記号
+
+     これらのいずれも非常に標準的な表記である。
+     [P -> _] と書いたとき [_] が分割されて認識されることがないように
+     含意記号は特別な設定がされている。
+
+ *)
 
  Reserved Notation "x -> y" (at level 99, right associativity, y at level 200).
  Reserved Notation "x <-> y" (at level 95, no associativity).
@@ -45,7 +51,7 @@ Module Pre.
  Reserved Notation "x \/ y" (at level 85, right associativity).
  Reserved Notation "~ x" (at level 75, right associativity).
 
- (** 等号及び不等号、大小関係。 *)
+ (** ** 等号及び不等号、大小関係 *)
 
  Reserved Notation "x = y :> T" (at level 70, y at next level, no associativity).
  Reserved Notation "x = y" (at level 70, no associativity).
@@ -58,7 +64,7 @@ Module Pre.
  Reserved Notation "x >= y" (at level 70, no associativity).
  Reserved Notation "x > y" (at level 70, no associativity).
 
- (** 算術演算子。 *)
+ (** ** 算術演算子 *)
 
  Reserved Notation "x + y" (at level 50, left associativity).
  Reserved Notation "x - y" (at level 50, left associativity).
@@ -69,7 +75,7 @@ Module Pre.
  Reserved Notation "- x" (at level 35, right associativity).
  Reserved Notation "/ x" (at level 35, right associativity).
 
- (** 視野 (scope) 。 *)
+ (** ** 視野 (scope) *)
 
  Delimit Scope type_scope with type.
  Delimit Scope function_scope with function.
@@ -82,13 +88,13 @@ Module Pre.
  Open Scope function_scope.
  Open Scope type_scope.
 
- (** 戦略 (tactic) の設定。 *)
+ (** ** 戦略 (tactic) の設定 *)
 
  Declare ML Module "ltac_plugin".
 
  Export Set Default Proof Mode "Classic".
 
- (** 設定旗 (flag) の操作。 *)
+ (** ** 設定旗 (flag) の操作 *)
 
  Export Unset Bracketing Last Introduction Pattern.
 
