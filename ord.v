@@ -32,8 +32,9 @@
 
     第三に、戦略 (tactic) を使用するための設定をする。
     戦略 (tactic) は一気に定義を書き上げることが出来ない場合に有用な道具である。
-    この部分の記述は Stack Overflow で Tej Chajed 氏に教えていただいた。感謝する。
-    さらに、 Coq の標準文庫 (library) の内部にある Coq.Init.Notations の記述も参考にした。
+    この部分の記述は Stack Overflow で Tej Chajed 氏に教えていただいた。
+    さらに、 Coq の標準文庫 (library) の内部にある
+    Coq.Init.Notations の記述も参考にした。
 
     第四に、設定旗 (flag) を操作する。
     HoTT の内部にある HoTT.Basics.Overture の記述に依った。
