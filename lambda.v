@@ -200,7 +200,7 @@ Defined.
 Definition loose_gen_beta_by_ind
     : forall N, lam N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
- refine (lam_rec _ _ _ _).
+ refine (lam_rect _ _ _ _).
  -
   intros Ni v m n p y.
   apply loose_gen_beta_var.
@@ -253,6 +253,12 @@ Proof.
   apply y.
 Defined.
 
+Definition plus_n_O : forall n : nat, n = n + 0 :=
+ nat_ind (fun n => n = n + 0)
+  eq_refl
+  (fun (n : nat) (IH : n = n + 0) => f_equal S IH)
+.
+
 Definition beta
     : forall m, lam (S m) -> lam m -> lam m.
 Proof.
@@ -271,15 +277,73 @@ Proof.
  apply (app _ (abs _ x) y).
 Defined.
 
-(** lam's reduction relation *)
+Definition rich_var : forall m n, lam (m + S n).
+Proof.
+ intros m n.
+ apply var.
+ apply fin_ups.
+ apply fin_full.
+Defined.
 
-Inductive Head_Reduced {m : nat} : lam m -> lam m -> Prop :=
-| head_reduction : forall f x y, beta m f x = y -> Head_Reduced (apply m f x) y
-.
+Definition redux
+    : forall m, lam m -> lam m -> lam m.
+Proof.
+ intros m [ mi v | mi x | mi a b ] y.
+ -
+  apply (app mi (var mi v) y).
+ -
+  apply (beta mi x y).
+ -
+  apply (app mi (app mi a b) y).
+Defined.
 
-Inductive Reduced {m : nat} : lam m -> lam m -> Prop :=
-| head_red : forall x y, Head_Reduced x y -> Reduced x y
-| abs_red : forall x y, @Reduced (S m) x y -> Reduced (abs m x) (abs m y)
-| app_red_l : forall xl xr yl yr, Reduced xl yl -> Reduced (app m xl xr) (app m yl yr)
-| app_red_r : forall xl xr yl yr, Reduced xr yr -> Reduced (app m xl xr) (app m yl yr)
-.
+Notation "m ~ n" := (rich_var m n) (at level 30, no    associativity).
+Notation "a @ b" := (app _ a b)    (at level 40, left  associativity).
+Notation "\-> x" := (abs _ x)      (at level 45, right associativity).
+
+Notation "a $ b" := (redux _ a b)  (at level 40, left  associativity).
+
+Definition Icon : lam 0 := \-> 0~0.
+
+Definition Kcon : lam 0 := \-> \-> 0~1.
+
+Definition Scon : lam 0 := \-> \-> \-> 0~2 @ 2~0 @ (1~1 @ 2~0).
+
+Definition eq_Icon : forall x, Icon $ x = x.
+Proof.
+ intros x.
+ unfold Icon.
+ unfold redux.
+ unfold rich_var.
+ unfold fin_full.
+ unfold nat_rect.
+ unfold fin_ups.
+ unfold nat_rect.
+ unfold plus.
+ unfold beta.
+ unfold plus_n_O.
+ unfold nat_ind.
+ unfold eq_sym.
+ unfold plus_1_mn.
+ unfold nat_ind.
+ unfold loose_gen_beta.
+ unfold plus.
+ unfold loose_gen_beta_by_ind.
+ unfold lam_rect.
+ unfold eq_sym.
+ unfold loose_gen_beta_var.
+ unfold loose_gen_beta_var_comp.
+ unfold plus_1_mn.
+ unfold nat_ind.
+ unfold plus.
+ unfold fin_full.
+ unfold nat_rect.
+ unfold fin_ups.
+ unfold nat_rect.
+ unfold loose_gen_beta_var_comp_by_ind.
+ unfold fin_rect.
+ unfold eq_add_S.
+ unfold f_equal.
+ unfold eq_sym.
+ apply eq_refl.
+Defined. (* call by value! *)
