@@ -38,28 +38,6 @@ Inductive fin : nat -> Type :=
 | fs : forall n, fin n -> fin (S n)
 .
 
-Definition ind_fin :
-    forall P : forall n : nat, fin n -> Type,
-    (forall n : nat, P (S n) (fo n)) ->
-    (forall n : nat, forall xp : fin n, P n xp -> P (S n) (fs n xp)) ->
-    forall n : nat, forall x : fin n, P n x.
-Proof.
- intros P cfo cfs.
- fix go 2.
- intros n x.
- refine (
-  match x as x' in fin n' return P n' x' with
-  | fo n' => _
-  | fs n' xp => _
-  end
- ).
- -
-  apply cfo.
- -
-  apply cfs.
-  apply go.
-Defined.
-
 Definition fin_S : forall P m, fin m -> (forall n, S n = m -> P) -> P.
 Proof.
  intros P m [ m' | m' xp ] r; apply r with m'; apply eq_refl.
@@ -67,7 +45,7 @@ Defined.
 
 Definition fin_up : forall m, fin m -> fin (S m).
 Proof.
- refine (ind_fin _ _ _).
+ refine (fin_rect _ _ _).
  -
   intros M.
   apply fo.
@@ -79,13 +57,14 @@ Defined.
 
 Definition fin_ups : forall m n, fin n -> fin (m + n).
 Proof.
- intros m.
- induction m as [ | mp IH ].
+ refine (nat_rect _ _ _).
  -
   intros n x.
   apply x.
  -
-  intros n x.
+  intros mp IH n x.
+  cbv.
+  fold plus.
   apply fin_up.
   fold plus.
   apply IH.
@@ -94,11 +73,11 @@ Defined.
 
 Definition fin_full : forall m, fin (S m).
 Proof.
- intros m.
- induction m as [ | mp IH ].
+ refine (nat_rect _ _ _).
  -
   apply fo.
  -
+  intros mp IH.
   apply fs.
   apply IH.
 Defined.
@@ -111,39 +90,9 @@ Inductive lam : nat -> Type :=
 | app : forall n, lam n -> lam n -> lam n
 .
 
-Definition ind_lam :
-    forall P : forall n, lam n -> Type,
-    (forall n : nat, forall v : fin n, P n (var n v)) ->
-    (forall n : nat, forall x : lam (S n), P (S n) x -> P n (abs n x)) ->
-    (forall n : nat, forall a : lam n, forall b : lam n, P n a -> P n b -> P n (app n a b)) ->
-    forall n : nat, forall x : lam n, P n x.
-Proof.
- intros P cvar cabs capp.
- fix go 2.
- intros n x.
- refine (
-  match x as x' in lam n' return P n' x' with
-  | var n' v => _
-  | abs n' x => _
-  | app n' a b => _
-  end
- ).
- -
-  apply cvar.
- -
-  apply cabs.
-  apply go.
- -
-  apply capp.
-  +
-   apply go.
-  +
-   apply go.
-Defined.
-
 Definition lam_succ : forall n, lam n -> lam (S n).
 Proof.
- refine (ind_lam _ _ _ _).
+ refine (lam_rect _ _ _ _).
  -
   intros ni v.
   apply var.
@@ -154,7 +103,7 @@ Proof.
   apply abs.
   apply IH.
  -
-  intros ni a b IHa IHb.
+  intros ni a IHa b IHb.
   apply app.
   +
    apply IHa.
@@ -181,67 +130,44 @@ Defined.
 Definition loose_gen_beta_var_comp_by_ind
     : forall n, fin n -> fin n -> forall np, S np = n -> option (fin np).
 Proof.
- refine (ind_fin _ _ _).
+ refine (fin_rect _ _ _).
  -
   intros ni y np pnp.
+  case (eq_sym (eq_add_S np ni pnp)).
+  clear pnp np.
   refine (
-   match y in fin n' return n' = S ni -> option (fin np) with
-   | fo n' => _
-   | fs n' yp => _
+   match y in fin (S ni') return option (fin ni') with
+   | fo ni'    => None
+   | fs ni' yp => Some _
    end
-   eq_refl
-  ).
-  +
-   intros pn'.
-   apply None.
-  +
-   intros pn'.
-   apply Some.
-   case (eq_sym (eq_add_S np ni pnp)).
-   case (eq_add_S n' ni pn').
-   apply yp.
+  ); clear y.
+  apply yp.
  -
-  intros ni xp IH y np pnp.
+  intros ni xp IHx y np pnp.
+  case (eq_sym (eq_add_S np ni pnp)).
+  clear pnp np.
+  revert xp IHx.
   refine (
-   match y in fin n' return n' = S ni -> option (fin np) with
-   | fo n' => _
-   | fs n' yp => _
+   match y in fin (S ni')
+    return fin ni' -> (fin ni' -> forall np, S np = ni' -> option (fin np)) -> option (fin ni')
+   with
+   | fo ni'    => fun xp IHx => fin_S _ ni' xp (fun ni'p pni'p => Some _)
+   | fs ni' yp => fun xp IHx => fin_S _ ni' xp (fun ni'p pni'p => _     )
    end
-   eq_refl
-  ).
+  ); clear y.
   +
-   intros pn'.
-   apply Some.
-   apply fin_S with np.
-   *
-    case (eq_sym (eq_add_S np ni pnp)).
-    apply xp.
-   *
-    intros npp pnpp.
-    case pnpp.
-    apply fo.
+   case pni'p.
+   apply fo.
   +
-   intros pn'.
-   refine (fin_S _ ni _ _).
+   apply option_map with (fin ni'p).
    *
-    case (eq_add_S n' ni pn').
-    apply yp.
-   *
-    intros nip pnip.
-    apply option_map with (fin nip).
-    --
-     intros IH'.
-     case (eq_sym (eq_add_S np ni pnp)).
-     case pnip.
+     clear IHx.
+     intros IHx.
+     case pni'p.
      apply fs.
-     apply IH'.
-    --
-     apply IH.
-     ++
-      case (eq_add_S n' ni pn').
-      apply yp.
-     ++
-      apply pnip.
+     apply IHx.
+   *
+    apply (IHx yp ni'p pni'p).
 Defined.
 
 Definition loose_gen_beta_var_comp
@@ -274,7 +200,7 @@ Defined.
 Definition loose_gen_beta_by_ind
     : forall N, lam N -> forall m n, m + S n = N -> lam (m + n) -> lam (m + n).
 Proof.
- refine (ind_lam _ _ _ _).
+ refine (lam_rec _ _ _ _).
  -
   intros Ni v m n p y.
   apply loose_gen_beta_var.
@@ -297,20 +223,8 @@ Proof.
    apply lam_succ.
    apply y.
  -
-  intros Ni a b IHa IHb m n p y.
-  apply app.
-  +
-   apply IHa.
-   *
-    apply p.
-   *
-    apply y.
-  +
-   apply IHb.
-   *
-    apply p.
-   *
-    apply y.
+  intros Ni a IHa b IHb m n p y.
+  apply (app _ (IHa _ _ p y) (IHb _ _ p y)).
 Defined.
 
 Definition loose_gen_beta
@@ -354,12 +268,7 @@ Definition apply
     : forall m, lam (S m) -> lam m -> lam m.
 Proof.
  intros m x y.
- apply app.
- -
-  apply abs.
-  apply x.
- -
-  apply y.
+ apply (app _ (abs _ x) y).
 Defined.
 
 (** lam's reduction relation *)
