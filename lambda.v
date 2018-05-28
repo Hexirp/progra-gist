@@ -2,6 +2,12 @@ Require Import Coq.Init.Prelude.
 
 (** * Lemmas *)
 
+Definition plus_n_O : forall n : nat, n = n + 0 :=
+ nat_ind (fun n => n = n + 0)
+  eq_refl
+  (fun (n : nat) (IH : n = n + 0) => f_equal S IH)
+.
+
 Lemma plus_1_mn : forall m n, S (m + n) = m + (S n).
 Proof.
  refine (nat_ind _ _ _).
@@ -252,12 +258,6 @@ Proof.
   apply lam_succs.
   apply y.
 Defined.
-
-Definition plus_n_O : forall n : nat, n = n + 0 :=
- nat_ind (fun n => n = n + 0)
-  eq_refl
-  (fun (n : nat) (IH : n = n + 0) => f_equal S IH)
-.
 
 Definition beta
     : forall m, lam (S m) -> lam m -> lam m.
