@@ -29,9 +29,7 @@ Definition bool_rect
  end
 .
 
-Definition and
- (x : bool) (y : bool) : bool
-:=
+Definition and (x : bool) (y : bool) : bool :=
  match x, y with
  | false, false => false
  | false, true => false
@@ -40,13 +38,23 @@ Definition and
  end
 .
 
-Definition or
- (x : bool) (y : bool) : bool
-:=
+Definition or (x : bool) (y : bool) : bool :=
  match x, y with
  | false, false => false
  | false, true => true
  | true, false => true
  | true, true => true
  end
+.
+
+Definition not (x : bool) : bool :=
+ match x with
+ | false => true
+ | true => false
+ end
+.
+
+Inductive nat : Type :=
+| O : nat
+| S : nat -> nat
 .
