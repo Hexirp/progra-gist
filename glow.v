@@ -19,3 +19,34 @@ Definition bool_rec
  | true => ct
  end
 .
+
+Definition bool_rect
+ {P : bool -> Type} (cf : P false) (ct : P true) (x : bool) : P x
+:=
+ match x as x' return P x' with
+ | false => cf
+ | true => ct
+ end
+.
+
+Definition and
+ (x : bool) (y : bool) : bool
+:=
+ match x, y with
+ | false, false => false
+ | false, true => false
+ | true, false => false
+ | true, true => true
+ end
+.
+
+Definition or
+ (x : bool) (y : bool) : bool
+:=
+ match x, y with
+ | false, false => false
+ | false, true => true
+ | true, false => true
+ | true, true => true
+ end
+.
