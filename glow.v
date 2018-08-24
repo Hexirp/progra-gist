@@ -196,3 +196,27 @@ Definition Empty_rect
  match x with
  end
 .
+
+Inductive paths {A : Type} (a : A) : A -> Type :=
+| idpath : paths a a
+.
+
+Arguments idpath {A a} , [A] a.
+
+Definition paths_rec
+ {A : Type} {a : A} {P : A -> Type} (ci : P a)
+ {a' : A} (x : paths a a') : P a'
+:=
+ match x with
+ | idpath => ci
+ end
+.
+
+Definition paths_rect
+ {A : Type} {a : A} {P : forall a', paths a a' -> Type} (ci : P a idpath)
+ {a' : A} (x : paths a a') : P a' x
+:=
+ match x with
+ | idpath => ci
+ end
+.
