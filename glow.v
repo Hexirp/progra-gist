@@ -221,3 +221,21 @@ Definition paths_rect
  | idpath => ci
  end
 .
+
+Definition paths_rec_nop
+ {A : Type} {P : A -> A -> Type} (ci : forall a, P a a)
+ {a a' : A} (x : paths a a') : P a a'
+:=
+ match x with
+ | idpath => ci a
+ end
+.
+
+Definition paths_rect_nop
+ {A : Type} (P : forall a a', paths a a' -> Type) (ci : forall a, P a a idpath)
+ {a a' : A} (x : paths a a') : P a a' x
+:=
+ match x with
+ | idpath => ci a
+ end
+.
