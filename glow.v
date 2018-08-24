@@ -90,3 +90,10 @@ Fixpoint mult (m n : nat) : nat :=
  | S mp => plus n (mult mp n)
  end
 .
+
+Fixpoint power (m n : nat) : nat :=
+ match n with
+ | O => S O
+ | S np => mult m (power m np)
+ end
+.
