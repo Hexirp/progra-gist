@@ -97,3 +97,38 @@ Fixpoint power (m n : nat) : nat :=
  | S np => mult m (power m np)
  end
 .
+
+Inductive prod (A B : Type) : Type :=
+| pair : A -> B -> prod A B
+.
+
+Arguments pair {A B} x y.
+
+Definition prod_rec
+ {A B P : Type} (cp : A -> B -> P) (x : prod A B) : P
+:=
+ match x with
+ | pair a b => cp a b
+ end
+.
+
+Definition prod_rect
+ {A B : Type} {P : prod A B -> Type}
+ (cp : forall (a : A) (b : B), P (pair a b)) (x : prod A B) : P x
+:=
+ match x as x' return P x' with
+ | pair a b => cp a b
+ end
+.
+
+Definition fst {A B : Type} (x : prod A B) : A :=
+ match x with
+ | pair a _ => a
+ end
+.
+
+Definition snd {A B : Type} (x : prod A B) : B :=
+ match x with
+ | pair _ b => b
+ end
+.
