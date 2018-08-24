@@ -348,3 +348,25 @@ Proof.
    refine (inverse _).
    exact plus_m_n_S.
 Defined.
+
+Definition plus_assoc {m n o : nat} : m + n + o = m + (n + o).
+Proof.
+ revert m n o.
+ refine (nat_rect _ _).
+ -
+  refine (fun n => _).
+  refine (fun o => _).
+  change (O + n) with n.
+  change (O + (n + o)) with (n + o).
+  exact idpath.
+ -
+  refine (fun mp => _).
+  refine (fun IHmp => _).
+  refine (fun n => _).
+  refine (fun o => _).
+  change (S mp + n) with (S (mp + n)).
+  change (S (mp + n) + o) with (S (mp + n + o)).
+  change (S mp + (n + o)) with (S (mp + (n + o))).
+  refine (ap _ _).
+  exact (IHmp n o).
+Defined.
