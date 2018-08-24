@@ -64,7 +64,7 @@ Fixpoint nat_rec
 :=
  match x with
  | O => co
- | S xp => nat_rec co cs xp
+ | S xp => cs (nat_rec co cs xp)
  end
 .
 
@@ -73,6 +73,6 @@ Fixpoint nat_rect
 :=
  match x as x' return P x' with
  | O => co
- | S xp => nat_rect co cs xp
+ | S xp => cs xp (nat_rect co cs xp)
  end
 .
