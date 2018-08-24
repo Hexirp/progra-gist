@@ -265,3 +265,35 @@ Notation "x = y :> A" := (@paths A x y)
 .
 
 Notation "x = y" := (x = y :> _) (at level 70, no associativity).
+
+Definition plus_O_n {n : nat} : O + n = n.
+Proof.
+ change (O + n) with n.
+ exact idpath.
+Defined.
+
+Definition plus_n_O {n : nat} : n + O = n.
+Proof.
+ refine ((_ : forall n, n + O = n) n); clear n.
+ refine (nat_rect _ _).
+ -
+  change (O = O).
+  exact idpath.
+ -
+  refine (fun np => _).
+  change (S np + O) with (S (np + O)).
+  change (S (np + O) = S np) with ((fun np' => S (np + O) = S np') np).
+  refine (paths_rec _).
+  exact idpath.
+Defined.
+
+Definition plus_m_n_S {m n : nat} : m + (S n) = S (m + n).
+Proof.
+ refine ((_ : forall m n, m + S n = S (m + n)) m n); clear m n.
+ refine (nat_rect _ _).
+ -
+  refine (fun n => _).
+  change (S n = S n).
+  exact idpath.
+ -
+  
