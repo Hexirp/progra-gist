@@ -159,3 +159,40 @@ Definition sum_rect
  | right b => cr b
  end
 .
+
+Inductive Unit : Type :=
+| unit : Unit
+.
+
+Definition Unit_rec
+ {P : Type} (cu : P) (x : Unit) : P
+:=
+ match x with
+ | unit => cu
+ end
+.
+
+Definition Unit_rect
+ {P : Unit -> Type} (cu : P unit) (x : Unit) : P x
+:=
+ match x with
+ | unit => cu
+ end
+.
+
+Inductive Empty : Type :=
+.
+
+Definition Empty_rec
+ {P : Type} (x : Empty) : P
+:=
+ match x with
+ end
+.
+
+Definition Empty_rect
+ {P : Empty -> Type} (x : Empty) : P x
+:=
+ match x with
+ end
+.
