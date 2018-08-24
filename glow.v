@@ -58,3 +58,21 @@ Inductive nat : Type :=
 | O : nat
 | S : nat -> nat
 .
+
+Fixpoint nat_rec
+ {P : Type} (co : P) (cs : P -> P) (x : nat) : P
+:=
+ match x with
+ | O => co
+ | S xp => nat_rec co cs xp
+ end
+.
+
+Fixpoint nat_rect
+ {P : nat -> Type} (co : P O) (cs : forall xp, P xp -> P (S xp)) (x : nat) : P x
+:=
+ match x as x' return P x' with
+ | O => co
+ | S xp => nat_rect co cs xp
+ end
+.
