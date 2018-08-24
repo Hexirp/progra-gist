@@ -132,3 +132,29 @@ Definition snd {A B : Type} (x : prod A B) : B :=
  | pair _ b => b
  end
 .
+
+Inductive sum (A B : Type) : Type :=
+| left : A -> sum A B
+| right : B -> sum A B
+.
+
+Arguments left {A B} x.
+Arguments right {A B} x.
+
+Definition sum_rec
+ {A B P : Type} (cl : A -> P) (cr : B -> P) (x : sum A B) : P
+:=
+ match x with
+ | left a => cl a
+ | right b => cr b
+ end
+.
+
+Definition sum_rect
+ {A B : Type} {P : sum A B -> Type} (cl : forall a, P (left a)) (cr : forall b, P (right b)) (x : sum A B) : P x
+:=
+ match x with
+ | left a => cl a
+ | right b => cr b
+ end
+.
