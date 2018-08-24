@@ -23,7 +23,7 @@ Definition bool_rec
 Definition bool_rect
  {P : bool -> Type} (cf : P false) (ct : P true) (x : bool) : P x
 :=
- match x as x' return P x' with
+ match x with
  | false => cf
  | true => ct
  end
@@ -71,7 +71,7 @@ Fixpoint nat_rec
 Fixpoint nat_rect
  {P : nat -> Type} (co : P O) (cs : forall xp, P xp -> P (S xp)) (x : nat) : P x
 :=
- match x as x' return P x' with
+ match x with
  | O => co
  | S xp => cs xp (nat_rect co cs xp)
  end
@@ -114,7 +114,7 @@ Definition prod_rec
 
 Definition prod_rect
  {A B : Type} {P : prod A B -> Type}
- (cp : forall (a : A) (b : B), P (pair a b)) (x : prod A B) : P x
+ (cp : forall a b, P (pair a b)) (x : prod A B) : P x
 :=
  match x as x' return P x' with
  | pair a b => cp a b
@@ -151,7 +151,8 @@ Definition sum_rec
 .
 
 Definition sum_rect
- {A B : Type} {P : sum A B -> Type} (cl : forall a, P (left a)) (cr : forall b, P (right b)) (x : sum A B) : P x
+ {A B : Type} {P : sum A B -> Type}
+ (cl : forall a, P (left a)) (cr : forall b, P (right b)) (x : sum A B) : P x
 :=
  match x with
  | left a => cl a
