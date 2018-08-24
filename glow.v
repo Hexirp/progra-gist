@@ -242,8 +242,27 @@ Definition paths_rect_nop
  end
 .
 
+Definition concat
+ {A : Type} {x y z : A} (p : paths x y) (q : paths y z) : paths x z
+:=
+ match q with
+ | idpath =>
+  match p with
+  | idpath => idpath
+  end
+ end
+.
+
 Definition inverse
- {A : Type} {a b : A} (p : paths a b) : paths b a
+ {A : Type} {x y : A} (p : paths x y) : paths y x
+:=
+ match p with
+ | idpath => idpath
+ end
+.
+
+Definition ap
+ {A B : Type} (f : A -> B) {x y : A} (p : paths x y) : paths (f x) (f y)
 :=
  match p with
  | idpath => idpath
@@ -279,16 +298,17 @@ Proof.
  refine ((_ : forall n, n + O = n) n); clear n.
  refine (nat_rect _ _).
  -
+  change (O + O) with O.
   exact idpath.
  -
   refine (fun np => _).
+  refine (fun IHnp => _).
   change (S np + O) with (S (np + O)).
-  change (S (np + O) = S np) with ((fun np' => S (np + O) = S np') np).
-  refine (paths_rec _).
-  exact idpath.
+  refine (ap _ _).
+  exact IHnp.
 Defined.
 
-Definition plus_m_n_S {m n : nat} : m + (S n) = S (m + n).
+Definition plus_m_n_S {m n : nat} : m + S n = S (m + n).
 Proof.
  refine ((_ : forall m n, m + S n = S (m + n)) m n); clear m n.
  refine (nat_rect _ _).
@@ -301,12 +321,9 @@ Proof.
   refine (fun mp => _).
   refine (fun IHmp => _).
   refine (fun n => _).
-  refine (_ (IHmp n)); clear IHmp.
   change (S mp + S n) with (S (mp + S n)).
-  change (S (mp + S n) = S (S mp + n))
-   with ((fun r => S (mp + S n) = S r) (S mp + n)).
-  refine (paths_rec _).
-  exact idpath.
+  refine (ap _ _).
+  exact (IHmp n).
 Defined.
 
 Definition plus_comm {m n : nat} : m + n = n + m.
@@ -316,4 +333,18 @@ Proof.
  -
   refine (fun n => _).
   change (O + n) with n.
-  refine (_ (
+  refine (inverse _).
+  exact plus_n_O.
+ -
+  refine (fun mp => _).
+  refine (fun IHmp => _).
+  refine (fun n => _).
+  change (S mp + n) with (S (mp + n)).
+  refine (concat (y := S (n + mp)) _ _).
+  +
+   refine (ap _ _).
+   exact (IHmp n).
+  +
+   refine (inverse _).
+   exact plus_m_n_S.
+Defined.
