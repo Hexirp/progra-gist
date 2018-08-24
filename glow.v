@@ -242,6 +242,14 @@ Definition paths_rect_nop
  end
 .
 
+Definition inverse
+ {A : Type} {a b : A} (p : paths a b) : paths b a
+:=
+ match p with
+ | idpath => idpath
+ end
+.
+
 Declare ML Module "ltac_plugin".
 
 Export Set Default Proof Mode "Classic".
@@ -266,18 +274,11 @@ Notation "x = y :> A" := (@paths A x y)
 
 Notation "x = y" := (x = y :> _) (at level 70, no associativity).
 
-Definition plus_O_n {n : nat} : O + n = n.
-Proof.
- change (O + n) with n.
- exact idpath.
-Defined.
-
 Definition plus_n_O {n : nat} : n + O = n.
 Proof.
  refine ((_ : forall n, n + O = n) n); clear n.
  refine (nat_rect _ _).
  -
-  change (O = O).
   exact idpath.
  -
   refine (fun np => _).
@@ -296,4 +297,12 @@ Proof.
   change (S n = S n).
   exact idpath.
  -
-  
+  refine (fun mp => _).
+  refine (fun IHmp => _).
+  refine (fun n => _).
+  refine (_ (IHmp n)); clear IHmp.
+  change (S mp + S n) with (S (mp + S n)).
+  change (S (mp + S n) = S (S mp + n))
+   with ((fun r => S (mp + S n) = S r) (S mp + n)).
+  refine (paths_rec _).
+  exact idpath.
