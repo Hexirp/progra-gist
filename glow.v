@@ -38,6 +38,8 @@ Definition and (x y : bool) : bool :=
  end
 .
 
+Notation "x && y" := (and x y) (at level 40, left associativity).
+
 Definition or (x y : bool) : bool :=
  match x, y with
  | false, false => false
@@ -46,6 +48,8 @@ Definition or (x y : bool) : bool :=
  | true, true => true
  end
 .
+
+Notation "x || y" := (or x y) (at level 40, left associativity).
 
 Definition not (x : bool) : bool :=
  match x with
@@ -84,12 +88,16 @@ Fixpoint plus (m n : nat) : nat :=
  end
 .
 
+Notation "x + y" := (plus x y) (at level 50, left associativity).
+
 Fixpoint mult (m n : nat) : nat :=
  match m with
  | O => O
  | S mp => plus n (mult mp n)
  end
 .
+
+Notation "x * y" := (mult x y) (at level 40, left associativity).
 
 Fixpoint power (m n : nat) : nat :=
  match n with
@@ -103,6 +111,8 @@ Inductive prod (A B : Type) : Type :=
 .
 
 Arguments pair {A B} x y.
+
+Notation "x /\ y" := (prod x y) (at level 80, right associativity).
 
 Definition prod_rec
  {A B P : Type} (cp : A -> B -> P) (x : prod A B) : P
@@ -140,6 +150,8 @@ Inductive sum (A B : Type) : Type :=
 
 Arguments left {A B} x.
 Arguments right {A B} x.
+
+Notation "x \/ y" := (sum x y) (at level 85, right associativity).
 
 Definition sum_rec
  {A B P : Type} (cl : A -> P) (cr : B -> P) (x : sum A B) : P
@@ -198,11 +210,21 @@ Definition Empty_rect
  end
 .
 
+Definition neg (A : Type) : Type := A -> Empty.
+
+Notation "~ x" := (neg x) (at level 75, right associativity).
+
 Inductive paths {A : Type} (a : A) : A -> Type :=
 | idpath : paths a a
 .
 
 Arguments idpath {A a} , [A] a.
+
+Notation "x = y :> A" := (@paths A x y)
+ (at level 70, y at next level, no associativity)
+.
+
+Notation "x = y" := (x = y :> _) (at level 70, no associativity).
 
 Definition paths_rec
  {A : Type} {a : A} {P : A -> Type} (ci : P a)
@@ -239,3 +261,7 @@ Definition paths_rect_nop
  | idpath => ci a
  end
 .
+
+Declare ML Module "ltac_plugin".
+
+Export Set Default Proof Mode "Classic".
