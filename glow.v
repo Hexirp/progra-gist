@@ -29,7 +29,7 @@ Definition bool_rect
  end
 .
 
-Definition and (x : bool) (y : bool) : bool :=
+Definition and (x y : bool) : bool :=
  match x, y with
  | false, false => false
  | false, true => false
@@ -38,7 +38,7 @@ Definition and (x : bool) (y : bool) : bool :=
  end
 .
 
-Definition or (x : bool) (y : bool) : bool :=
+Definition or (x y : bool) : bool :=
  match x, y with
  | false, false => false
  | false, true => true
