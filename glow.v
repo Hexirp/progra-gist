@@ -294,7 +294,8 @@ Proof.
  refine (nat_rect _ _).
  -
   refine (fun n => _).
-  change (S n = S n).
+  change (O + S n) with (S n).
+  change (O + n) with n.
   exact idpath.
  -
   refine (fun mp => _).
@@ -306,3 +307,13 @@ Proof.
    with ((fun r => S (mp + S n) = S r) (S mp + n)).
   refine (paths_rec _).
   exact idpath.
+Defined.
+
+Definition plus_comm {m n : nat} : m + n = n + m.
+Proof.
+ refine ((_ : forall m n, m + n = n + m) m n); clear m n.
+ refine (nat_rect _ _).
+ -
+  refine (fun n => _).
+  change (O + n) with n.
+  refine (_ (
