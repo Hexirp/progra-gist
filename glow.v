@@ -76,3 +76,17 @@ Fixpoint nat_rect
  | S xp => cs xp (nat_rect co cs xp)
  end
 .
+
+Fixpoint plus (m n : nat) : nat :=
+ match m with
+ | O => n
+ | S mp => S (plus mp n)
+ end
+.
+
+Fixpoint mult (m n : nat) : nat :=
+ match m with
+ | O => O
+ | S mp => plus n (mult mp n)
+ end
+.
