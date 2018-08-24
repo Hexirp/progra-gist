@@ -295,7 +295,7 @@ Notation "x = y" := (x = y :> _) (at level 70, no associativity).
 
 Definition plus_n_O {n : nat} : n + O = n.
 Proof.
- refine ((_ : forall n, n + O = n) n); clear n.
+ revert n.
  refine (nat_rect _ _).
  -
   change (O + O) with O.
@@ -310,7 +310,7 @@ Defined.
 
 Definition plus_m_n_S {m n : nat} : m + S n = S (m + n).
 Proof.
- refine ((_ : forall m n, m + S n = S (m + n)) m n); clear m n.
+ revert m n.
  refine (nat_rect _ _).
  -
   refine (fun n => _).
@@ -328,7 +328,7 @@ Defined.
 
 Definition plus_comm {m n : nat} : m + n = n + m.
 Proof.
- refine ((_ : forall m n, m + n = n + m) m n); clear m n.
+ revert m n.
  refine (nat_rect _ _).
  -
   refine (fun n => _).
