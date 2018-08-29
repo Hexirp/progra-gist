@@ -426,7 +426,34 @@ Proof.
   pull n.
   change (O * S n) with O.
   change (O * n) with O.
-  
+  change (O + O) with O.
+  exact idpath.
+ -
+  pull mp.
+  pull IHmp.
+  pull n.
+  change (S mp * S n) with (S n + mp * S n).
+  change (S n + mp * S n) with (S (n + mp * S n)).
+  change (S mp + S mp * n) with (S (mp + S mp * n)).
+  refine (ap _ _).
+  change (S mp * n) with (n + mp * n).
+  refine (concat (y := n + (mp + mp * n)) _ _).
+  +
+   refine (ap _ _).
+   exact (IHmp n).
+  +
+   refine (concat (y := (n + mp) + mp * n) _ _).
+   *
+    refine (inverse _).
+    exact plus_assoc.
+   *
+    refine (concat (y := mp + n + mp * n) _ _).
+    --
+     refine (ap (fun x => x + _) _).
+     exact plus_comm.
+    --
+     exact plus_assoc.
+Defined.
 
 Definition mult_comm {m n : nat} : m * n = n * m.
 Proof.
