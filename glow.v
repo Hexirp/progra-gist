@@ -293,16 +293,19 @@ Notation "x = y :> A" := (@paths A x y)
 
 Notation "x = y" := (x = y :> _) (at level 70, no associativity).
 
+Ltac pull x := refine (fun x => _).
+Ltac push x := revert x.
+
 Definition plus_n_O {n : nat} : n + O = n.
 Proof.
- revert n.
+ push n.
  refine (nat_rect _ _).
  -
   change (O + O) with O.
   exact idpath.
  -
-  refine (fun np => _).
-  refine (fun IHnp => _).
+  pull np.
+  pull IHnp.
   change (S np + O) with (S (np + O)).
   refine (ap _ _).
   exact IHnp.
@@ -310,17 +313,18 @@ Defined.
 
 Definition plus_m_n_S {m n : nat} : m + S n = S (m + n).
 Proof.
- revert m n.
+ push n.
+ push m.
  refine (nat_rect _ _).
  -
-  refine (fun n => _).
+  pull n.
   change (O + S n) with (S n).
   change (O + n) with n.
   exact idpath.
  -
-  refine (fun mp => _).
-  refine (fun IHmp => _).
-  refine (fun n => _).
+  pull mp.
+  pull IHmp.
+  pull n.
   change (S mp + S n) with (S (mp + S n)).
   refine (ap _ _).
   exact (IHmp n).
@@ -328,17 +332,18 @@ Defined.
 
 Definition plus_comm {m n : nat} : m + n = n + m.
 Proof.
- revert m n.
+ push n.
+ push m.
  refine (nat_rect _ _).
  -
-  refine (fun n => _).
+  pull n.
   change (O + n) with n.
   refine (inverse _).
   exact plus_n_O.
  -
-  refine (fun mp => _).
-  refine (fun IHmp => _).
-  refine (fun n => _).
+  pull mp.
+  pull IHmp.
+  pull n.
   change (S mp + n) with (S (mp + n)).
   refine (concat (y := S (n + mp)) _ _).
   +
@@ -351,19 +356,21 @@ Defined.
 
 Definition plus_assoc {m n o : nat} : m + n + o = m + (n + o).
 Proof.
- revert m n o.
+ push o.
+ push n.
+ push m.
  refine (nat_rect _ _).
  -
-  refine (fun n => _).
-  refine (fun o => _).
+  pull n.
+  pull o.
   change (O + n) with n.
   change (O + (n + o)) with (n + o).
   exact idpath.
  -
-  refine (fun mp => _).
-  refine (fun IHmp => _).
-  refine (fun n => _).
-  refine (fun o => _).
+  pull mp.
+  pull IHmp.
+  pull n.
+  pull o.
   change (S mp + n) with (S (mp + n)).
   change (S (mp + n) + o) with (S (mp + n + o)).
   change (S mp + (n + o)) with (S (mp + (n + o))).
