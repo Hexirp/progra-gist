@@ -476,3 +476,5 @@ Proof.
    exact (IHmp n).
   +
    refine (inverse _).
+   exact mult_m_Sn.
+Defined.
