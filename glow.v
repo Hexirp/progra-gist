@@ -296,6 +296,12 @@ Notation "x = y" := (x = y :> _) (at level 70, no associativity).
 Ltac pull x := refine (fun x => _).
 Ltac push x := revert x.
 
+Definition plus_O_n {n : nat} : O + n = n.
+Proof.
+ change (O + n) with n.
+ exact idpath.
+Defined.
+
 Definition plus_n_O {n : nat} : n + O = n.
 Proof.
  push n.
@@ -311,7 +317,13 @@ Proof.
   exact IHnp.
 Defined.
 
-Definition plus_m_n_S {m n : nat} : m + S n = S (m + n).
+Definition plus_Sm_n {m n : nat} : S m + n = S (m + n).
+Proof.
+ change (S m + n) with (S (m + n)).
+ exact idpath.
+Defined.
+
+Definition plus_m_Sn {m n : nat} : m + S n = S (m + n).
 Proof.
  push n.
  push m.
@@ -351,7 +363,7 @@ Proof.
    exact (IHmp n).
   +
    refine (inverse _).
-   exact plus_m_n_S.
+   exact plus_m_Sn.
 Defined.
 
 Definition plus_assoc {m n o : nat} : m + n + o = m + (n + o).
