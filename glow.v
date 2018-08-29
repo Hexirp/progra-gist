@@ -293,6 +293,12 @@ Notation "x = y :> A" := (@paths A x y)
 
 Notation "x = y" := (x = y :> _) (at level 70, no associativity).
 
+Notation "x @( ty )@ y" := (concat (y := ty) x y)
+ (at level 20, right associativity)
+.
+
+Notation "x @ y" := (x @( _ )@ y) (at level 20, no associativity).
+
 Ltac pull x := refine (fun x => _).
 Ltac push x := revert x.
 
@@ -366,7 +372,7 @@ Proof.
    exact plus_m_Sn.
 Defined.
 
-Definition plus_assoc {m n o : nat} : m + n + o = m + (n + o).
+Definition plus_assoc {m n o : nat} : (m + n) + o = m + (n + o).
 Proof.
  push o.
  push n.
@@ -388,6 +394,25 @@ Proof.
   change (S mp + (n + o)) with (S (mp + (n + o))).
   refine (ap _ _).
   exact (IHmp n o).
+Defined.
+
+Definition plus_accom_l {m n o : nat} : m + (n + o) = n + (m + o).
+Proof.
+ refine (
+  _
+  @( m + n + o )@
+  _
+  @( n + m + o )@
+  _
+ ).
+ -
+  refine (inverse _).
+  exact plus_assoc.
+ -
+  refine (ap (fun x => x + _) _).
+  exact plus_comm.
+ -
+  exact plus_assoc.
 Defined.
 
 Definition mult_O_n {n : nat} : O * n = O.
@@ -442,17 +467,7 @@ Proof.
    refine (ap _ _).
    exact (IHmp n).
   +
-   refine (concat (y := (n + mp) + mp * n) _ _).
-   *
-    refine (inverse _).
-    exact plus_assoc.
-   *
-    refine (concat (y := mp + n + mp * n) _ _).
-    --
-     refine (ap (fun x => x + _) _).
-     exact plus_comm.
-    --
-     exact plus_assoc.
+   exact plus_accom_l.
 Defined.
 
 Definition mult_comm {m n : nat} : m * n = n * m.
