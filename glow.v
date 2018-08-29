@@ -417,6 +417,17 @@ Proof.
  exact idpath.
 Defined.
 
+Definition mult_m_Sn {m n : nat} : m * S n = m + m * n.
+Proof.
+ push n.
+ push m.
+ refine (nat_rect _ _).
+ -
+  pull n.
+  change (O * S n) with O.
+  change (O * n) with O.
+  
+
 Definition mult_comm {m n : nat} : m * n = n * m.
 Proof.
  push n.
@@ -432,3 +443,9 @@ Proof.
   pull IHmp.
   pull n.
   change (S mp * n) with (n + mp * n).
+  refine (concat (y := n + n * mp) _ _).
+  +
+   refine (ap _ _).
+   exact (IHmp n).
+  +
+   refine (inverse _).
