@@ -389,3 +389,46 @@ Proof.
   refine (ap _ _).
   exact (IHmp n o).
 Defined.
+
+Definition mult_O_n {n : nat} : O * n = O.
+Proof.
+ change (O * n) with O.
+ exact idpath.
+Defined.
+
+Definition mult_n_O {n : nat} : n * O = O.
+Proof.
+ push n.
+ refine (nat_rect _ _).
+ -
+  change (O * O) with O.
+  exact idpath.
+ -
+  pull np.
+  pull IHnp.
+  change (S np * O) with (O + np * O).
+  change (O + np * O) with (np * O).
+  exact IHnp.
+Defined.
+
+Definition mult_Sm_n {m n : nat} : S m * n = n + m * n.
+Proof.
+ change (S m * n) with (n + m * n).
+ exact idpath.
+Defined.
+
+Definition mult_comm {m n : nat} : m * n = n * m.
+Proof.
+ push n.
+ push m.
+ refine (nat_rect _ _).
+ -
+  pull n.
+  change (O * n) with O.
+  refine (inverse _).
+  exact mult_n_O.
+ -
+  pull mp.
+  pull IHmp.
+  pull n.
+  change (S mp * n) with (n + mp * n).
