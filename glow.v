@@ -398,7 +398,7 @@ Defined.
 
 Definition plus_accom_l {m n o : nat} : m + (n + o) = n + (m + o).
 Proof.
- refine (_ @(m + n + o)@ _ @(n + m + o)@ _).
+ refine (_ @((m + n) + o)@ _ @((n + m) + o)@ _).
  -
   refine (inverse _).
   exact plus_assoc.
