@@ -363,7 +363,7 @@ Proof.
   pull IHmp.
   pull n.
   change (S mp + n) with (S (mp + n)).
-  refine (concat (y := S (n + mp)) _ _).
+  refine (_ @(S (n + mp))@ _).
   +
    refine (ap _ _).
    exact (IHmp n).
