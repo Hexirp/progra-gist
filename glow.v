@@ -456,7 +456,7 @@ Proof.
   change (S mp + S mp * n) with (S (mp + S mp * n)).
   refine (ap _ _).
   change (S mp * n) with (n + mp * n).
-  refine (concat (y := n + (mp + mp * n)) _ _).
+  refine (_ @(n + (mp + mp * n))@ _).
   +
    refine (ap _ _).
    exact (IHmp n).
@@ -479,7 +479,7 @@ Proof.
   pull IHmp.
   pull n.
   change (S mp * n) with (n + mp * n).
-  refine (concat (y := n + n * mp) _ _).
+  refine (_ @(n + n * mp)@ _).
   +
    refine (ap _ _).
    exact (IHmp n).
