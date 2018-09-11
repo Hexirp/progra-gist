@@ -493,3 +493,5 @@ Definition pointwise_paths
 :=
  forall x, f x = g x
 .
+
+Notation "f == g" := (pointwise_paths f g) (at level 70, no associativity).
