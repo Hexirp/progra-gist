@@ -495,3 +495,19 @@ Definition pointwise_paths
 .
 
 Notation "f == g" := (pointwise_paths f g) (at level 70, no associativity).
+
+Definition pointwise_concat
+ {A : Type} {P : A -> Type} {f g h : forall x, P x}
+ (p : f == g) (q : g == h) : f == h
+.
+Proof.
+ change (forall x, f x = h x).
+ pull x.
+ refine (_ @(g x)@ _).
+ -
+  change (forall x, f x = g x) in p.
+  exact (p x).
+ -
+  change (forall x, g x = h x) in q.
+  exact (q x).
+Defined.
