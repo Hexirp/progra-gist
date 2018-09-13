@@ -511,3 +511,9 @@ Proof.
   change (forall x, g x = h x) in q.
   exact (q x).
 Defined.
+
+Definition Noetherian_induction
+ {A : Type} (R : A -> A -> Type) : Type
+:=
+ forall P, (forall x, (forall xp, R xp x -> P xp) -> P x) -> forall x, P x
+.
