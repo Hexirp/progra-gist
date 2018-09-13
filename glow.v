@@ -533,13 +533,9 @@ Proof.
  change (~ ~ forall P, (forall x, (forall y, ~ R y x) -> P) -> P).
  change ((~ forall P, (forall x, (forall y, ~ R y x) -> P) -> P) -> Empty).
  pull ne3.
- assert (forall P : Type, ~ ((forall x : A, (forall y : A, ~ R y x) -> P) -> P)).
+ assert (forall Q, (forall P, (~ ((forall x : A, (forall y : A, ~ R y x) -> P) -> P)) -> Q) -> Q).
  -
-  pull P.
-  change (((forall x : A, (forall y : A, ~ R y x) -> P) -> P) -> Empty).
-  pull e3.
-  change ((forall P : Type, (forall x : A, (forall y : A, ~ R y x) -> P) -> P) -> Empty) in ne3.
-  refine (ne3 _).
+  pull Q.
   admit.
  -
   admit.
