@@ -518,8 +518,13 @@ Definition Noetherian_induction
  forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
 .
 
-Definition not_not_exists_empty_set
+Definition not_not_exists_empty_element
  {A : Type} (R : A -> A -> Type) : Type
 :=
  ~ ~ forall P, (forall x, (forall y, ~ R y x) -> P) -> P
+.
+
+Definition n2e3_Ni
+ {A : Type} (R : A -> A -> Type)
+ : Noetherian_induction R -> not_not_exists_empty_element R
 .
