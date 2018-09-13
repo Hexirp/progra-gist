@@ -515,5 +515,11 @@ Defined.
 Definition Noetherian_induction
  {A : Type} (R : A -> A -> Type) : Type
 :=
- forall P, (forall x, (forall xp, R xp x -> P xp) -> P x) -> forall x, P x
+ forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
+.
+
+Definition not_not_exists_empty_set
+ {A : Type} (R : A -> A -> Type) : Type
+:=
+ ~ ~ forall P, (forall x, (forall y, ~ R y x) -> P) -> P
 .
