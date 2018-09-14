@@ -585,8 +585,21 @@ Proof.
  change (~ ~ exists x, forall y, ~ ~ R y x).
  change ((~ exists x, forall y, ~ ~ R y x) -> Empty).
  pull H0.
- admit.
-Admitted.
+ change ((exists x : A, forall y : A, ~ ~ R y x) -> Empty) in H0.
+ refine (H0 _).
+ push eee.
+ change (exists_empty_element R) with (exists x, forall y, R y x).
+ refine (ex_rec _).
+ pull x.
+ pull xH.
+ refine (ex_pair x _).
+ pull y.
+ change ((~ R y x) -> Empty).
+ pull H1.
+ change (R y x -> Empty) in H1.
+ refine (H1 _).
+ exact (xH y).
+Defined.
 
 Definition nne3_Ni
  {A : Type} (R : A -> A -> Type)
