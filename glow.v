@@ -546,10 +546,16 @@ Definition Noetherian_induction
  forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
 .
 
-Definition not_not_exists_empty_element
+Definition exists_empty_element
  {A : Type} (R : A -> A -> Type) : Type
 :=
- ~ ~ forall P, (forall x, (forall y, ~ R y x) -> P) -> P
+ exists x, forall y, R y x
+.
+
+Definition Kuroda's_exists_empty_element
+ {A : Type} (R : A -> A -> Type) : Type
+:=
+ ~ ~ exists x, forall y, ~ ~ R y x
 .
 
 Definition nne3_Ni
