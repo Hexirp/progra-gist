@@ -200,6 +200,8 @@ Definition Empty_rect
 
 Definition neg (A : Type) : Type := A -> Empty.
 
+Definition all {A : Type} (P : A -> Type) : Type := forall x, P x.
+
 Inductive paths {A : Type} (a : A) : A -> Type :=
 | idpath : paths a a
 .
