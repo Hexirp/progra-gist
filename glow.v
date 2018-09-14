@@ -202,6 +202,12 @@ Definition neg (A : Type) : Type := A -> Empty.
 
 Definition all {A : Type} (P : A -> Type) : Type := forall x, P x.
 
+Inductive ex {A : Type} (P : A -> Type) : Type :=
+| ex_pair : forall x, P x -> ex P
+.
+
+Arguments ex_pair {A P} x _.
+
 Inductive paths {A : Type} (a : A) : A -> Type :=
 | idpath : paths a a
 .
