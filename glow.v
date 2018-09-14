@@ -558,6 +558,18 @@ Definition Kuroda's_exists_empty_element
  ~ ~ exists x, forall y, ~ ~ R y x
 .
 
+Definition Keee_eee
+ {A : Type} (R : A -> A -> Type)
+ : exists_empty_element R -> Kuroda's_exists_empty_element R
+.
+Proof.
+ pull eee.
+ change (~ ~ exists x, forall y, ~ ~ R y x).
+ change ((~ exists x, forall y, ~ ~ R y x) -> Empty).
+ pull H0.
+ admit.
+Admitted.
+
 Definition nne3_Ni
  {A : Type} (R : A -> A -> Type)
  : Noetherian_induction R -> not_not_exists_empty_element R
