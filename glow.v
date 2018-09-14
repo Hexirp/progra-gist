@@ -601,6 +601,36 @@ Proof.
  exact (xH y).
 Defined.
 
+Definition exists_an_element
+ {A : Type} (R : A -> A -> Type) : Type
+:=
+ forall x, exists y, R y x
+.
+
+Definition Kuroda's_exists_an_element
+ {A : Type} (R : A -> A -> Type) : Type
+:=
+ forall x, ~ ~ exists y, R y x
+.
+
+Definition Keae_nKeee
+ {A : Type} (R : A -> A -> Type)
+ : ~ Kuroda's_exists_empty_element R -> Kuroda's_exists_an_element R
+.
+Proof.
+ pull nKeee.
+ change (forall x, ~ ~ exists y, R y x).
+ pull x.
+ change (~ (exists y : A, R y x) -> Empty).
+ pull H0.
+ change (Kuroda's_exists_empty_element R -> Empty) in nKeee.
+ refine (nKeee _).
+ change (~ ~ exists x, forall y, ~ ~ R y x).
+ change (~ (exists x, forall y, ~ ~ R y x) -> Empty).
+ pull H1.
+ admit.
+Admitted.
+
 Definition nne3_Ni
  {A : Type} (R : A -> A -> Type)
  : Noetherian_induction R -> not_not_exists_empty_element R
