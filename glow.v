@@ -307,6 +307,14 @@ Notation "x \/ y" := (sum x y) (at level 85, right associativity).
 
 Notation "~ x" := (neg x) (at level 75, right associativity).
 
+Notation "'exists' x .. y , p" := (ex (fun x => .. (ex (fun y => p)) ..))
+ (
+  at level 200,
+  x binder,
+  right associativity,
+  format "'[' 'exists'  '/  ' x  ..  y ,  '/  ' p ']'")
+.
+
 Notation "x = y :> A" := (@paths A x y)
  (at level 70, y at next level, no associativity)
 .
