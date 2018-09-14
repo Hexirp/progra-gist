@@ -208,6 +208,18 @@ Inductive ex {A : Type} (P : A -> Type) : Type :=
 
 Arguments ex_pair {A P} x _.
 
+Definition ex_fst {A : Type} {P : A -> Type} (x : ex P) : A :=
+ match x with
+ | ex_pair x _ => x
+ end
+.
+
+Definition ex_snd {A : Type} {P : A -> Type} (x : ex P) : P (ex_fst x) :=
+ match x with
+ | ex_pair _ H => H
+ end
+.
+
 Inductive paths {A : Type} (a : A) : A -> Type :=
 | idpath : paths a a
 .
