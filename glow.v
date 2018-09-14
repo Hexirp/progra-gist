@@ -208,6 +208,24 @@ Inductive ex {A : Type} (P : A -> Type) : Type :=
 
 Arguments ex_pair {A P} x _.
 
+Definition ex_rec
+ {A : Type} {B : A -> Type} {P : Type} (c : forall x, B x -> P) (x : ex B) : P
+:=
+ match x with
+ | ex_pair x H => c x H
+ end
+.
+
+Definition ex_rect
+ {A : Type} {B : A -> Type} {P : ex B -> Type}
+ (c : forall (x : A) (H : B x), P (ex_pair x H))
+ (x : ex B) : P x
+:=
+ match x with
+ | ex_pair x H => c x H
+ end
+.
+
 Definition ex_fst {A : Type} {P : A -> Type} (x : ex P) : A :=
  match x with
  | ex_pair x _ => x
