@@ -564,13 +564,13 @@ Definition Noetherian_induction
  forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
 .
 
-Definition exists_empty_element
+Definition exists_empty_set
  {A : Type} (R : A -> A -> Type) : Type
 :=
  exists x, forall y, R y x
 .
 
-Definition Kuroda's_exists_empty_element
+Definition Kuroda's_exists_empty_set
  {A : Type} (R : A -> A -> Type) : Type
 :=
  ~ ~ exists x, forall y, ~ ~ R y x
@@ -578,7 +578,7 @@ Definition Kuroda's_exists_empty_element
 
 Definition Keee_eee
  {A : Type} (R : A -> A -> Type)
- : exists_empty_element R -> Kuroda's_exists_empty_element R
+ : exists_empty_set R -> Kuroda's_exists_empty_set R
 .
 Proof.
  pull eee.
@@ -588,7 +588,7 @@ Proof.
  change ((exists x : A, forall y : A, ~ ~ R y x) -> Empty) in H0.
  refine (H0 _).
  push eee.
- change (exists_empty_element R) with (exists x, forall y, R y x).
+ change (exists_empty_set R) with (exists x, forall y, R y x).
  refine (ex_rec _).
  pull x.
  pull xH.
@@ -615,7 +615,7 @@ Definition Kuroda's_exists_an_element
 
 Definition Keae_nKeee
  {A : Type} (R : A -> A -> Type)
- : ~ Kuroda's_exists_empty_element R -> Kuroda's_exists_an_element R
+ : ~ Kuroda's_exists_empty_set R -> Kuroda's_exists_an_element R
 .
 Proof.
  pull nKeee.
@@ -623,7 +623,7 @@ Proof.
  pull x.
  change (~ (exists y : A, R y x) -> Empty).
  pull H0.
- change (Kuroda's_exists_empty_element R -> Empty) in nKeee.
+ change (Kuroda's_exists_empty_set R -> Empty) in nKeee.
  refine (nKeee _).
  change (~ ~ exists x, forall y, ~ ~ R y x).
  change (~ (exists x, forall y, ~ ~ R y x) -> Empty).
@@ -633,17 +633,8 @@ Admitted.
 
 Definition nne3_Ni
  {A : Type} (R : A -> A -> Type)
- : Noetherian_induction R -> not_not_exists_empty_element R
+ : Noetherian_induction R -> exists_empty_set R
 .
 Proof.
- pull Ni.
- change (~ ~ forall P, (forall x, (forall y, ~ R y x) -> P) -> P).
- change ((~ forall P, (forall x, (forall y, ~ R y x) -> P) -> P) -> Empty).
- pull ne3.
- assert (forall Q, (forall P, (~ ((forall x : A, (forall y : A, ~ R y x) -> P) -> P)) -> Q) -> Q).
- -
-  pull Q.
-  admit.
- -
-  admit.
+ admit.
 Admitted.
