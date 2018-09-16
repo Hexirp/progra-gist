@@ -624,34 +624,23 @@ Proof.
  pull pKep.
  change (Kuroda's_exists_empty_set R -> Empty) in nKeee.
  refine (nKeee _).
- change (~ ~ exists x, forall y, ~ ~ R y x).
- change (~ (exists x, forall y, ~ ~ R y x) -> Empty).
- pull pKee.
+ change (~ ~ exists x, forall y, ~ ~ ~ R y x).
+ change (~ (exists x, forall y, ~ ~ ~ R y x) -> Empty).
+ pull pKeee.
  change ((forall x, ~ ~ (exists y, R y x)) -> Empty) in pKep.
  refine (pKep _).
  pull ppKep_x.
  change (~ (exists y : A, R y ppKep_x) -> Empty).
  pull ppKep_xH.
- change ((exists x, forall y, ~ ~ R y x) -> Empty) in pKee.
- change (Kuroda's_exists_empty_set R -> Empty) in nKeee.
- refine (nKeee _).
- change (~ ~ exists x, forall y, ~ ~ R y x).
- change (~ (exists x, forall y, ~ ~ R y x) -> Empty).
- pull H1.
- change ((forall x, ~ ~ (exists y, R y x)) -> Empty) in H0.
- refine (H0 _).
- pull x.
- change (~ (exists y, R y x) -> Empty).
- pull xH.
- change ((exists x, forall y, ~ ~ R y x) -> Empty) in H1.
- refine (H1 _).
- refine (ex_pair x _).
- pull y.
- change (~ R y x -> Empty).
- pull yH.
- change ((exists y, R y x) -> Empty) in xH.
- refine (xH _).
- refine (ex_pair y _).
+ change ((exists x, forall y, ~ ~ ~ R y x) -> Empty) in pKeee.
+ refine (pKeee _).
+ refine (ex_pair ppKep_x _).
+ pull ppKeee_x.
+ change (~ ~ R ppKeee_x ppKep_x -> Empty).
+ pull ppKeee_xH.
+ change ((exists y, R y ppKep_x) -> Empty) in ppKep_xH.
+ refine (ppKep_xH _).
+ refine (ex_pair ppKeee_x _).
  admit.
 Admitted.
 
