@@ -651,3 +651,12 @@ Definition nne3_Ni
 Proof.
  admit.
 Admitted.
+
+Inductive fol (A : Type) (H : Type) : Type :=
+| fol_unit : fol Unit
+| fol_empty : fol Empty
+| fol_prod : forall x y, fol x -> fol y -> fol (x /\ y)
+| fol_sum : forall x y, fol x -> fol y -> fol (x \/ y)
+| fol_forall : forall f, (forall x, fol (f x)) -> fol (forall x, f x)
+| fol_exists : forall f, (exists x, fol (f x)) -> fol (exists x, f x)
+.
