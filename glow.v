@@ -622,6 +622,11 @@ Proof.
  change (~ ~ forall x, ~ ~ exists y, R y x).
  change (~ (forall x, ~ ~ exists y, R y x) -> Empty).
  pull H0.
+ change ((forall x : A, ~ ~ (exists y : A, R y x)) -> Empty) in H0.
+ refine (H0 _).
+ pull x.
+ change (~ (exists y : A, R y x) -> Empty).
+ pull xH.
  change (Kuroda's_exists_empty_set R -> Empty) in nKeee.
  refine (nKeee _).
  change (~ ~ exists x, forall y, ~ ~ R y x).
