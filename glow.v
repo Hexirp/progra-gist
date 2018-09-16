@@ -567,13 +567,13 @@ Definition Noetherian_induction
 Definition exists_empty_set
  {A : Type} (R : A -> A -> Type) : Type
 :=
- exists x, forall y, R y x
+ exists x, forall y, ~ R y x
 .
 
 Definition Kuroda's_exists_empty_set
  {A : Type} (R : A -> A -> Type) : Type
 :=
- ~ ~ exists x, forall y, ~ ~ R y x
+ ~ ~ exists x, forall y, ~ ~ ~ R y x
 .
 
 Definition Keee_eee
@@ -582,21 +582,21 @@ Definition Keee_eee
 .
 Proof.
  pull eee.
- change (~ ~ exists x, forall y, ~ ~ R y x).
- change ((~ exists x, forall y, ~ ~ R y x) -> Empty).
+ change (~ ~ exists x, forall y, ~ ~ ~ R y x).
+ change ((~ exists x, forall y, ~ ~ ~ R y x) -> Empty).
  pull H0.
- change ((exists x : A, forall y : A, ~ ~ R y x) -> Empty) in H0.
+ change ((exists x : A, forall y : A, ~ ~ ~ R y x) -> Empty) in H0.
  refine (H0 _).
  push eee.
- change (exists_empty_set R) with (exists x, forall y, R y x).
+ change (exists_empty_set R) with (exists x, forall y, ~ R y x).
  refine (ex_rec _).
  pull x.
  pull xH.
  refine (ex_pair x _).
  pull y.
- change ((~ R y x) -> Empty).
+ change ((~ ~ R y x) -> Empty).
  pull H1.
- change (R y x -> Empty) in H1.
+ change (~ R y x -> Empty) in H1.
  refine (H1 _).
  exact (xH y).
 Defined.
