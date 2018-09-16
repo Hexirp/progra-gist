@@ -618,6 +618,29 @@ Definition Keae_nKeee
  : ~ Kuroda's_exists_empty_set R -> Kuroda's_exists_predecessor R
 .
 Proof.
+ pull nKeee.
+ change (~ ~ forall x, ~ ~ exists y, R y x).
+ change (~ (forall x, ~ ~ exists y, R y x) -> Empty).
+ pull H0.
+ change (Kuroda's_exists_empty_set R -> Empty) in nKeee.
+ refine (nKeee _).
+ change (~ ~ exists x, forall y, ~ ~ R y x).
+ change (~ (exists x, forall y, ~ ~ R y x) -> Empty).
+ pull H1.
+ change ((forall x, ~ ~ (exists y, R y x)) -> Empty) in H0.
+ refine (H0 _).
+ pull x.
+ change (~ (exists y, R y x) -> Empty).
+ pull xH.
+ change ((exists x, forall y, ~ ~ R y x) -> Empty) in H1.
+ refine (H1 _).
+ refine (ex_pair x _).
+ pull y.
+ change (~ R y x -> Empty).
+ pull yH.
+ change ((exists y, R y x) -> Empty) in xH.
+ refine (xH _).
+ refine (ex_pair y _).
  admit.
 Admitted.
 
