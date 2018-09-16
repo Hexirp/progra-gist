@@ -629,9 +629,10 @@ Proof.
  pull pKee.
  change ((forall x, ~ ~ (exists y, R y x)) -> Empty) in pKep.
  refine (pKep _).
- pull x.
- change (~ (exists y : A, R y x) -> Empty).
- pull xH.
+ pull ppKep_x.
+ change (~ (exists y : A, R y ppKep_x) -> Empty).
+ pull ppKep_xH.
+ change ((exists x, forall y, ~ ~ R y x) -> Empty) in pKee.
  change (Kuroda's_exists_empty_set R -> Empty) in nKeee.
  refine (nKeee _).
  change (~ ~ exists x, forall y, ~ ~ R y x).
