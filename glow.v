@@ -660,4 +660,9 @@ Inductive fol (U : Type) : Type -> Type :=
 | fol_forall : forall P, (forall x : U, fol U (P x)) -> fol U (forall x, P x)
 | fol_exists : forall P, (exists x : U, fol U (P x)) -> fol U (exists x, P x)
 | fol_not : forall A, fol U A -> fol U (~ A)
+| fol_atom : forall A, fol U A
+.
+
+(** Gödel–Gentzen translation *)
+Inductive GG {U : Type} : forall A B, fol U A -> fol U B -> Type :=
 .
