@@ -652,11 +652,12 @@ Proof.
  admit.
 Admitted.
 
-Inductive fol (A : Type) (H : Type) : Type :=
-| fol_unit : fol Unit
-| fol_empty : fol Empty
-| fol_prod : forall x y, fol x -> fol y -> fol (x /\ y)
-| fol_sum : forall x y, fol x -> fol y -> fol (x \/ y)
-| fol_forall : forall f, (forall x, fol (f x)) -> fol (forall x, f x)
-| fol_exists : forall f, (exists x, fol (f x)) -> fol (exists x, f x)
+Inductive fol (U : Type) (H : Type) : Type :=
+| fol_unit : fol U Unit
+| fol_empty : fol U Empty
+| fol_prod : forall A B, fol U A -> fol U B -> fol U (A /\ B)
+| fol_sum : forall A B, fol U A -> fol U B -> fol U (A \/ B)
+| fol_forall : forall P, (forall x : U, fol U (P x)) -> fol U (forall x, P x)
+| fol_exists : forall P, (exists x : U, fol U (P x)) -> fol U (exists x, P x)
+| fol_not : forall A, fol U A -> fol U (~ A)
 .
