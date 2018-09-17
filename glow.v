@@ -652,7 +652,7 @@ Proof.
  admit.
 Admitted.
 
-Inductive fol (U : Type) (H : Type) : Type :=
+Inductive fol (U : Type) : Type -> Type :=
 | fol_unit : fol U Unit
 | fol_empty : fol U Empty
 | fol_prod : forall A B, fol U A -> fol U B -> fol U (A /\ B)
