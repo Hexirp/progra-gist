@@ -684,3 +684,11 @@ Inductive GG : Type -> Type -> Type :=
 | GG_atom
  : forall A, GG A (~ ~ A)
 .
+
+Fixpoint GG_soundness
+ (A B : Type) (H : GG A B)
+ : ((forall X, ~ ~ X -> X) -> A) -> B
+.
+Proof.
+ admit.
+Admitted.
