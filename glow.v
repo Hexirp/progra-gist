@@ -692,3 +692,11 @@ Fixpoint GG_soundness
 Proof.
  admit.
 Admitted.
+
+Fixpoint GG_completeness
+ (A B : Type) (H : GG A B)
+ : B -> (forall X, ~ ~ X -> X) -> A
+.
+Proof.
+ admit.
+Admitted.
