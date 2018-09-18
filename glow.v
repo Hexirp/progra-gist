@@ -664,20 +664,23 @@ Inductive fol (U : Type) : Type -> Type :=
 .
 
 (** Gödel–Gentzen translation *)
-Inductive GG {U : Type} : forall A B, fol U A -> fol U B -> Type :=
-| GG_unit : GG Unit Unit fol_unit fol_unit
-| GG_empty : GG Empty Empty fol_unit fol_unit
-| GG_prod :
- forall (A B : Type) (x : fol U A) (y : fol U B),
-  GG (A /\ B) (A /\ B) (fol_prod A B x y) (fol_prod A B x y)
-| GG_sum :
- forall (A B : Type) (x : fol U A) (y : fol U B),
-  GG
-   (A \/ B)
-   (~ (~ A \/ ~ B))
-   (fol_sum A B x y)
-   (fol_neg (~ A /\ ~ B) (fol_prod (~ A) (~ B) (fol_neg A x) (fol_neg B x)))
-| GG_forall :
- forall (P : U -> Type) (f : forall x, fol U (P x)),
-  GG (forall x, P x) (forall x, P x
+Inductive GG : Type -> Type -> Type :=
+| GG_unit
+ : GG Unit Unit
+| GG_empty
+ : GG Empty Empty
+| GG_prod
+ : forall A B C D, GG A C -> GG B D -> GG (A /\ B) (C /\ D)
+| GG_sum
+ : forall A B C D, GG A C -> GG B D -> GG (A \/ B) (~ (~ C \/ ~ D))
+| GG_forall
+ : forall A P G,
+  (forall x : A, GG (P x) (G x)) -> GG (forall x, P x) (forall x, G x)
+| GG_exists
+ : forall A P G,
+  (forall x : A, GG (P x) (G x)) -> GG (exists x, P x) (~ forall x, ~ G x)
+| GG_neg
+ : forall A B, GG A B -> GG (~ A) (~ B)
+| GG_atom
+ : forall A, GG A (~ ~ A)
 .
