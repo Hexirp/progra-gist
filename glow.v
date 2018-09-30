@@ -586,12 +586,34 @@ Section Rel.
   exists f, is_predecessor_function f
  .
 
+ Definition predecessor_function_fhap
+  (H: forall_has_a_predecessor) : A -> A
+ .
+ Proof.
+  pull x.
+  change (forall x, has_a_predecessor x) in H.
+  change (forall x, exists y, R y x) in H.
+  refine (ex_fst _).
+  refine (H _).
+  exact x.
+ Defined.
+
+ Definition predecessor_function_eipf
+  (H : exists_is_predecessor_function) : A -> A
+ .
+ Proof.
+  change (exists f, is_predecessor_function f) in H.
+  refine (ex_fst _).
+  exact H.
+ Defined.
+
  Definition eipf_fhap
   (H : forall_has_a_predecessor) : exists_is_predecessor_function
  .
  Proof.
   change (exists f, is_predecessor_function f).
-  
+  refine (ex_pair (predecessor_function_fhap H) _).
+  change (forall x, R (f x) x
 End Rel.
 
 Definition is_empty_set
