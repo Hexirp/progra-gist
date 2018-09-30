@@ -613,7 +613,16 @@ Section Rel.
  Proof.
   change (exists f, is_predecessor_function f).
   refine (ex_pair (predecessor_function_fhap H) _).
-  change (forall x, R (f x) x
+  change (forall x, R (predecessor_function_fhap H x) x).
+  pull x.
+  change (R (ex_fst (H x)) x).
+  change (forall x, has_a_predecessor x) in H.
+  case (H x).
+  pull y.
+  pull RH.
+  change (R y x).
+  exact RH.
+ Defined.
 End Rel.
 
 Definition is_empty_set
