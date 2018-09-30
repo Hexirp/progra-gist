@@ -622,6 +622,19 @@ Section Rel.
   change (R (ex_fst H_x) x).
   exact (ex_snd H_x).
  Defined.
+
+ Definition fhap_eipf
+  (H : exists_is_predecessor_function) : forall_has_a_predecessor
+ .
+ Proof.
+  change (forall x, has_a_predecessor x).
+  pull x.
+  change (exists y, R y x).
+  refine (ex_pair (predecessor_function_eipf H x) _).
+  change (R (ex_fst H x) x).
+  change (exists f, forall x, R (f x) x) in H.
+  exact (ex_snd H x).
+ Defined.
 End Rel.
 
 Definition is_empty_set
