@@ -558,16 +558,19 @@ Proof.
   exact (q x).
 Defined.
 
-Definition Noetherian_induction
- {A : Type} (R : A -> A -> Type) : Type
-:=
- forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
-.
+Section Rel.
+ Parameter A : Type.
+ Parameter R : A -> A -> Type.
 
-Definition exists_empty_set
+ Definition Noetherian_induction : Type :=
+  forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
+ .
+End Rel.
+
+Definition is_empty_set
  {A : Type} (R : A -> A -> Type) : Type
 :=
- exists x, forall y, ~ R y x
+ forall x, ~ forall y, ~ R y x
 .
 
 Definition Kuroda's_exists_empty_set
