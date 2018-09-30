@@ -617,11 +617,10 @@ Section Rel.
   pull x.
   change (R (ex_fst (H x)) x).
   change (forall x, has_a_predecessor x) in H.
-  case (H x).
-  pull y.
-  pull RH.
-  change (R y x).
-  exact RH.
+  change (forall x, exists y, R y x) in H.
+  pose (H_x := H x).
+  change (R (ex_fst H_x) x).
+  exact (ex_snd H_x).
  Defined.
 End Rel.
 
