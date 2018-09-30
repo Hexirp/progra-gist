@@ -565,6 +565,33 @@ Section Rel.
  Definition Noetherian_induction : Type :=
   forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
  .
+
+ Definition is_empty_set (x : A) : Type :=
+  forall y, ~ R y x
+ .
+
+ Definition has_a_predecessor (x : A) : Type :=
+  exists y, R y x
+ .
+
+ Definition forall_has_a_predecessor : Type :=
+  forall x, has_a_predecessor x
+ .
+
+ Definition is_predecessor_function (f : A -> A) : Type :=
+  forall x, R (f x) x
+ .
+
+ Definition exists_is_predecessor_function : Type :=
+  exists f, is_predecessor_function f
+ .
+
+ Definition eipf_fhap
+  (H : forall_has_a_predecessor) : exists_is_predecessor_function
+ .
+ Proof.
+  change (exists f, is_predecessor_function f).
+  
 End Rel.
 
 Definition is_empty_set
