@@ -559,8 +559,8 @@ Proof.
 Defined.
 
 Section Rel.
- Parameter A : Type.
- Parameter R : A -> A -> Type.
+ Variable A : Type.
+ Variable R : A -> A -> Type.
 
  Definition Noetherian_induction : Type :=
   forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
@@ -634,6 +634,26 @@ Section Rel.
   change (R (ex_fst H x) x).
   change (exists f, forall x, R (f x) x) in H.
   exact (ex_snd H x).
+ Defined.
+
+ Definition Contradict_ni_fhap
+  (ni : Noetherian_induction) (fhap : forall_has_a_predecessor) (x : A) : Empty
+ .
+ Proof.
+  change (
+   forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
+  ) in ni.
+  refine (ni (fun _ => Empty) _ _).
+  -
+   clear x.
+   pull x.
+   pull xH.
+   change (forall x, has_a_predecessor x) in fhap.
+   change (forall x, exists y, R y x) in fhap.
+   case (fhap x).
+   exact xH.
+  -
+   exact x.
  Defined.
 End Rel.
 
