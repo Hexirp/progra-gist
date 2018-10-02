@@ -593,9 +593,10 @@ Section Rel.
   pull x.
   change (forall x, has_a_predecessor x) in H.
   change (forall x, exists y, R y x) in H.
-  refine (ex_fst _).
-  refine (H _).
-  exact x.
+  case (H x).
+  pull y.
+  pull yH.
+  exact y.
  Defined.
 
  Definition predecessor_function_eipf
@@ -603,8 +604,10 @@ Section Rel.
  .
  Proof.
   change (exists f, is_predecessor_function f) in H.
-  refine (ex_fst _).
-  exact H.
+  case H.
+  pull f.
+  pull fH.
+  exact f.
  Defined.
 
  Definition eipf_fhap
@@ -612,15 +615,19 @@ Section Rel.
  .
  Proof.
   change (exists f, is_predecessor_function f).
-  refine (ex_pair (predecessor_function_fhap H) _).
-  change (forall x, R (predecessor_function_fhap H x) x).
+  pose (pf := predecessor_function_fhap H).
+  refine (ex_pair pf _).
+  change (forall x, R (pf x) x).
   pull x.
+  change (R (predecessor_function_fhap H x) x).
   change (R (ex_fst (H x)) x).
   change (forall x, has_a_predecessor x) in H.
   change (forall x, exists y, R y x) in H.
-  pose (H_x := H x).
-  change (R (ex_fst H_x) x).
-  exact (ex_snd H_x).
+  case (H x).
+  pull y.
+  pull yH.
+  change (R y x).
+  exact yH.
  Defined.
 
  Definition fhap_eipf
@@ -630,7 +637,9 @@ Section Rel.
   change (forall x, has_a_predecessor x).
   pull x.
   change (exists y, R y x).
-  refine (ex_pair (predecessor_function_eipf H x) _).
+  pose (pf := predecessor_function_eipf H).
+  refine (ex_pair (pf x) _).
+  change (R (predecessor_function_eipf H x) x).
   change (R (ex_fst H x) x).
   change (exists f, forall x, R (f x) x) in H.
   exact (ex_snd H x).
