@@ -656,6 +656,26 @@ Section Rel.
   -
    exact x.
  Defined.
+
+ Definition Contradict_ni_eipf
+  (ni : Noetherian_induction) (eipf : exists_is_predecessor_function) (x : A) : Empty
+ .
+ Proof.
+  change (
+   forall P, (forall x, (forall y, R y x -> P y) -> P x) -> forall x, P x
+  ) in ni.
+  refine (ni (fun _ => Empty) _ _).
+  -
+   clear x.
+   pull x.
+   pull xH.
+   change (exists f, is_predecessor_function f) in eipf.
+   change (exists f, forall y, R (f y) y) in eipf.
+   refine (xH (ex_fst eipf x) _).
+   exact (ex_snd eipf x).
+  -
+   exact x.
+ Defined.
 End Rel.
 
 Definition is_empty_set
