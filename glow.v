@@ -593,10 +593,8 @@ Section Rel.
   pull x.
   change (forall x, has_a_predecessor x) in H.
   change (forall x, exists y, R y x) in H.
-  case (H x).
-  pull y.
-  pull yH.
-  exact y.
+  refine (ex_fst (P := fun y => R y x) _).
+  exact (H x).
  Defined.
 
  Definition predecessor_function_eipf
@@ -604,10 +602,8 @@ Section Rel.
  .
  Proof.
   change (exists f, is_predecessor_function f) in H.
-  case H.
-  pull f.
-  pull fH.
-  exact f.
+  refine (ex_fst (P := is_predecessor_function) _).
+  exact H.
  Defined.
 
  Definition eipf_fhap
@@ -620,14 +616,10 @@ Section Rel.
   change (forall x, R (pf x) x).
   pull x.
   change (R (predecessor_function_fhap H x) x).
-  change (R (ex_fst (H x)) x).
+  change (R (ex_fst (P := fun y => R y x) (H x)) x).
   change (forall x, has_a_predecessor x) in H.
   change (forall x, exists y, R y x) in H.
-  case (H x).
-  pull y.
-  pull yH.
-  change (R y x).
-  exact yH.
+  exact (ex_snd (P := fun y => R y x) (H x)).
  Defined.
 
  Definition fhap_eipf
@@ -640,10 +632,12 @@ Section Rel.
   pose (pf := predecessor_function_eipf H).
   refine (ex_pair (pf x) _).
   change (R (predecessor_function_eipf H x) x).
-  change (R (ex_fst H x) x).
+  change (R (ex_fst (P := is_predecessor_function) H x) x).
+  change (R (ex_fst (P := fun f => forall x, R (f x) x) H x) x).
   change (exists f, forall x, R (f x) x) in H.
-  exact (ex_snd H x).
+  exact (ex_snd (P := fun f => forall x, R (f x) x) H x).
  Defined.
+
 
  Definition Contradict_ni_fhap
   (ni : Noetherian_induction) (fhap : forall_has_a_predecessor) (x : A) : Empty
