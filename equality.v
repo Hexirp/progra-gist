@@ -131,6 +131,12 @@ Proof.
  ).
 Defined.
 
+Definition eq_JMeq
+ (A : Type) (x y : A) (p : eq A x y) : JMeq A x A y
+:=
+ match p with eq_refl _ _ => JMeq_refl A x end
+.
+
 Section Declare_JMeq_eq.
  Variable JMeq_eq : forall A x y, JMeq A x A y -> eq A x y.
 
@@ -141,7 +147,8 @@ Section Declare_JMeq_eq.
  .
  Proof.
   refine (
-   eq_elim A x (fun y jmp => 
+   eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) c y (JMeq_eq A x y p)
+  ).
 
 
 (* JMeqを使って定義されたeq
