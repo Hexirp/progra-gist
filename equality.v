@@ -140,15 +140,25 @@ Definition eq_JMeq
 Section Declare_JMeq_eq.
  Variable JMeq_eq : forall A x y, JMeq A x A y -> eq A x y.
 
- Definition JMeq_elim_eqlike
-  (A : Type) (x : A) (P : forall y : A, JMeq A x A y -> Type)
-  (c : P x (JMeq_refl A x)) (y : A) (p : JMeq A x A y)
-  : P y p
- .
- Proof.
-  refine (
-   eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) c y (JMeq_eq A x y p)
-  ).
+ Section Declare_iso_JMeq_eq.
+  Variable JMeq_eq_JMeq
+   : forall A x y p, eq (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) p.
+
+  Definition JMeq_elim_eqlike
+   (A : Type) (x : A) (P : forall y : A, JMeq A x A y -> Type)
+   (c : P x (JMeq_refl A x)) (y : A) (p : JMeq A x A y)
+   : P y p
+  .
+  Proof.
+   refine (
+    eq_elim
+     (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) (fun p' _ => P y p')
+     _ p (JMeq_eq_JMeq A x y p)
+   ).
+   refine (
+    eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) c y (JMeq_eq A x y p)
+   ).
+  Defined.
 
 
 (* JMeqを使って定義されたeq
