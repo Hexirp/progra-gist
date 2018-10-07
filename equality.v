@@ -111,6 +111,9 @@ Proof.
  Fail refine (match p with eq_refl _ _ => c end).
 Abort.
 
+(* UIPの等しい対象がeq_reflになったバージョン
+  Kから簡単に導ける。
+  http://adam.chlipala.net/cpdt/html/Equality.html (Heterogeneous Equality) *)
 Definition UIP_refl
  (A : Type) (x : A) (p : eq A x x) : eq (eq A x x) (eq_refl A x) p
 .
@@ -124,6 +127,42 @@ Proof.
  ).
  Fail refine (match p with eq_refl _ _ => eq_refl (eq A x x) (eq_refl A x) end).
 Abort.
+
+(* UIPをJMeqを使って定義したバージョン
+  証明できる。さっきやりたかったことが出来ている。 *)
+Definition UIP' (A : Type) (x y : A) (p q : eq A x y) : JMeq (eq A x y) p (eq A x y) q.
+Proof.
+ refine (
+  eq_elim
+   A x (fun y' p' => JMeq (eq A x y') p' (eq A x y) q)
+   _ y p
+ ).
+ refine (
+  eq_elim
+   A x (fun y' q' => JMeq (eq A x x) (eq_refl A x) (eq A x y') q')
+   _ y q
+ ).
+ refine (
+  JMeq_refl (eq A x x) (eq_refl A x)
+ ).
+Defined.
+
+(* UIP_reflをJMeqで定義したバージョン
+  証明できる。さっきやりたかったことが出来ている。 *)
+Definition UIP'_refl
+ (A : Type) (x : A) (p : eq A x x) : JMeq (eq A x x) (eq_refl A x) (eq A x x) p
+.
+Proof.
+ refine (
+  eq_elim
+   A x (fun x' p' => JMeq (eq A x x) (eq_refl A x) (eq A x x') p')
+   _ x p
+ ).
+ refine (
+  JMeq_refl (eq A x x) (eq_refl A x)
+ ).
+Defined.
+
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
