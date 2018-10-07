@@ -85,11 +85,9 @@ Abort.
   https://ncatlab.org/nlab/show/axiom+UIP *)
 Definition UIP (A : Type) (x y : A) (p q : eq A x y) : eq (eq A x y) p q.
 Proof.
- (* 単純に考えればpを除去してそれがeq_reflで構築されたものと示し *)
- (* qも除去してそれがeq_reflで構築された物であることを示し *)
- (* 両者が等しいことが分かるのでeq_reflを使って証明するところだが *)
- (* 両側の型が違うものになるからpだけを書き換えることはできない。 *)
- (* qだけを書き換えることもできないし、両方を一度に書き換えることはできない *)
+ (* 単純に考えればeq (eq A x x) (eq_refl A x) (eq_refl A x)から *)
+ (* eq (A x y) p (eq_refl A x)を作ってeq (A x y) p qを作りたいところだが *)
+ (* 途中で両方の型が異ならなければならないし、一度に書き換えることはできない *)
  Fail refine (
   eq_elim A x (fun y p => eq (eq A x y) p q) (eq_refl (eq A x x) (eq_refl A x)) y p
  ).
@@ -100,11 +98,32 @@ Proof.
  ).
 Abort.
 
+(* axiom K
+  https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29 *)
 Definition K
  (A : Type) (x : A) (P : eq A x x -> Type)
  (c : P (eq_refl A x)) (p : eq A x x)
  : P p
 .
+Proof.
+ (* 単純に考えればP (eq_refl A x)からP pを作りたいところだができない *)
+ Fail refine (eq_elim A x (fun y p => P p) c x p).
+ Fail refine (match p with eq_refl _ _ => c end).
+Abort.
+
+Definition UIP_refl
+ (A : Type) (x : A) (p : eq A x x) : eq (eq A x x) (eq_refl A x) p
+.
+Proof.
+ (* 単純に考えればeq (eq A x x) (eq_refl A x) (eq_refl A x)から *)
+ (* eq (eq A x x) (eq_refl A x) pを作りたいができない *)
+ Fail refine (
+  eq_elim
+   A x (fun y p => eq (eq A x x) (eq_refl A x) p)
+   (eq_refl (eq A x x) (eq_refl A x)) x p
+ ).
+ Fail refine (match p with eq_refl _ _ => eq_refl (eq A x x) (eq_refl A x) end).
+Abort.
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
