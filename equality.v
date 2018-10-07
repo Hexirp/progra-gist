@@ -159,7 +159,7 @@ Section Declare_JMeq_eq.
     eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) c y (JMeq_eq A x y p)
    ).
   Defined.
-
+ End Declare_iso_JMeq_eq.
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
