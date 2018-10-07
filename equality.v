@@ -80,6 +80,32 @@ Proof.
  Fail refine (match p with JMeq_refl _ _ => c end).
 Abort.
 
+(* axiom UIP (UIP axiom, the axiom of uniqueness of identity proofs)
+  全てのeqは等しいという公理。
+  https://ncatlab.org/nlab/show/axiom+UIP *)
+Definition UIP (A : Type) (x y : A) (p q : eq A x y) : eq (eq A x y) p q.
+Proof.
+ (* 単純に考えればpを除去してそれがeq_reflで構築されたものと示し *)
+ (* qも除去してそれがeq_reflで構築された物であることを示し *)
+ (* 両者が等しいことが分かるのでeq_reflを使って証明するところだが *)
+ (* 両側の型が違うものになるからpだけを書き換えることはできない。 *)
+ (* qだけを書き換えることもできないし、両方を一度に書き換えることはできない *)
+ Fail refine (
+  eq_elim A x (fun y p => eq (eq A x y) p q) (eq_refl (eq A x x) (eq_refl A x)) y p
+ ).
+ Fail refine (
+  match p with eq_refl _ _ =>
+   match q with eq_refl _ _ => eq_refl (eq A x x) (eq_refl A x) end
+  end
+ ).
+Abort.
+
+Definition K
+ (A : Type) (x : A) (P : eq A x x -> Type)
+ (c : P (eq_refl A x)) (p : eq A x x)
+ : P p
+.
+
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
 Definition JMeqH (A : Type) (x y : A) := JMeq A x A y.
