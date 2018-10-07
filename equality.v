@@ -57,11 +57,6 @@ Definition JMeq_eq
  (A : Type) (x y : A) (p : JMeq A x A y) : eq A x y
 .
 Proof.
- (* 単純に考えればJMeqの除去規則によってeq A x xからeq A x yを作りたいところだが *)
- (* JMeqの除去規則で書き換えたいyはどんな型でもいいようにしなければならない *)
- Fail refine (JMeq_elim A x (fun B b _ => eq A x b) (eq_refl A x) A x p).
- (* パターンマッチングしてみてもだめ（書き換えるところを推論させることと同じ） *)
- Fail refine (match p with JMeq_refl _ _ => eq_refl A x end).
 Abort.
 
 (* JMeqのeqのような除去規則？
@@ -73,11 +68,6 @@ Definition JMeq_elim_eqlike
  : P y p
 .
 Proof.
- (* 単純に考えればJMeqの除去規則によってP x (JMeq_refl A x)からP y pを作りたいところだが *)
- (* JMeqの除去規則で書き換えたいyはどんな型でもいいようにしなければならない *)
- Fail refine (JMeq_elim A x (fun B b p => P b p) c y p).
- (* パターンマッチングしてみてもだめ（書き換えるところを推論させることと同じ） *)
- Fail refine (match p with JMeq_refl _ _ => c end).
 Abort.
 
 (* axiom UIP (UIP axiom, the axiom of uniqueness of identity proofs)
@@ -85,17 +75,6 @@ Abort.
   https://ncatlab.org/nlab/show/axiom+UIP *)
 Definition UIP (A : Type) (x y : A) (p q : eq A x y) : eq (eq A x y) p q.
 Proof.
- (* 単純に考えればeq (eq A x x) (eq_refl A x) (eq_refl A x)から *)
- (* eq (A x y) p (eq_refl A x)を作ってeq (A x y) p qを作りたいところだが *)
- (* 途中で両方の型が異ならなければならないし、一度に書き換えることはできない *)
- Fail refine (
-  eq_elim A x (fun y p => eq (eq A x y) p q) (eq_refl (eq A x x) (eq_refl A x)) y p
- ).
- Fail refine (
-  match p with eq_refl _ _ =>
-   match q with eq_refl _ _ => eq_refl (eq A x x) (eq_refl A x) end
-  end
- ).
 Abort.
 
 (* axiom K
@@ -106,9 +85,6 @@ Definition K
  : P p
 .
 Proof.
- (* 単純に考えればP (eq_refl A x)からP pを作りたいところだができない *)
- Fail refine (eq_elim A x (fun y p => P p) c x p).
- Fail refine (match p with eq_refl _ _ => c end).
 Abort.
 
 (* UIPの等しい対象がeq_reflになったバージョン
@@ -118,14 +94,6 @@ Definition UIP_refl
  (A : Type) (x : A) (p : eq A x x) : eq (eq A x x) (eq_refl A x) p
 .
 Proof.
- (* 単純に考えればeq (eq A x x) (eq_refl A x) (eq_refl A x)から *)
- (* eq (eq A x x) (eq_refl A x) pを作りたいができない *)
- Fail refine (
-  eq_elim
-   A x (fun y p => eq (eq A x x) (eq_refl A x) p)
-   (eq_refl (eq A x x) (eq_refl A x)) x p
- ).
- Fail refine (match p with eq_refl _ _ => eq_refl (eq A x x) (eq_refl A x) end).
 Abort.
 
 (* UIPをJMeqを使って定義したバージョン
@@ -162,6 +130,18 @@ Proof.
   JMeq_refl (eq A x x) (eq_refl A x)
  ).
 Defined.
+
+Section Declare_JMeq_eq.
+ Variable JMeq_eq : forall A x y, JMeq A x A y -> eq A x y.
+
+ Definition JMeq_elim_eqlike
+  (A : Type) (x : A) (P : forall y : A, JMeq A x A y -> Type)
+  (c : P x (JMeq_refl A x)) (y : A) (p : JMeq A x A y)
+  : P y p
+ .
+ Proof.
+  refine (
+   eq_elim A x (fun y jmp => 
 
 
 (* JMeqを使って定義されたeq
