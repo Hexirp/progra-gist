@@ -490,13 +490,13 @@ Definition eqJM
 .
 
 Definition eqJM_JMeq
- (A : Type) (x y : A) (p : eqJM A x A y) : JMeq A x A y
+ (A B : Type) (a : A) (b : B) (p : eqJM A a B b) : JMeq A a B b
 .
 Proof.
  refine (
   ex_elim_nodep
-   (eq Type A A) (fun p => eq A (eq_elim_nodep Type A (fun A' => A') x A p) y)
-    (JMeq A x A y) _ p
+   (eq Type A B) (fun p => eq B (eq_elim_nodep Type A (fun A' => A') a B p) b)
+    (JMeq A a B b) _ p
  ).
  refine (
   fun tp => _
@@ -504,6 +504,6 @@ Proof.
  refine (
   eq_elim
    Type A
-   (fun A' tp' => eq A (eq_elim_nodep Type A (fun A' : Type => A') x A' tp') y -> JMeq A x A y)
-   _ A tp
+   (fun B' tp' => eq B' (eq_elim_nodep Type A (fun A' => A') a B' tp') b -> JMeq A a B' b)
+   _ B tp
  ).
