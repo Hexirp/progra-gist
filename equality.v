@@ -31,8 +31,6 @@ Definition eq_elim
  end
 .
 
-Check eq_elim.
-
 (* Heteroな等式を表す型
   Haskellでの(:~~:)に対応する *)
 Inductive JMeq (A : Type) (a : A) : forall B : Type, B -> Type :=
@@ -131,16 +129,19 @@ Proof.
  ).
 Defined.
 
+(* eqからJMeqを導く *)
 Definition eq_JMeq
  (A : Type) (x y : A) (p : eq A x y) : JMeq A x A y
 :=
  match p with eq_refl _ _ => JMeq_refl A x end
 .
 
+(* JMeq_eqを仮定して他の公理を導く *)
 Section Declare_JMeq_eq.
  Variable JMeq_eq : forall A x y, JMeq A x A y -> eq A x y.
 
- Section Declare_iso_JMeq_eq.
+ Section Declare_JMeq_eq_JMeq.
+  (* JMeq_eqがどのように計算されるかの仮定 *)
   Variable JMeq_eq_JMeq
    : forall A x y p, eq (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) p.
 
@@ -159,7 +160,19 @@ Section Declare_JMeq_eq.
     eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) c y (JMeq_eq A x y p)
    ).
   Defined.
- End Declare_iso_JMeq_eq.
+ End Declare_JMeq_eq_JMeq.
+
+ Definition UIP (A : Type) (x y : A) (p q : eq A x y) : eq (eq A x y) p q.
+ Proof.
+  refine (JMeq_eq (eq A x y) p q _).
+  refine (UIP' A x y p q).
+ Defined.
+
+ Definition K
+  (A : Type) (x : A) (P : eq A x x -> Type)
+  (c : P (eq_refl A x)) (p : eq A x x)
+  : P p
+ .
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
