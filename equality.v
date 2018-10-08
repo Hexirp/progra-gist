@@ -140,6 +140,25 @@ Definition eq_JMeq
 Section Declare_JMeq_eq.
  Variable JMeq_eq : forall A x y, JMeq A x A y -> eq A x y.
 
+ Definition UIP (A : Type) (x y : A) (p q : eq A x y) : eq (eq A x y) p q.
+ Proof.
+  refine (JMeq_eq (eq A x y) p q _).
+  refine (UIP' A x y p q).
+ Defined.
+
+ Definition K
+  (A : Type) (x : A) (P : eq A x x -> Type)
+  (c : P (eq_refl A x)) (p : eq A x x)
+  : P p
+ .
+ Proof.
+   refine (
+    eq_elim
+     (eq A x x) (eq_refl A x) (fun p' _ => P p')
+     c p (UIP A x x (eq_refl A x) p)
+   ).
+ Defined.
+
  Section Declare_JMeq_eq_JMeq.
   (* JMeq_eqがどのように計算されるかの仮定 *)
   Variable JMeq_eq_JMeq
@@ -161,18 +180,6 @@ Section Declare_JMeq_eq.
    ).
   Defined.
  End Declare_JMeq_eq_JMeq.
-
- Definition UIP (A : Type) (x y : A) (p q : eq A x y) : eq (eq A x y) p q.
- Proof.
-  refine (JMeq_eq (eq A x y) p q _).
-  refine (UIP' A x y p q).
- Defined.
-
- Definition K
-  (A : Type) (x : A) (P : eq A x x -> Type)
-  (c : P (eq_refl A x)) (p : eq A x x)
-  : P p
- .
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
