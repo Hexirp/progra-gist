@@ -172,6 +172,16 @@ Section Declare_JMeq_eq.
   Variable reduce_JMeq_eq
    : forall A x, eq (eq A x x) (JMeq_eq A x x (JMeq_refl A x)) (eq_refl A x).
 
+  Definition JMeq_eq_JMeq
+   (A : Type) (x y : A) (p : JMeq A x A y)
+   : eq (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) p.
+  Proof.
+   refine (
+    JMeq_elim
+     A x (fun A' y' p' => eq (JMeq A x A' y') (eq_JMeq A x y' (JMeq_eq A x y' p')) p')
+     _ A y p
+   ).
+
   Definition JMeq_elim_eqlike
    (A : Type) (x : A) (P : forall y : A, JMeq A x A y -> Type)
    (c : P x (JMeq_refl A x)) (y : A) (p : JMeq A x A y)
