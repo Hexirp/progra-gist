@@ -283,8 +283,8 @@ Section Declare_JMeq_eq.
  .
  Proof.
    refine (
-    eq_elim
-     (eq A x x) (eq_refl A x) (fun p' _ => P p')
+    eq_elim_nodep
+     (eq A x x) (eq_refl A x) (fun p' => P p')
      c p (UIP A x x (eq_refl A x) p)
    ).
  Defined.
@@ -303,6 +303,27 @@ Section Declare_JMeq_eq.
  Proof.
   refine (JMeq_eq (JMeq A a B b) p q _).
   refine (JMeq_UIP' A B a b p q).
+ Defined.
+
+ Definition JMeq_K
+  (A : Type) (x : A) (P : JMeq A x A x -> Type)
+  (c : P (JMeq_refl A x)) (p : JMeq A x A x)
+  : P p
+ .
+ Proof.
+  refine (
+   eq_elim_nodep
+    (JMeq A x A x) (JMeq_refl A x) P
+    c p (JMeq_UIP A A x x (JMeq_refl A x) p)
+  ).
+ Defined.
+
+ Definition JMeq_UIP_refl
+  (A : Type) (x : A) (p : JMeq A x A x) : eq (JMeq A x A x) (JMeq_refl A x) p
+ .
+ Proof.
+  refine (JMeq_eq (JMeq A x A x) (JMeq_refl A x) p _).
+  refine (JMeq_UIP'_refl A x p).
  Defined.
 
  Section Declare_JMeq_eq_JMeq.
