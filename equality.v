@@ -480,6 +480,26 @@ Definition ex_elim_nodep
  end
 .
 
+Definition eq_elim_nopoint
+ (A : Type) (P : forall (x y : A), eq A x y -> Type)
+ (c : forall a : A, P a a (eq_refl A a)) (x y : A) (p : eq A x y)
+ : P x y p
+:=
+ match p as p' in eq _ _ y' return P x y' p' with
+ | eq_refl _ _ => c x
+ end
+.
+
+Definition eq_elim_nopoint_nodep
+ (A : Type) (P : A -> A -> Type)
+ (c : forall a : A, P a a) (x y : A) (p : eq A x y)
+ : P x y
+:=
+ match p with
+ | eq_refl _ _ => c x
+ end
+.
+
 (* eqを使って定義されたJMeq *)
 Definition eqJM
  (A : Type) (a : A) (B : Type) (b : B)
@@ -501,6 +521,9 @@ Proof.
  ).
  refine (
   fun tp => _
+ ).
+ refine (
+  _ (eq_refl Type B)
  ).
  refine (
   eq_elim
