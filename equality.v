@@ -213,6 +213,41 @@ Definition JMeq_UIP_refl
 Proof.
 Abort.
 
+Definition JMeq_UIP'
+ (A B : Type) (a : A) (b : B) (p q : JMeq A a B b)
+ : JMeq (JMeq A a B b) p (JMeq A a B b) q
+.
+Proof.
+ refine (
+  JMeq_elim
+   A a (fun B' b' p' => JMeq (JMeq A a B' b') p' (JMeq A a B b) q)
+   _ B b p
+ ).
+ refine (
+  JMeq_elim
+   A a (fun B' b' q' => JMeq (JMeq A a A a) (JMeq_refl A a) (JMeq A a B' b') q')
+   _ B b q
+ ).
+ refine (
+  JMeq_refl (JMeq A a A a) (JMeq_refl A a)
+ ).
+Defined.
+
+Definition JMeq_UIP'_refl
+ (A : Type) (x : A) (p : JMeq A x A x)
+ : JMeq (JMeq A x A x) (JMeq_refl A x) (JMeq A x A x) p
+.
+Proof.
+ refine (
+  JMeq_elim
+   A x (fun A' x' p' => JMeq (JMeq A x A x) (JMeq_refl A x) (JMeq A x A' x') p')
+   _ A x p
+ ).
+ refine (
+  JMeq_refl (JMeq A x A x) (JMeq_refl A x)
+ ).
+Defined.
+
 (* eqからJMeqを導く *)
 Definition eq_JMeq
  (A : Type) (x y : A) (p : eq A x y) : JMeq A x A y
