@@ -486,7 +486,7 @@ Definition eqJM
 :=
  ex
   (eq Type A B)
-  (fun p => eq B (eq_elim_nodep Type A (fun A' => A') a B p) b)
+  (fun p => (eq_elim_nodep Type A (fun B' => A -> B' -> Type) (eq A) B p) a b)
 .
 
 Definition eqJM_JMeq
