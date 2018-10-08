@@ -42,16 +42,23 @@ Definition eq_elim_nodep
 Definition eq_sym
  (A : Type) (x y : A) (p : eq A x y) : eq A y x
 :=
- match p with eq_refl _ _ => eq_refl A x end
+ eq_elim_nodep A x (fun y' => eq A y' x) (eq_refl A x) y p
 .
 
 Definition eq_trans
  (A : Type) (x y z : A) (p : eq A y z) (q : eq A x y) : eq A x z
-:=
- match p with eq_refl _ _ =>
-  match q with eq_refl _ _ => eq_refl A x end
- end
 .
+Proof.
+ refine (
+  eq_elim_nodep A y (fun z' => eq A x z') _ z p
+ ).
+ refine (
+  eq_elim_nodep A x (fun y' => eq A x y') _ y q
+ ).
+ refine (
+  eq_refl A x
+ ).
+Defined.
 
 (* Heteroな等式を表す型
   Haskellでの(:~~:)に対応する *)
@@ -81,17 +88,24 @@ Definition JMeq_elim_nodep
 Definition JMeq_sym
  (A B : Type) (a : A) (b : B) (p : JMeq A a B b) : JMeq B b A a
 :=
- match p with JMeq_refl _ _ => JMeq_refl A a end
+ JMeq_elim_nodep A a (fun B' b' => JMeq B' b' A a) (JMeq_refl A a) B b p
 .
 
 Definition JMeq_trans
  (A B C : Type) (a : A) (b : B) (c : C) (p : JMeq B b C c) (q : JMeq A a B b)
  : JMeq A a C c
-:=
- match p with JMeq_refl _ _ =>
-  match q with JMeq_refl _ _ => JMeq_refl A a end
- end
 .
+Proof.
+ refine (
+  JMeq_elim_nodep B b (fun C' c' => JMeq A a C' c') _ C c p
+ ).
+ refine (
+  JMeq_elim_nodep A a (fun B' b' => JMeq A a B' b') _ B b q
+ ).
+ refine (
+  JMeq_refl A a
+ ).
+Defined.
 
 (* JMeqからeqを導く
   証明不可能で公理として追加するしかない。
