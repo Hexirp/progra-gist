@@ -31,6 +31,20 @@ Definition eq_elim
  end
 .
 
+Definition eq_sym
+ (A : Type) (x y : A) (p : eq A x y) : eq A y x
+:=
+ match p with eq_refl _ _ => eq_refl A x end
+.
+
+Definition eq_trans
+ (A : Type) (x y z : A) (p : eq A y z) (q : eq A x y) : eq A x z
+:=
+ match p with eq_refl _ _ =>
+  match q with eq_refl _ _ => eq_refl A x end
+ end
+.
+
 (* Heteroな等式を表す型
   Haskellでの(:~~:)に対応する *)
 Inductive JMeq (A : Type) (a : A) : forall B : Type, B -> Type :=
@@ -45,6 +59,21 @@ Definition JMeq_elim
 :=
  match p as p' in JMeq _ _ B' b' return P B' b' p' with
  | JMeq_refl _ _ => c
+ end
+.
+
+Definition JMeq_sym
+ (A B : Type) (a : A) (b : B) (p : JMeq A a B b) : JMeq B b A a
+:=
+ match p with JMeq_refl _ _ => JMeq_refl A a end
+.
+
+Definition JMeq_trans
+ (A B C : Type) (a : A) (b : B) (c : C) (p : JMeq B b C c) (q : JMeq A a B b)
+ : JMeq A a C c
+:=
+ match p with JMeq_refl _ _ =>
+  match q with JMeq_refl _ _ => JMeq_refl A a end
  end
 .
 
