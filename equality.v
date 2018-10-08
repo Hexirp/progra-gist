@@ -455,3 +455,36 @@ Definition JMeq_JMeqH
 :=
  p
 .
+
+Inductive ex (A : Type) (P : A -> Type) : Type :=
+| ex_pair : forall x : A, P x -> ex A P
+.
+
+Definition ex_elim
+ (A : Type) (P : A -> Type) (Q : ex A P -> Type)
+ (c : forall (x : A) (xH : P x), Q (ex_pair A P x xH)) (x : ex A P)
+ : Q x
+:=
+ match x as x' return Q x' with
+ | ex_pair _ _ a aH => c a aH
+ end
+.
+
+Definition ex_elim_nodep
+ (A : Type) (P : A -> Type) (Q : Type)
+ (c : forall (x : A), P x -> Q) (x : ex A P)
+ : Q
+:=
+ match x with
+ | ex_pair _ _ a aH => c a aH
+ end
+.
+
+(* eqを使って定義されたJMeq *)
+Definition eqJM
+ (A : Type) (a : A) (B : Type) (b : B)
+:=
+ ex
+  (eq Type A B)
+  (fun p => eq B (eq_elim_nodep Type A (fun A' => A') a B p) b)
+.
