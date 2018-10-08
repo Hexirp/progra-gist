@@ -534,3 +534,37 @@ Proof.
   eq_refl A a
  ).
 Defined.
+
+(* https://homotopytypetheory.org/2012/11/21/on-heterogeneous-equality/ *)
+
+Definition pointed_type : Type := ex Type (fun A => A).
+
+Definition unpointed (A : pointed_type) : Type :=
+ ex_elim_nodep Type (fun A => A) Type (fun A a => A) A
+.
+
+Definition base_point (A : pointed_type) : unpointed A :=
+ ex_elim Type (fun A => A) (fun A => unpointed A) (fun A a => a) A
+.
+
+Definition at_home (A : Type) (a : A) : pointed_type := ex_pair Type (fun A => A) A a.
+
+Definition eqPt (A : Type) (a : A) (B : Type) (b : B) :=
+ eq pointed_type (at_home A a) (at_home A a)
+.
+
+Definition JMeq_eqPt
+ (A B : Type) (a : A) (b : B) (p : JMeq A a B b) : eqPt A a B b
+.
+Proof.
+ refine (
+  JMeq_elim_nodep A a (fun B' b' => eqPt A a B' b') _ B b p
+ ).
+ refine (
+  eq_refl pointed_type (at_home A a)
+ ).
+Defined.
+
+Definition eqPt_JMeq
+ (A B : Type) (a : A) (b : B) (p : JMeq A a B b) : eqPt A a B b
+.
