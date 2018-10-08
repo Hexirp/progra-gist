@@ -185,8 +185,9 @@ Section Declare_JMeq_eq.
      _ p (JMeq_eq_JMeq A x y p)
    ).
    refine (
-    eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) c y (JMeq_eq A x y p)
+    eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) _ y (JMeq_eq A x y p)
    ).
+   refine c.
   Defined.
  End Declare_JMeq_eq_JMeq.
 End Declare_JMeq_eq.
