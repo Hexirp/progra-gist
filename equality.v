@@ -125,9 +125,7 @@ Definition JMeq_elim_eqlike_nodep
 Proof.
 Abort.
 
-(* JMeqのeqのような除去規則？
-  JMeq_eqを導くので証明不可能であるとわかる。
-  ライブラリにはない。 *)
+(* JMeqのeqのような除去規則 *)
 Definition JMeq_elim_eqlike
  (A : Type) (x : A) (P : forall y : A, JMeq A x A y -> Type)
  (c : P x (JMeq_refl A x)) (y : A) (p : JMeq A x A y)
@@ -162,8 +160,7 @@ Definition UIP_refl
 Proof.
 Abort.
 
-(* UIPをJMeqを使って定義したバージョン
-  証明できる。さっきやりたかったことが出来ている。 *)
+(* UIPをJMeqを使って定義したバージョン *)
 Definition UIP' (A : Type) (x y : A) (p q : eq A x y) : JMeq (eq A x y) p (eq A x y) q.
 Proof.
  refine (
@@ -181,8 +178,7 @@ Proof.
  ).
 Defined.
 
-(* UIP_reflをJMeqで定義したバージョン
-  証明できる。さっきやりたかったことが出来ている。 *)
+(* UIP_reflをJMeqで定義したバージョン *)
 Definition UIP'_refl
  (A : Type) (x : A) (p : eq A x x) : JMeq (eq A x x) (eq_refl A x) (eq A x x) p
 .
