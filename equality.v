@@ -335,21 +335,17 @@ Section Declare_JMeq_eq.
   refine (UIP_refl A x (JMeq_eq A x x (JMeq_refl A x))).
  Defined.
 
- (* JMeq_eqを適用してeq_JMeqを適用すると元に戻る *)
+ (* JMeq_eqを適用してeq_JMeqを適用すると元に戻る
+   証明不可能？ *)
  Definition JMeq_eq_JMeq
   (A : Type) (x y : A) (p : JMeq A x A y)
   : eq (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) p
  .
  Proof.
-  refine (
-   eq_elim
-    A x (fun y' p' => eq (JMeq A x A y') (eq_JMeq A x y' p) p)
-    _ y (JMeq_eq A x y p)
-  ).
+ Abort.
 
  Section Declare_JMeq_eq_JMeq.
-  (* JMeq_eqを適用してeq_JMeqを適用すると元に戻る
-    この仮定をさらに弱められるかどうかは分かんない *)
+  (* この仮定をさらに弱められるかどうかは分かんない *)
   Variable JMeq_eq_JMeq
    : forall A x y p, eq (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) p.
 
@@ -371,6 +367,22 @@ Section Declare_JMeq_eq.
   Defined.
  End Declare_JMeq_eq_JMeq.
 End Declare_JMeq_eq.
+
+(* JMeq_elim_nodep_eqlikeを仮定して他の公理を導く *)
+Section Declare_JMeq_elim_nodep_eqlike.
+ Variable JMeq_elim_nodep_eqlike
+  : forall A x P, P x -> forall y, JMeq A x A y -> P y.
+
+ Definition JMeq_eq
+  (A : Type) (x y : A) (p : JMeq A x A y) : eq A x y
+ .
+ Proof.
+  refine (
+   JMeq_elim_nodep_eqlike
+    A x (fun y' => eq A x y')
+    (eq_refl A x) y p
+  ).
+ Defined.
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
