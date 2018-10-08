@@ -495,8 +495,9 @@ Definition eqJM_JMeq
 Proof.
  refine (
   ex_elim_nodep
-   (eq Type A B) (fun p => eq B (eq_elim_nodep Type A (fun A' => A') a B p) b)
-    (JMeq A a B b) _ p
+   (eq Type A B)
+   (fun p => (eq_elim_nodep Type A (fun B' => A -> B' -> Type) (eq A) B p) a b)
+   (JMeq A a B b) _ p
  ).
  refine (
   fun tp => _
@@ -504,6 +505,7 @@ Proof.
  refine (
   eq_elim
    Type A
-   (fun B' tp' => eq B' (eq_elim_nodep Type A (fun A' => A') a B' tp') b -> JMeq A a B' b)
+   (fun B' tp' =>
+    (eq_elim_nodep Type A (fun B' => A -> B' -> Type) (eq A) B' tp') a b -> JMeq A a B' b)
    _ B tp
  ).
