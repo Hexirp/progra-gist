@@ -297,6 +297,14 @@ Section Declare_JMeq_eq.
   refine (UIP'_refl A x p).
  Defined.
 
+ Definition JMeq_UIP
+  (A B : Type) (a : A) (b : B) (p q : JMeq A a B b) : eq (JMeq A a B b) p q
+ .
+ Proof.
+  refine (JMeq_eq (JMeq A a B b) p q _).
+  refine (JMeq_UIP' A B a b p q).
+ Defined.
+
  Section Declare_JMeq_eq_JMeq.
   (* JMeq_eqを適用してeq_JMeqを適用すると元に戻る
     この仮定をさらに弱められるかどうかは分かんない *)
