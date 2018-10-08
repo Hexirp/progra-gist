@@ -506,7 +506,7 @@ Definition eqJM
 :=
  ex
   (eq Type A B)
-  (fun p => (eq_elim_nodep Type A (fun B' => A -> B' -> Type) (eq A) B p) a b)
+  (fun p => (eq_elim_nopoint_nodep Type (fun A' B' => A' -> B' -> Type) eq A B p) a b)
 .
 
 Definition eqJM_JMeq
@@ -516,19 +516,16 @@ Proof.
  refine (
   ex_elim_nodep
    (eq Type A B)
-   (fun p => (eq_elim_nodep Type A (fun B' => A -> B' -> Type) (eq A) B p) a b)
+   (fun p => (eq_elim_nopoint_nodep Type (fun A' B' => A' -> B' -> Type) eq A B p) a b)
    (JMeq A a B b) _ p
  ).
  refine (
   fun tp => _
  ).
  refine (
-  _ (eq_refl Type B)
- ).
- refine (
-  eq_elim
-   Type A
-   (fun B' tp' =>
-    (eq_elim_nodep Type A (fun B' => A -> B' -> Type) (eq A) B' tp') a b -> JMeq A a B' b)
-   _ B tp
+  eq_elim_nopoint
+   Type
+   (fun A' B' tp' =>
+    (eq_elim_nopoint_nodep Type (fun A' B' => A' -> B' -> Type) eq A' B' tp') a b)
+   _ A B tp
  ).
