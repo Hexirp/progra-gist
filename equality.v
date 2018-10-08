@@ -565,7 +565,7 @@ Proof.
 Defined.
 
 Definition eqPt (A : Type) (a : A) (B : Type) (b : B) :=
- eq pointed_type (at_home A a) (at_home A a)
+ eq pointed_type (at_home A a) (at_home B b)
 .
 
 Definition JMeq_eqPt
@@ -583,3 +583,11 @@ Defined.
 Definition eqPt_JMeq
  (A B : Type) (a : A) (b : B) (p : eqPt A a B b) : JMeq A a B b
 .
+Proof.
+ pose (pA := at_home A a).
+ pose (pB := at_home B b).
+ change (JMeq (unpointed pA) (base_point pA) (unpointed pB) (base_point pB)).
+ refine (ptEq_JMeq pA pB p).
+Defined.
+
+(* この後さらにhequivであることがわかる　*)
