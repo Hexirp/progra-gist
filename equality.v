@@ -259,7 +259,7 @@ Definition eq_JMeq
 Section Declare_JMeq_eq.
  Variable JMeq_eq : forall A x y, JMeq A x A y -> eq A x y.
 
- Definition JMeq_elim_eqlike_nodep
+ Definition JMeq_elim_eqlike_nodep_from_
   (A : Type) (x : A) (P : A -> Type)
   (c : P x) (y : A) (p : JMeq A x A y)
   : P y
@@ -425,7 +425,7 @@ Section Declare_JMeq_elim_nodep_eqlike.
  Variable JMeq_elim_nodep_eqlike
   : forall A x P, P x -> forall y, JMeq A x A y -> P y.
 
- Definition JMeq_eq
+ Definition JMeq_eq_from_JMeq_elim_nodep_eqlike
   (A : Type) (x y : A) (p : JMeq A x A y) : eq A x y
  .
  Proof.
@@ -435,6 +435,15 @@ Section Declare_JMeq_elim_nodep_eqlike.
     (eq_refl A x) y p
   ).
  Defined.
+
+ (* 証明不可能？ *)
+ Definition reduce_JMeq_elim_nodep_eqlike
+  (A : Type) (x : A) (P : A -> Type) (c : P x)
+  : eq (P x) (JMeq_elim_nodep_eqlike A x P c x (JMeq_refl A x)) c
+ .
+ Proof.
+ Abort.
+End Declare_JMeq_elim_nodep_eqlike.
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
