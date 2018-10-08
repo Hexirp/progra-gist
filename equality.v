@@ -193,6 +193,26 @@ Proof.
  ).
 Defined.
 
+Definition JMeq_UIP
+ (A B : Type) (a : A) (b : B) (p q : JMeq A a B b) : eq (JMeq A a B b) p q
+.
+Proof.
+Abort.
+
+Definition JMeq_K
+ (A : Type) (x : A) (P : JMeq A x A x -> Type)
+ (c : P (JMeq_refl A x)) (p : JMeq A x A x)
+ : P p
+.
+Proof.
+Abort.
+
+Definition JMeq_UIP_refl
+ (A : Type) (x : A) (p : JMeq A x A x) : eq (JMeq A x A x) (JMeq_refl A x) p
+.
+Proof.
+Abort.
+
 (* eqからJMeqを導く *)
 Definition eq_JMeq
  (A : Type) (x y : A) (p : eq A x y) : JMeq A x A y
