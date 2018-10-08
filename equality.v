@@ -159,6 +159,14 @@ Section Declare_JMeq_eq.
    ).
  Defined.
 
+ Definition UIP_refl
+  (A : Type) (x : A) (p : eq A x x) : eq (eq A x x) (eq_refl A x) p
+ .
+ Proof.
+  refine (JMeq_eq (eq A x x) (eq_refl A x) p _).
+  refine (UIP'_refl A x p).
+ Defined.
+
  Section Declare_JMeq_eq_JMeq.
   (* JMeq_eqがどのように計算されるかの仮定 *)
   Variable JMeq_eq_JMeq
@@ -180,6 +188,7 @@ Section Declare_JMeq_eq.
    ).
   Defined.
  End Declare_JMeq_eq_JMeq.
+End Declare_JMeq_eq.
 
 (* JMeqを使って定義されたeq
   Coq.Logic.JMeq.JMeq_homとしてライブラリに存在。 *)
