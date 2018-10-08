@@ -201,7 +201,7 @@ Defined.
 Definition eq_JMeq
  (A : Type) (x y : A) (p : eq A x y) : JMeq A x A y
 :=
- match p with eq_refl _ _ => JMeq_refl A x end
+ eq_elim_nodep A x (fun y' => JMeq A x A y') (JMeq_refl A x) y p
 .
 
 (* JMeq_eqを仮定して他の公理を導く *)
