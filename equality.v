@@ -549,6 +549,21 @@ Definition base_point (A : pointed_type) : unpointed A :=
 
 Definition at_home (A : Type) (a : A) : pointed_type := ex_pair Type (fun A => A) A a.
 
+Definition ptEq_JMeq
+ (A B : pointed_type) (p : eq pointed_type A B)
+ : JMeq (unpointed A) (base_point A) (unpointed B) (base_point B)
+.
+Proof.
+ refine (
+  eq_elim_nodep
+   pointed_type A (fun B' => JMeq (unpointed A) (base_point A) (unpointed B') (base_point B'))
+   _ B p
+ ).
+ refine (
+  JMeq_refl (unpointed A) (base_point A)
+ ).
+Defined.
+
 Definition eqPt (A : Type) (a : A) (B : Type) (b : B) :=
  eq pointed_type (at_home A a) (at_home A a)
 .
@@ -566,5 +581,5 @@ Proof.
 Defined.
 
 Definition eqPt_JMeq
- (A B : Type) (a : A) (b : B) (p : JMeq A a B b) : eqPt A a B b
+ (A B : Type) (a : A) (b : B) (p : eqPt A a B b) : JMeq A a B b
 .
