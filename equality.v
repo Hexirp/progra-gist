@@ -31,6 +31,14 @@ Definition eq_elim
  end
 .
 
+Definition eq_elim_nodep
+ (A : Type) (x : A) (P : A -> Type)
+ (c : P x) (y : A) (p : eq A x y)
+ : P y
+:=
+ eq_elim A x (fun y' _ => P y') c y p
+.
+
 Definition eq_sym
  (A : Type) (x y : A) (p : eq A x y) : eq A y x
 :=
@@ -60,6 +68,14 @@ Definition JMeq_elim
  match p as p' in JMeq _ _ B' b' return P B' b' p' with
  | JMeq_refl _ _ => c
  end
+.
+
+Definition JMeq_elim_nodep
+ (A : Type) (a : A) (P : forall (B : Type), B -> Type)
+ (c : P A a) (B : Type) (b : B) (p : JMeq A a B b)
+ : P B b
+:=
+ JMeq_elim A a (fun B' b' _ => P B' b') c B b p
 .
 
 Definition JMeq_sym
