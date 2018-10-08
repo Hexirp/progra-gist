@@ -326,17 +326,44 @@ Section Declare_JMeq_eq.
   refine (JMeq_UIP'_refl A x p).
  Defined.
 
- Definition JMeq_elim_eqlike
-  (A : Type) (x : A) (P : forall y : A, JMeq A x A y -> Type)
-  (c : P x (JMeq_refl A x)) (y : A) (p : JMeq A x A y)
-  : P y p
+ (* JMeq_eqがどう簡約されるか *)
+ Definition reduce_JMeq_eq
+  (A : Type) (x : A) : eq (eq A x x) (JMeq_eq A x x (JMeq_refl A x)) (eq_refl A x)
+ .
+ Proof.
+  refine (eq_sym (eq A x x) (eq_refl A x) (JMeq_eq A x x (JMeq_refl A x)) _).
+  refine (UIP_refl A x (JMeq_eq A x x (JMeq_refl A x))).
+ Defined.
+
+ (* JMeq_eqを適用してeq_JMeqを適用すると元に戻る *)
+ Definition JMeq_eq_JMeq
+  (A : Type) (x y : A) (p : JMeq A x A y)
+  : eq (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) p
  .
  Proof.
   refine (
    eq_elim
-    (JMeq A x A y) (JMeq_refl A x) (fun p' _ => P y p')
-    _ p (JMeq_UIP_refl A x p)
+    A x (fun y' p' => eq (JMeq A x A y') (eq_JMeq A x y' p') p)
+    _ y (JMeq_eq A x y p)
   ).
+
+ Section Declare_JMeq_eq_JMeq.
+  (* JMeq_eqを適用してeq_JMeqを適用すると元に戻る
+    この仮定をさらに弱められるかどうかは分かんない *)
+  Variable JMeq_eq_JMeq
+   : forall A x y p, eq (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) p.
+
+  Definition JMeq_elim_eqlike
+   (A : Type) (x : A) (P : forall y : A, JMeq A x A y -> Type)
+   (c : P x (JMeq_refl A x)) (y : A) (p : JMeq A x A y)
+   : P y p
+  .
+  Proof.
+   refine (
+    eq_elim
+     (JMeq A x A y) (eq_JMeq A x y (JMeq_eq A x y p)) (fun p' _ => P y p')
+     _ p (JMeq_eq_JMeq A x y p)
+   ).
    refine (
     eq_elim A x (fun y' p' => P y' (eq_JMeq A x y' p')) _ y (JMeq_eq A x y p)
    ).
