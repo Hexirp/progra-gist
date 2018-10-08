@@ -204,6 +204,17 @@ Definition eq_JMeq
 Section Declare_JMeq_eq.
  Variable JMeq_eq : forall A x y, JMeq A x A y -> eq A x y.
 
+ Definition JMeq_elim_eqlike_nodep
+  (A : Type) (x : A) (P : A -> Type)
+  (c : P x) (y : A) (p : JMeq A x A y)
+  : P y
+ .
+ Proof.
+  refine (
+   eq_elim_nodep A x P c y (JMeq_eq A x y p)
+  ).
+ Defined.
+
  Definition UIP (A : Type) (x y : A) (p q : eq A x y) : eq (eq A x y) p q.
  Proof.
   refine (JMeq_eq (eq A x y) p q _).
