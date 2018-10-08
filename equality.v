@@ -509,23 +509,28 @@ Definition eqJM
   (fun p => (eq_elim_nopoint_nodep Type (fun A' B' => A' -> B' -> Type) eq A B p) a b)
 .
 
+(* 証明不可能？ *)
 Definition eqJM_JMeq
  (A B : Type) (a : A) (b : B) (p : eqJM A a B b) : JMeq A a B b
 .
 Proof.
+Abort.
+
+Definition JMeq_eqJM
+ (A B : Type) (a : A) (b : B) (p : JMeq A a B b) : eqJM A a B b
+.
+Proof.
  refine (
-  ex_elim_nodep
-   (eq Type A B)
-   (fun p => (eq_elim_nopoint_nodep Type (fun A' B' => A' -> B' -> Type) eq A B p) a b)
-   (JMeq A a B b) _ p
+  JMeq_elim_nodep A a (eqJM A a) _ B b p
  ).
  refine (
-  fun tp => _
+  ex_pair
+   (eq Type A A)
+   (fun p => (eq_elim_nopoint_nodep Type (fun A' A'' => A' -> A'' -> Type) eq A A p) a a)
+   (eq_refl Type A)
+   _
  ).
  refine (
-  eq_elim_nopoint
-   Type
-   (fun A' B' tp' =>
-    (eq_elim_nopoint_nodep Type (fun A' B' => A' -> B' -> Type) eq A' B' tp') a b)
-   _ A B tp
+  eq_refl A a
  ).
+Defined.
