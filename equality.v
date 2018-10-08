@@ -86,6 +86,15 @@ Definition JMeq_eq
 Proof.
 Abort.
 
+(* JMeqのeqのような依存無しの除去規則 *)
+Definition JMeq_elim_eqlike_nodep
+ (A : Type) (x : A) (P : A -> Type)
+ (c : P x) (y : A) (p : JMeq A x A y)
+ : P y
+.
+Proof.
+Abort.
+
 (* JMeqのeqのような除去規則？
   JMeq_eqを導くので証明不可能であるとわかる。
   ライブラリにはない。 *)
