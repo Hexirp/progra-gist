@@ -343,7 +343,7 @@ Section Declare_JMeq_eq.
  Proof.
   refine (
    eq_elim
-    A x (fun y' p' => eq (JMeq A x A y') (eq_JMeq A x y' p') p)
+    A x (fun y' p' => eq (JMeq A x A y') (eq_JMeq A x y' p) p)
     _ y (JMeq_eq A x y p)
   ).
 
