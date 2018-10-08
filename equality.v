@@ -500,7 +500,7 @@ Definition eq_elim_nopoint_nodep
  end
 .
 
-(* eqを使って定義されたJMeq *)
+(* eqを使って定義されたJMeqもどき *)
 Definition eqJM
  (A : Type) (a : A) (B : Type) (b : B)
 :=
