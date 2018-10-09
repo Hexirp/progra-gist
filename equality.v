@@ -591,3 +591,7 @@ Proof.
 Defined.
 
 (* この後さらにhequivであることがわかる　*)
+
+Inductive JMeqE (A : Type) (a : A) : forall B : Type, B -> eq Type A B -> Type :=
+| JMeqE_refl : JMeqE A a A a (eq_refl Type A)
+.
